@@ -1,0 +1,20 @@
+{
+  "name": "canary",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": ["contracts"],
+  "scripts": {
+    "discovery": "node scripts/discovery.mjs",
+    "test:discovery": "node --test scripts/discovery.test.mjs",
+    "typecheck": "npm run typecheck --workspace contracts",
+    "forge": "node scripts/forge.mjs"
+  },
+  "devDependencies": {
+    "@qorechain/pqc": "0.2.3",
+    "solc": "0.8.28",
+    "viem": "^2.0.0"
+  },
+  "engines": { "node": ">=20" },
+  "optionalDependencies": { "@foundry-rs/forge-win32-amd64": "1.7.1" }
+}

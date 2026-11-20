@@ -1,0 +1,28 @@
+{
+  "observedAt": "2026-11-20T20:21:05.852Z",
+  "network": "qorechain-diana",
+  "rpc": "https://evm-testnet.qore.host",
+  "broadcast": false,
+  "compiler": "0.8.28+commit.7893614a.Emscripten.clang",
+  "checks": {
+    "precompiles": [
+      "0x0000000000000000000000000000000000000901",
+      "0x0000000000000000000000000000000000000C01",
+      "0x0000000000000000000000000000000000000a01",
+      "0x0000000000000000000000000000000000000a02"
+    ],
+    "validSignature": true,
+    "tamperedSignature": false,
+    "solidityProbe": {
+      "target": "0x0000000000000000000000000000000000000a01",
+      "nativeBalance": "0",
+      "rpcBalance": "0",
+      "valid": true,
+      "verifierCallGas": "106662",
+      "method": "eth_call contract creation; no persistent deployment"
+    }
+  },
+  "block": "10455150",
+  "blockGasLimit": "4294967295",
+  "passed": true
+}
