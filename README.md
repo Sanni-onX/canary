@@ -4,7 +4,7 @@ A post-quantum safety layer for QoreChain: canaries raise an on-chain alarm,
 PQ-Wrap vaults freeze classical authority, and Lifeboat helps users migrate
 before an attack. Built for the QoreChain Developer Fest, Post-Quantum dApp track.
 
-**Status: Phase 0 discovery. No deployed vaults, production UI or audit yet.**
+**Status: Phase 0 discovery. Discovery UI available; no deployed vaults or audit yet.**
 Testnet only. No real funds. The full requirements are in
 [the build prompt](Canary%20Full%20Product%20Build%20Prompt.md).
 
@@ -15,6 +15,8 @@ Testnet only. No real funds. The full requirements are in
   verification; no funded contract or mock deployed.
 - A reproducible live testnet discovery script, unit/negative tests, Solidity
   fuzz tests, strict TypeScript check, and saved gas/chain evidence.
+- A responsive Next.js discovery console for public account reads, QoreX-only
+  connection and browser-local PQ compatibility checks. It sends no transactions.
 - [Discovery](docs/DISCOVERY.md), [architecture](docs/ARCHITECTURE.md),
   [progress](docs/PROGRESS.md), [threat model](docs/THREAT_MODEL.md) and
   [AI contribution log](AI_USAGE.md).
@@ -52,8 +54,23 @@ flowchart LR
   V --> P[PQ-signed rescue exit]
 ```
 
-The planned web app is Next.js/React; the official Vite template under
-`.starter/` is reference material, not Canary's user interface.
+The discovery web app is Next.js/React; the official Vite template under
+`.starter/` remains reference material. Full vault and migration screens are pending.
+
+## Preview the discovery page
+
+```powershell
+npm run dev
+```
+
+Open http://127.0.0.1:3000 on the development computer. `npm run build` creates
+the production build. `npm run test:web` runs desktop and mobile-viewport browser
+checks (Windows uses installed Edge; other platforms need Playwright Chromium).
+QoreX mobile requires a public HTTPS preview; localhost is not accessible as a
+phone wallet test link. No preview is published yet.
+
+The human selected **QoreX mobile only**. A native session-key route is being
+investigated and remains disabled. [Integration findings](docs/QOREX_INTEGRATION.md).
 
 ## Limits and security
 
@@ -70,12 +87,15 @@ separate, clearly labeled testnet simulation.
 
 ## Deployment and audit
 
-No addresses or transaction hashes yet. Read-only simulation is not a deployment.
+No deployed contract addresses or Canary-generated transaction hashes yet.
+The human's funded testnet account and an existing chain-verified hybrid transfer
+are recorded in [the integration findings](docs/QOREX_INTEGRATION.md).
+Read-only simulation is not a deployment.
 The explorer currently has no source verification API; source and exact compiler
 settings will be published with real receipts. [Audit status and required
 two-stage QCAI evidence](docs/AUDIT.md). No external audit completed.
 
-Current validation: 8 Node discovery tests and 8 Foundry tests passed (including
+Current validation: 10 browser checks, 8 Node discovery tests and 8 Foundry tests passed (including
 the original starter's 3 tests); two fuzz tests ran 256 cases each. This is not
 validation of the unimplemented vault. [Gas measurement](docs/gas.md).
 
@@ -92,6 +112,9 @@ validation of the unimplemented vault. [Gas measurement](docs/gas.md).
   forge-std v1.9.7 (MIT/Apache-2.0), TypeScript (Apache-2.0), tsx (MIT),
   CosmJS (Apache-2.0), and Node.js (MIT): development/integration dependencies.
 - Retained web reference uses React/React DOM (MIT) and Vite (MIT).
+- Discovery UI: Next.js 16.4.6 and React/React DOM 19.3.1 (MIT);
+  `@qorechain/qorex-types` 0.1.0 (Apache-2.0); Playwright 1.65.1
+  (Apache-2.0). https://github.com/qorechain/qorex-integrations
 - OpenZeppelin is specified for later core contracts; it is not yet installed
   or claimed as an implemented integration.
 

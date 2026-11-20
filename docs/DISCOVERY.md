@@ -2,7 +2,12 @@
 
 Evidence gathered 20 November 2026. This phase is **in progress**. No contract
 has been persistently deployed and no wallet transaction has been broadcast.
-No vault, watcher or product UI is claimed to be implemented yet.
+No vault or watcher is implemented yet. A minimal Next.js discovery console is
+now available; it sends no transactions. New account and mobile-only integration
+findings are in `QOREX_INTEGRATION.md` and supersede the earlier pending items
+below. Account funding/PQ possession and an existing human hybrid transaction
+are now independently verified. Browser PQ signing passed Chromium tests;
+actual QoreX mobile execution still needs a secure HTTPS preview.
 
 ## Primary sources
 
@@ -27,12 +32,12 @@ tokenomics example is not evidence that those RPC methods work on public nodes.
 
 | ID | Finding and evidence | Status / remaining work |
 | --- | --- | --- |
-| A1 | A Solidity `addr.balance` read ran on testnet inside contract-creation `eth_call` and matched `eth_getBalance` at the same block. Local Foundry fuzz coverage includes arbitrary balances. | Read-only check passed. Repeat on the user's funded public address and persistently deployed probe before phase completion. ERC-20 fallback not needed so far. |
+| A1 | A Solidity `addr.balance` read ran on testnet inside contract-creation `eth_call` and matched `eth_getBalance`. Repeated at block 10,455,926 on the supplied account: 49.865 QOR. Local Foundry fuzz coverage includes arbitrary balances. | Funded-account read-only check passed. Persistent probe deployment pending. ERC-20 fallback not needed so far. |
 | A2 | Exact call is `pqcVerify(bytes pubkey, bytes signature, bytes message)` at `0x0000000000000000000000000000000000000a01`. Fresh real signature accepted, altered message rejected; Solidity call returned true. Active list saved in `evidence/discovery.json`. | Passed read-only integration; persistent deployment and signed transaction still pending. No mock used on testnet. |
 | A3 | Real chain-level admission gate. Native hybrid-signed window bounds blocks, transactions, QOR value plus maximum fees, and allowed targets. Classical keys alone cannot open it. | Confirmed from reference and starter. Need one opened scoped window and native tx receipt as project evidence. Save signed request scope too. |
-| A4 | Published `@qorechain/pqc@0.2.3` uses noble's JS ML-DSA-87, supports keygen/sign/verify, and local Node tests pass, including all five upstream known-answer vectors pinned to revision `66ff1eb447772f2f8036a0bf5050ae1573baeb85`. | Browser execution remains pending. No hosted signer fallback. |
-| A5 | QoreX is EIP-1193 compatible for accounts/network **but its documented EVM interface cannot send transactions**. Native `signAndBroadcast` is supported and keeps the wallet's PQ key in QoreX. | Integration decision requested: QoreX native signing plus a separate EVM wallet for the same account. No invented `eth_sendTransaction` support. Investigate native-only alternative if declined. |
-| A6 | Measured Solidity verifier call including probe ABI/call overhead: **106,662 gas**, at block 10,455,150. Reported block gas limit: 4,294,967,295. | Read-only measurement passed. Governance path and actual tx gas not measured. Do not equate native hybrid verification gas with this precompile. |
+| A4 | Published `@qorechain/pqc@0.2.3` uses noble's JS ML-DSA-87. Node known-answer vectors pass at pinned revision `66ff1eb447772f2f8036a0bf5050ae1573baeb85`. Real keygen/sign/verify and altered-message rejection also passed Chromium desktop/mobile-viewport tests. | General browser runtime passed. Actual QoreX mobile device still pending. Used the planned Next.js app for the small browser proof instead of a temporary Vite app; cryptographic scope is unchanged. No hosted signer. |
+| A5 | QoreX is EIP-1193 compatible for accounts/network **but its documented EVM interface cannot send transactions**. Native `signAndBroadcast` is supported and keeps the wallet's PQ key in QoreX. | Human selected QoreX mobile only. Native session-key EVM candidate is unverified/disabled; see `QOREX_INTEGRATION.md`. No invented support, second wallet or permissions enabled. |
+| A6 | Measured Solidity verifier call including probe ABI/call overhead: **109,162 gas cold**, block 10,455,926; initial warm-address run was 106,662. Block gas limit: 4,294,967,295. | Read-only measurement passed. Governance path and actual tx gas not measured. Do not equate native hybrid verification gas with this precompile. |
 | A7 | Testnet REST params and JSON-RPC reads/eth_call succeeded, with 20-second client timeouts. | Basic connectivity passed. Sustained watcher limits, subscriptions, faucet claim and full E2E remain untested. |
 | A8 | FAQ explicitly says explorer source verification and Etherscan-compatible API are not available. | Use documented fallback: publish source and exact compiler settings plus real deployment receipt. No claim of verified explorer source. |
 | A9 | Both QCAI runs must use the same EVM/Solidity setting. Stage 2 follows triage of every Stage 1 finding. Store dated PDFs under `docs/audit/`, response mapping in `docs/AUDIT.md`, link README and project How it's made. EVM quantum readiness may say Not scored. | Procedure confirmed; actual audits pending contracts. Canonical PDF location follows current FAQ; raw artifacts also go in `audit/`. |
@@ -51,8 +56,9 @@ tokenomics example is not evidence that those RPC methods work on public nodes.
 - The official Q-Day Drill registration closed 17 November and drill ran
   18 November. It is already past. Canary's own simulation remains in scope;
   do not claim participation or eligibility for the official drill award.
-- Human confirmed a funded wallet and completed registration in chat. These
-  have not yet been independently verified; public address requested.
+- Human confirmed completed registration. The supplied wallet's funding,
+  registered/proven key and prior successful hybrid transfer have now been
+  independently verified; fest account registration remains human-confirmed.
 
 ## Reproduction
 
@@ -73,8 +79,8 @@ in memory, signs only a discovery message and clears its secret buffer in
 
 The Solidity creation call instantiates the probe only within simulated state.
 It is not a deployed contract, a hybrid transaction or submission evidence for
-deployment. The original zero-balance target is recorded honestly; local fuzz
-tests cover nonzero balance behavior.
+deployment. The original zero-balance target is retained as
+`evidence/initial-discovery.json`. The current result uses the funded user account.
 
 ## Toolchain and local issues
 
@@ -93,9 +99,9 @@ tests cover nonzero balance behavior.
 
 ## Before closing Phase 0
 
-1. Receive public address; inspect funded balance, key registration/proof and window.
-2. Resolve QoreX's EVM-signing limitation with the human.
-3. Run browser keygen/sign/verify; upstream known-vector checks already pass in Node.
-4. Use wallet-local hybrid signing to open a scoped window; preserve receipt.
+1. Resolve the QoreX-mobile-only EVM submission path without secret export.
+2. Publish a secure preview and test the actual QoreX mobile connection.
+3. Retain the passed browser/known-vector and funded-account evidence.
+4. Obtain scoped window evidence; existing human hybrid transfer is verified.
 5. Simulate, deploy the read-only probe, then record address and receipts.
 6. Re-measure actual transaction gas and close the discovery checkpoint.

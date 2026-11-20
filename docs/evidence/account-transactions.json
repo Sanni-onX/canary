@@ -1,0 +1,473 @@
+{
+  "observedAt": "2026-11-20T20:44:16.473Z",
+  "network": "qorechain-diana",
+  "account": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+  "broadcast": false,
+  "note": "Existing account history, not a Canary-initiated transaction",
+  "transactions": [
+    {
+      "hash": "F6A6EB9E038C2F8FC4B6880353CA34FDB03D9932ED1777C9A12F0B36AE8E6A97",
+      "height": "10454410",
+      "code": 0,
+      "events": [
+        {
+          "type": "pqc_verify",
+          "attributes": [
+            {
+              "key": "address",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+              "index": true
+            },
+            {
+              "key": "key_type",
+              "value": "hybrid",
+              "index": true
+            },
+            {
+              "key": "algorithm_id",
+              "value": "dilithium5",
+              "index": true
+            },
+            {
+              "key": "hybrid_mode",
+              "value": "required",
+              "index": true
+            },
+            {
+              "key": "status",
+              "value": "algorithm_active",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "pqc_hybrid_verify",
+          "attributes": [
+            {
+              "key": "address",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+              "index": true
+            },
+            {
+              "key": "algorithm_id",
+              "value": "dilithium5",
+              "index": true
+            },
+            {
+              "key": "status",
+              "value": "verified",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "ai_anomaly_check",
+          "attributes": [
+            {
+              "key": "score_millionths",
+              "value": "0",
+              "index": true
+            },
+            {
+              "key": "action",
+              "value": "allow",
+              "index": true
+            },
+            {
+              "key": "is_anomalous",
+              "value": "false",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "coin_spent",
+          "attributes": [
+            {
+              "key": "spender",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+              "index": true
+            },
+            {
+              "key": "amount",
+              "value": "45000uqor",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "coin_received",
+          "attributes": [
+            {
+              "key": "receiver",
+              "value": "qor17xpfvakm2amg962yls6f84z3kell8c5lyj5r7l",
+              "index": true
+            },
+            {
+              "key": "amount",
+              "value": "45000uqor",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "transfer",
+          "attributes": [
+            {
+              "key": "recipient",
+              "value": "qor17xpfvakm2amg962yls6f84z3kell8c5lyj5r7l",
+              "index": true
+            },
+            {
+              "key": "sender",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+              "index": true
+            },
+            {
+              "key": "amount",
+              "value": "45000uqor",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "message",
+          "attributes": [
+            {
+              "key": "sender",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "tx",
+          "attributes": [
+            {
+              "key": "fee",
+              "value": "45000uqor",
+              "index": true
+            },
+            {
+              "key": "fee_payer",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "tx",
+          "attributes": [
+            {
+              "key": "acc_seq",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z/1",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "tx",
+          "attributes": [
+            {
+              "key": "signature",
+              "value": "x5oni3Vf5dbz2Z4cd26YS0xN9RgAxalCRfGAnLVzD7gUDz710GWN+w3XuCi8IZBC22pwbh52GXt1NiR34ylhVg==",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "message",
+          "attributes": [
+            {
+              "key": "action",
+              "value": "/cosmos.bank.v1beta1.MsgSend",
+              "index": true
+            },
+            {
+              "key": "sender",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+              "index": true
+            },
+            {
+              "key": "module",
+              "value": "bank",
+              "index": true
+            },
+            {
+              "key": "msg_index",
+              "value": "0",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "coin_spent",
+          "attributes": [
+            {
+              "key": "spender",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+              "index": true
+            },
+            {
+              "key": "amount",
+              "value": "1uqor",
+              "index": true
+            },
+            {
+              "key": "msg_index",
+              "value": "0",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "coin_received",
+          "attributes": [
+            {
+              "key": "receiver",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+              "index": true
+            },
+            {
+              "key": "amount",
+              "value": "1uqor",
+              "index": true
+            },
+            {
+              "key": "msg_index",
+              "value": "0",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "transfer",
+          "attributes": [
+            {
+              "key": "recipient",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+              "index": true
+            },
+            {
+              "key": "sender",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+              "index": true
+            },
+            {
+              "key": "amount",
+              "value": "1uqor",
+              "index": true
+            },
+            {
+              "key": "msg_index",
+              "value": "0",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "message",
+          "attributes": [
+            {
+              "key": "sender",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+              "index": true
+            },
+            {
+              "key": "msg_index",
+              "value": "0",
+              "index": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "hash": "6618922E20C973DD3B049BE0B3C9B1851C690F3CD31BC6BB178FCA430FCE772E",
+      "height": "10454407",
+      "code": 0,
+      "events": [
+        {
+          "type": "pqc_hybrid_classical_only",
+          "attributes": [
+            {
+              "key": "address",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+              "index": true
+            },
+            {
+              "key": "hybrid_mode",
+              "value": "required",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "ai_anomaly_check",
+          "attributes": [
+            {
+              "key": "score_millionths",
+              "value": "0",
+              "index": true
+            },
+            {
+              "key": "action",
+              "value": "allow",
+              "index": true
+            },
+            {
+              "key": "is_anomalous",
+              "value": "false",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "coin_spent",
+          "attributes": [
+            {
+              "key": "spender",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+              "index": true
+            },
+            {
+              "key": "amount",
+              "value": "90000uqor",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "coin_received",
+          "attributes": [
+            {
+              "key": "receiver",
+              "value": "qor17xpfvakm2amg962yls6f84z3kell8c5lyj5r7l",
+              "index": true
+            },
+            {
+              "key": "amount",
+              "value": "90000uqor",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "transfer",
+          "attributes": [
+            {
+              "key": "recipient",
+              "value": "qor17xpfvakm2amg962yls6f84z3kell8c5lyj5r7l",
+              "index": true
+            },
+            {
+              "key": "sender",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+              "index": true
+            },
+            {
+              "key": "amount",
+              "value": "90000uqor",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "message",
+          "attributes": [
+            {
+              "key": "sender",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "tx",
+          "attributes": [
+            {
+              "key": "fee",
+              "value": "90000uqor",
+              "index": true
+            },
+            {
+              "key": "fee_payer",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "tx",
+          "attributes": [
+            {
+              "key": "acc_seq",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z/0",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "tx",
+          "attributes": [
+            {
+              "key": "signature",
+              "value": "A1tFSClB463T6sIPbJl1DOU4Tircq2vdhhLw36S/tn9gFZLZo6Vsmc1vV2MpgwcgkAEAHirA7rZQS0LieMvilg==",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "message",
+          "attributes": [
+            {
+              "key": "action",
+              "value": "/qorechain.pqc.v1.MsgRegisterPQCKeyV2",
+              "index": true
+            },
+            {
+              "key": "sender",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+              "index": true
+            },
+            {
+              "key": "module",
+              "value": "pqc",
+              "index": true
+            },
+            {
+              "key": "msg_index",
+              "value": "0",
+              "index": true
+            }
+          ]
+        },
+        {
+          "type": "pqc_key_registered",
+          "attributes": [
+            {
+              "key": "address",
+              "value": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+              "index": true
+            },
+            {
+              "key": "key_type",
+              "value": "hybrid",
+              "index": true
+            },
+            {
+              "key": "algorithm_id",
+              "value": "dilithium5",
+              "index": true
+            },
+            {
+              "key": "msg_index",
+              "value": "0",
+              "index": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

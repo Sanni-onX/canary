@@ -20,5 +20,26 @@
 - AI also imported all five upstream public ML-DSA-87 known-answer vectors at a
   pinned commit, labeled their deliberately public test keys and verified
   keygen/sign/verify byte compatibility. Browser runtime is not yet tested.
+
+## 20 November 2026 — QoreX mobile-only investigation and browser proof
+
+- Human supplied the public testnet address and explicitly selected QoreX only,
+  then clarified mobile app. Human did not approve a second wallet, linked
+  session key, new permissions, secret export or any transaction this session.
+- AI verified public balance, proven PQ key, absent EVM window and an existing
+  human hybrid-signed transfer. The registration bootstrap is correctly marked
+  classical. No transaction was generated or broadcast by Canary.
+- AI investigated native authenticator execution as a possible QoreX-only EVM
+  route. It remains unverified/disabled; wallet decoding and relayer topology
+  are unresolved. Mobile/integration documentation has version inconsistencies.
+- AI built the Next.js discovery console, fixed public REST queries, added real
+  browser PQ compatibility proof, light/dark layouts and 10 browser checks.
+  Connection tests use test-only injected providers; they do not prove real
+  QoreX mobile execution. Browser PQ generation/signing itself is real.
+- AI measured 109,162 gas with the verifier address cold and explained why the
+  earlier warm-address probe was 2,500 gas cheaper. Both runs are retained.
+- AI fixed a test selector ambiguity with Next.js's accessibility announcer.
+  Production build and strict typecheck passed; 10 browser checks passed. The
+  actual mobile wallet and public HTTPS preview are still pending.
 - Test counts/results and limits are in `docs/PROGRESS.md`. The AI has not
   independently verified the human's registration and makes no audit claim.

@@ -3,15 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "workspaces": ["contracts"],
+  "workspaces": ["contracts", "apps/web"],
   "scripts": {
     "discovery": "node scripts/discovery.mjs",
     "test:discovery": "node --test scripts/discovery.test.mjs",
-    "typecheck": "npm run typecheck --workspace contracts",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "dev": "npm run dev --workspace @canary/web",
+    "build": "npm run build --workspace @canary/web",
+    "test:web": "playwright test",
     "forge": "node scripts/forge.mjs"
   },
   "devDependencies": {
     "@qorechain/pqc": "0.2.3",
+    "@playwright/test": "1.65.1",
     "solc": "0.8.28",
     "viem": "^2.0.0"
   },

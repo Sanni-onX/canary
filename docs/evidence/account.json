@@ -1,0 +1,84 @@
+{
+  "observedAt": "2026-11-20T20:31:10.782Z",
+  "network": "qorechain-diana",
+  "nativeAddress": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+  "evmAddress": "0x77cc6608600ef0305817c2bfdf4910f1319a1f63",
+  "broadcast": false,
+  "reads": {
+    "balances": {
+      "httpStatus": 200,
+      "body": {
+        "balances": [
+          {
+            "denom": "uqor",
+            "amount": "49865000"
+          }
+        ],
+        "pagination": {
+          "next_key": null,
+          "total": "1"
+        }
+      }
+    },
+    "pqc": {
+      "httpStatus": 200,
+      "body": {
+        "found": true,
+        "account": {
+          "address": "qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z",
+          "public_key": "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",
+          "algorithm_id": 1,
+          "algorithm_name": "dilithium5",
+          "ecdsa_pubkey": "AtJSNpxWsXJsgxIemE1iJ+YL2Jv1bfZ/Jhz1oX4ySSJ8",
+          "key_type": "hybrid",
+          "created_at_height": "10454407",
+          "migration_public_key": null,
+          "migration_algorithm_id": 0,
+          "classical_key_source": "auth_account",
+          "possession_proven": true
+        }
+      }
+    },
+    "window": {
+      "httpStatus": 200,
+      "body": {
+        "found": false,
+        "live": false,
+        "opened_height": "0",
+        "expiry_height": "0",
+        "max_txs": "0",
+        "used_txs": "0",
+        "max_value": "",
+        "used_value": "",
+        "remaining_blocks": "0",
+        "remaining_txs": "0",
+        "remaining_value": "",
+        "native_only": false,
+        "allowed_targets": [],
+        "validators": [],
+        "staking_validators": [],
+        "ibc_receivers": []
+      }
+    },
+    "abstractAccount": {
+      "httpStatus": 404,
+      "body": {
+        "code": 5,
+        "message": "account qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z not found",
+        "details": []
+      }
+    },
+    "abstractConfig": {
+      "httpStatus": 200,
+      "body": {
+        "config": {
+          "enabled": true,
+          "max_session_keys": 10,
+          "max_spending_rules": 5,
+          "default_session_ttl": "86400"
+        }
+      }
+    }
+  },
+  "evmBalanceWei": "49865000000000000000"
+}

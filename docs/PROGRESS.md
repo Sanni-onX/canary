@@ -1,5 +1,49 @@
 # Canary progress
 
+## 20 November 2026 — QoreX mobile-only checkpoint (current)
+
+Human decision: QoreX mobile only. No second wallet or linked-key permissions
+approved. The native session-key EVM route is a candidate, not a working feature.
+
+Completed since the first checkpoint:
+
+- Verified supplied account's **49.865 test QOR**, registered ML-DSA-87 key and
+  proof of possession. Its EVM window is closed. Testnet abstract-account module
+  is enabled; no abstract-account record found for this account.
+- Verified an existing human native transfer has code 0 and the chain event
+  `pqc_hybrid_verify: status=verified`. No repeat transfer needed for basic
+  account hybrid evidence. This was not initiated by Canary.
+- Repeated Solidity balance/PQ simulation against the funded user address:
+  49.865 QOR matched RPC; valid signature accepted, altered message rejected.
+- Recorded **109,162 gas cold** and retained the original 106,662 warm-address
+  measurement, with the access-cost difference explained.
+- Built Next.js discovery console: live public account checks, QoreX connection
+  inspection, real ephemeral browser PQ check, responsive light/dark layout.
+  No funds move, permissions change or signing requests leave the page.
+- Confirmed real browser ML-DSA-87 generation/sign/verify and rejection of an
+  altered message under Chromium desktop and mobile viewport. No key POST or
+  localStorage persistence in these tests.
+- **10/10 browser checks passed**, strict typecheck passed and production build
+  passed. Earlier 8 Node/8 Foundry tests are unchanged. CI now includes web build
+  and browser checks as well as contract checks; hosted CI has not been run yet.
+- Production preview started at `http://127.0.0.1:3000`; live API check returned
+  49.865 QOR, proven PQ key and closed window. It is local to this computer.
+
+Still blocked/pending:
+
+- A verified **QoreX-only EVM submission route**. Session-key registration,
+  decoded wallet message support and relay topology need proof before enabling.
+- Actual QoreX mobile test requires a secure HTTPS preview. Local desktop and
+  mobile-viewport tests do not substitute for the installed wallet.
+- Scoped EVM-window evidence, persistent probe deployment and real contract tx
+  gas remain pending. No vault contracts/deployment or external audit yet.
+- SDK/CosmJS direct import failed on Node 22.13.1; read-only account utilities
+  use documented REST endpoints. Original CLI helper remains typechecked only.
+
+See `QOREX_INTEGRATION.md` for source evidence and conditions for any permission
+change. The earlier checkpoint below is historical; current findings supersede
+its pending public-address, browser-runtime and wallet-choice entries.
+
 ## 20 November 2026 — Phase 0 checkpoint (incomplete)
 
 Completed:

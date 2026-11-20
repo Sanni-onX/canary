@@ -1,4 +1,4 @@
-name: Canary discovery
+name: Canary checks
 on: [push, pull_request]
 permissions:
   contents: read
@@ -18,5 +18,8 @@ jobs:
       - run: node scripts/forge.mjs install foundry-rs/forge-std@v1.9.7 --no-git
       - run: npm run test:discovery
       - run: npm run typecheck
+      - run: npm run build
       - run: node scripts/forge.mjs fmt --check
       - run: node scripts/forge.mjs test -vv
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:web

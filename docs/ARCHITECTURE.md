@@ -3,6 +3,11 @@
 Status: discovery in progress, not a deployed or audited product. The build
 prompt in the repository remains the complete specification.
 
+Update: the human requires QoreX mobile only. The separate-EVM-wallet fallback
+is not selected. See `QOREX_INTEGRATION.md` before implementing any transport or
+session permissions. `apps/web` now contains a discovery console; full product
+screens remain planned. No session key or transaction functionality is enabled.
+
 ```mermaid
 flowchart LR
   B[Bait accounts] --> R[CanaryRegistry]
