@@ -1,6 +1,8 @@
 # Threat model
 
-This describes intended protections, not a finished or audited implementation.
+This describes the implemented testnet prototype and its intended production
+properties. It is not audited or production-ready. Real testnet proof is in
+`docs/evidence/live-drill.json`; browser simulations remain separately labeled.
 
 An attacker can derive classical private keys from exposed public keys,
 front-run, submit transactions and race the watcher. ML-DSA-87 remains secure.
@@ -36,6 +38,9 @@ Assets are vault funds, alarm integrity and availability of the PQ rescue exit.
 
 ## Pending design review
 
-Cooling-off reversals, bounded rolling accounting, relay availability, delayed
-key rotation and alarm resets need precise semantics and invariant tests before
-core contracts ship. See `ARCHITECTURE.md` for the open design decisions.
+Cooling-off reversals, bounded rolling accounting, delayed key rotation and
+alarm reset transitions are implemented and tested. External review is still
+needed. The prototype registry has 16 lifetime slots including retired entries;
+production rotation must address this. The demo's 2-of-3 keys are held by a
+single local operator and its delays are intentionally short. Relay availability,
+general-user live migration, secure hosting and recovery UX remain open.

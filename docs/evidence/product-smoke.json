@@ -1,0 +1,22 @@
+{
+  "observedAt": "2026-11-21T04:31:02.520Z",
+  "network": "qorechain-diana",
+  "broadcast": false,
+  "method": "Read-only verification of real deployed code, receipts and final state",
+  "realPqcPrecompile": true,
+  "mockVerifier": false,
+  "alarmLatched": true,
+  "registryReady": true,
+  "alarmBlock": "10475594",
+  "pqNonce": "2",
+  "finalVaultBalanceWei": "0",
+  "verifiedDrillReceipts": 6,
+  "checks": {
+    "normalClassicalSucceeded": true,
+    "watcherTrippedAlarm": true,
+    "alarmClassicalBlocked": true,
+    "classicalRejection": "ClassicalFrozen decoded from eth_call; rejected before broadcast; vault balance unchanged",
+    "alarmPQRescueSucceeded": true
+  },
+  "passed": true
+}

@@ -7,6 +7,7 @@ node_modules/
 test-results/
 playwright-report/
 .artifacts/
+.local/
 dist/
 coverage/
 contracts/cache/

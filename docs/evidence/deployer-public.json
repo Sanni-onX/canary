@@ -1,0 +1,8 @@
+{
+  "network": "qorechain-diana",
+  "evmChainId": 9800,
+  "nativeAddress": "qor1mqfp8mfhqwpf8sc26850r94qarahf4ryfjvdpp",
+  "evmAddress": "0xd81213Ed37038293c30aD1e8f196a0E8Fb74D464",
+  "fundingRequestQor": "5",
+  "note": "Fresh local testnet-only deployer. Secrets stay in ignored .local/. No user wallet keys used."
+}

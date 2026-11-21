@@ -1,5 +1,28 @@
 # Phase 0 discovery
 
+## 21 November update — deployed evidence supersedes initial pending items
+
+Core contracts, factory clone, 2-of-3 PQ governance and three retained-key drill
+accounts are now deployed/configured. Real governance queues, timelocks, native
+balance monitoring, a normal classical withdrawal, watcher-latched alarm,
+`ClassicalFrozen` rejection and real PQ rescue all passed on Diana.
+See `deployments/testnet.json`, `docs/evidence/live-drill.json` and
+`docs/evidence/product-smoke.json`.
+
+A1/A2 have actual deployed proof, A3 has real bounded/target-scoped native hybrid
+window transactions, A4 has real browser plus known-vector/backup tests, and A6
+has real 2-of-3 governance and PQ-exit receipts. Actual charged vault PQ exit gas
+was 750,000 with a 1,500,000 limit; this is not the precompile-only measurement.
+A7 has a real watcher transaction and local E2E; A8's source/settings fallback
+still applies; A9's procedure is confirmed but actual QCAI runs remain pending;
+A10 is still a demonstrated residual risk. A5's user-facing transport remains
+open; local fresh deployer signing was authorized/funded by the human, without
+personal wallet keys. Current FAQ confirms a deployer can be a separately listed
+project address; `docs/SUBMISSION.md` records the required addition.
+
+The following November 20 notes are the historical discovery record, not the
+current deployment status.
+
 Evidence gathered 20 November 2026. This phase is **in progress**. No contract
 has been persistently deployed and no wallet transaction has been broadcast.
 No vault or watcher is implemented yet. A minimal Next.js discovery console is

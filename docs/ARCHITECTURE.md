@@ -1,12 +1,15 @@
-# Canary architecture — Phase 0 proposal
+# Canary architecture — deployed prototype
 
-Status: discovery in progress, not a deployed or audited product. The build
-prompt in the repository remains the complete specification.
+Status as of 21 November: core contracts are implemented and deployed on Diana
+with short demo bounds, plus a real watcher-triggered alarm/PQ-rescue drill.
+The browser has an interactive simulation and read-only live dashboard.
+General-user live migration is not complete; no external audit has been run.
+The build prompt remains the full product specification.
 
-Update: the human requires QoreX mobile only. The separate-EVM-wallet fallback
-is not selected. See `QOREX_INTEGRATION.md` before implementing any transport or
-session permissions. `apps/web` now contains a discovery console; full product
-screens remain planned. No session key or transaction functionality is enabled.
+The human now has QoreX extension and mobile, and funded a fresh, local testnet
+deployer. No personal key was supplied. A separate wallet app is not required
+for deployment. User-facing QoreX EVM transport is still unresolved; no hidden
+session permissions or invented QR connection are enabled.
 
 ```mermaid
 flowchart LR
@@ -38,7 +41,7 @@ flowchart LR
   is in `.starter/fullstack-web/`; it is Vite, not Next.js. Canary's planned web
   app remains Next.js in `apps/web/`, informed by the verified starter APIs.
 
-## Security decisions to settle before core implementation
+## Implemented security choices and remaining review
 
 1. PQ withdrawals must be permissionless to submit: authority comes from the
    payload, not `msg.sender`. A separate funded sender with its own live window
@@ -49,26 +52,29 @@ flowchart LR
 3. Check for drained canaries synchronously before classical fund release, in
    addition to the watcher. Otherwise the attacker can race watcher inclusion.
    This mitigates but does not eliminate the first-loss window or top-up masking.
-4. Rolling 24-hour spend must not be implemented as a reset-at-midnight bucket,
-   which permits a double spend around the boundary. Choose bounded accounting
-   and test the boundary before showing a loss estimate in the policy UI.
+4. Rolling spend uses 64 timestamped entries per token; no midnight reset. A full
+   live ring denies another classical release until a slot expires. UI warns
+   that matured large requests can exceed the daily allowance.
 5. Alarm history invalidates every earlier queued classical withdrawal even
    after reset. Same-block requests should be conservatively invalidated.
 6. PQ-authorised policy loosening and key rotation require a nonce, deadline,
    action-specific domain, chain id, vault address and timelock. Key rotation
    should prove control of the replacement key before it can become active.
-7. Cooling-off reversal cannot bypass daily limits, alarms, locking or the PQ
-   path. The exact deposit reversal semantics need definition before shipping.
+7. Owner-originated deposits open the cooling-off reversal window. Reversal is
+   owner-directed and uses the same alarm/lock/daily accounting as classical
+   withdrawal. Third-party deposits do not extend the owner's reversal window.
 8. Unsupported token behavior cannot be identified completely by one deposit
    delta check. Rebases and changing token behavior remain an explicit exclusion.
 9. Minimal clones delegate to an immutable implementation by design; the prompt's
    prohibition on delegatecall applies to vault implementation code, not the
    required EIP-1167 dispatch mechanism. No arbitrary delegated execution.
 
-These are design notes, not claims of implemented protections. Any scope change
-from the prompt requires the human's approval before implementation.
+These choices are covered by unit/invariant tests and the real testnet drill;
+they are not an external security audit. Production slot recycling for the
+registry and operational governance review remain required. Demo governance
+keys are held by one local operator, not independent people.
 
-## Planned components
+## Repository components
 
 `contracts/`: registry, PQ governance, factory, vault, unit/fuzz/invariant tests.
 `packages/pq/`: typed local signer and encrypted backup, known-vector tests.

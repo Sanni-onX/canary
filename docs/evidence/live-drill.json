@@ -1,0 +1,46 @@
+{
+  "network": "qorechain-diana",
+  "simulation": true,
+  "realTransactions": true,
+  "fundsHaveNoValue": true,
+  "canaryKeysIntentionallyRetained": true,
+  "vault": "0x7ff8A9F57f638A4347146687e1ef4F5b54E89Ae6",
+  "registry": "0x3a6d15b3cf0b65c5e6db6217d353508136988ec9",
+  "checks": {
+    "normalClassicalSucceeded": true,
+    "watcherTrippedAlarm": true,
+    "alarmClassicalBlocked": true,
+    "classicalRejection": "ClassicalFrozen decoded from eth_call; rejected before broadcast; vault balance unchanged",
+    "alarmPQRescueSucceeded": true
+  },
+  "transactions": [
+    {
+      "kind": "demo_deposit",
+      "hash": "0xbc401b01fb634555b2d24289684719419eadb3a34002f9505e9c432e0016866c"
+    },
+    {
+      "kind": "normal_classical_withdrawal",
+      "hash": "0xbec48802acb2354baeba97950c78e320d33c521994ed3f214154233848b491e4"
+    },
+    {
+      "kind": "drain_0",
+      "hash": "0x856cd46b860292cd6ae7d897f9ce9a129e9d88cd4f359e77a69269930319383d"
+    },
+    {
+      "kind": "drain_1",
+      "hash": "0xf0db6c35c34aedfd54f59effeadba74c375caf31643940a924190bac49729b12"
+    },
+    {
+      "kind": "watcher_alarm",
+      "hash": "0xa7ebd09c693290bb8ff112043836dc7dc13dced1066429047bed76b2c3922c5d"
+    },
+    {
+      "kind": "alarm_pq_rescue",
+      "hash": "0xed5f13dc0c0780f0756796488f625ccf9499468ff3e4c767cf24e2e4f518e27b",
+      "gasUsed": "750000",
+      "amountWei": "2900000000000000"
+    }
+  ],
+  "finalVaultBalanceWei": "0",
+  "completedAt": "2026-11-21T04:28:43.452Z"
+}

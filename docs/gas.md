@@ -19,4 +19,25 @@ precompile schedule (25,000 + 8 per ABI input byte) is a different scope from
 this outer-call measurement. The native hybrid signature fee is also separate.
 
 Compiler: solc 0.8.28, Paris, optimizer 200. The live node reported block gas
-limit 4,294,967,295. No vault or governance path gas has been measured yet.
+limit 4,294,967,295. These initial probe measurements precede the receipts below.
+
+## Deployed prototype — 21 November 2026
+
+| Actual transaction | Gas used |
+| --- | ---: |
+| PQGovernance deployment | 808,568 |
+| CanaryRegistry deployment | 667,747 |
+| VaultFactory deployment (includes implementation) | 2,953,541 |
+| Native vault deposit during drill | 75,000 |
+| Normal classical vault withdrawal | 301,384 |
+| Classical canary drain, each | 21,000 |
+| Watcher alarm latch | 122,443 |
+| PQ vault rescue during alarm | 750,000 |
+
+Sources: `deployments/testnet.json` and `docs/evidence/live-drill.json` contain
+receipt hashes. Effective gas price was 112,500,000,000 wei for the recorded
+drill. These are actual receipt values, not estimates of verifier cost alone.
+The blocked post-alarm classical attempt was rejected during preflight and
+incurred no transaction fee. Last recorded deployer balance after setup/drill:
+2.0122231625 test QOR of the 5 test QOR funded; this is a dated observation,
+not a live balance. Native PQ registration/window fees are separate from EVM gas.

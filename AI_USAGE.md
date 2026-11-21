@@ -1,5 +1,26 @@
 # AI usage record
 
+## 21 November 2026 — deployed product prototype
+
+- Human redirected work from wallet diagnostics to the actual Canary product,
+  confirmed QoreX extension availability and funded a fresh deployment account
+  with 5 test QOR. No personal wallet keys were received.
+- AI implemented registry, PQ vault/factory/governance, client encrypted PQ
+  backups, watcher, responsive product flows and explicitly separated simulation
+  from live deployed-state monitoring. General-user live migration remains open.
+- AI generated independent local testnet keys in ignored `.local/`, registered
+  PQ keys, opened bounded/scoped windows, deployed actual contracts and ran a
+  real drill: classical withdrawal, two canary drains, watcher alarm, blocked
+  classical preflight and real PQ rescue. No mock verifier was deployed.
+- Drill canary keys were intentionally retained. Neither a destruction ceremony
+  nor production readiness is claimed. Public receipts contain no private keys.
+- AI wrote and ran unit/fuzz/invariant, PQ backup/domain, watcher and browser
+  tests, captured product images and compared deployed executable runtime with
+  compiled sources. No external audit or QCAI review has been completed.
+- AI checked the official FAQ: the deployment account must be added to the
+  project page for its transactions to count. That project-form action remains
+  unconfirmed. Human review and final submission remain required.
+
 ## 20 November 2026 — Phase 0 discovery checkpoint
 
 - Human supplied the Canary mission, detailed product/security specification,

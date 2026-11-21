@@ -12,9 +12,24 @@ the README and the project's How it's made field.
 
 ## Current PQ verification surface
 
-`contracts/src/DiscoveryProbe.sol` calls the real `pqcVerify` using the documented
-ABI. It holds no funds. Tests check missing verifier output, wrong key and
-signature lengths, native balances, and ABI plumbing using a test-only mock.
-`scripts/discovery.mjs` separately checks real valid/invalid signatures against
-the public testnet precompile. No deployed vault or governance protection exists
-at this checkpoint.
+The deployed factory, vault and governance call the real `pqcVerify` through
+`PQAuth.sol`. Authorizations bind chain, contract, action, nonce and deadline;
+factory binding also includes owner, rescue and policy. Governance enforces
+distinct guardian indexes and a timelock. Key rotation requires new-key proof
+of possession. No mock verifier was deployed.
+
+`docs/evidence/live-drill.json` records actual normal withdrawal, two canary
+drains, watcher alarm and real PQ rescue. The blocked classical attempt was a
+decoded preflight rejection, not a broadcast transaction. Local mocks test
+authorization plumbing; they do not prove ML-DSA cryptography.
+
+`audit/deployment-evidence.json` archives actual deployed bytecode and creation
+inputs. Executable runtime comparison passed for governance, registry, factory
+and vault implementation, excluding compiler metadata and declared immutable
+slots only. This is not explorer verification or an external audit.
+
+31 Foundry tests (20 core, 6 invariants, 5 probes), PQ backup/domain tests,
+watcher integration and desktop/mobile product tests passed. Outstanding:
+Slither/solhint, both QCAI stages, independent review, production delay bounds,
+registry lifetime-slot rotation and wallet-backed end-user flows. Drill account
+keys were deliberately retained; no destruction ceremony is claimed.

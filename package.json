@@ -3,22 +3,35 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "workspaces": ["contracts", "apps/web"],
+  "workspaces": [
+    "contracts",
+    "apps/web",
+    "packages/pq",
+    "services/watcher"
+  ],
   "scripts": {
     "discovery": "node scripts/discovery.mjs",
     "test:discovery": "node --test scripts/discovery.test.mjs",
+    "test:pq": "node --import tsx --test packages/pq/test/pq.test.ts",
+    "test:watcher": "node --test services/watcher/test/once.test.mjs",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "dev": "npm run dev --workspace @canary/web",
     "build": "npm run build --workspace @canary/web",
     "test:web": "playwright test",
+    "watcher": "npm run start --workspace @canary/watcher",
     "forge": "node scripts/forge.mjs"
   },
   "devDependencies": {
-    "@qorechain/pqc": "0.2.3",
     "@playwright/test": "1.65.1",
+    "@qorechain/pqc": "0.2.3",
+    "qrcode": "^1.5.4",
     "solc": "0.8.28",
     "viem": "^2.0.0"
   },
-  "engines": { "node": ">=20" },
-  "optionalDependencies": { "@foundry-rs/forge-win32-amd64": "1.7.1" }
+  "engines": {
+    "node": ">=22.13"
+  },
+  "optionalDependencies": {
+    "@foundry-rs/forge-win32-amd64": "1.7.1"
+  }
 }

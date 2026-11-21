@@ -1,5 +1,82 @@
 # Canary progress
 
+## 21 November 2026 — working deployed prototype (current)
+
+Human steering: stop building a wallet diagnostic page and build the product.
+QoreX extension is now available as well as mobile. Human funded a fresh local
+testnet deployer with 5 test QOR, so no personal wallet keys were requested or
+provided. Confirmed from the current official FAQ that additional listed project
+addresses may deploy; deployer must be added to the project form (not confirmed).
+
+### Implemented and verified
+
+- CanaryRegistry, PQVault, immutable-clone VaultFactory, 2-of-3 PQGovernance.
+- Exact bounded rolling-24h spend, delayed large withdrawals, tighten-only
+  classical policies, lockdown, fail-closed registry handling, pre-alarm request
+  invalidation, nonce/domain-bound PQ rescue, delayed PQ policy/key changes.
+- New-key proof of possession and guard-set queue/timelock execution.
+- Native and standard ERC-20 custody; fee-on-transfer delta rejection;
+  reentrancy defense and bad/expired/replayed authorization rejection.
+- Product overview, vault controls, nine-step simulated Lifeboat, ceremony
+  draft, interactive drill, activity, threat model, responsive/light/dark UI.
+- Real browser ML-DSA-87 and encrypted backup (AES-GCM, PBKDF2-SHA256,
+  310,000 iterations) with encrypted-only IndexedDB persistence.
+- Watcher block subscription plus HTTP fallback/backoff, SQLite snapshots,
+  alarm/balance/retirement logs, health/status, Dockerfile and once mode.
+- Separate live dashboard reads actual deployed state and displays real receipts;
+  no simulation fallback is used on RPC failure.
+
+### Real testnet outcome
+
+`deployments/testnet.json` contains actual addresses/receipts. Registry, governance,
+factory and a clone are deployed. Three retained-key drill accounts were funded,
+PQ-registered, window-scoped and added through real two-guardian PQ signatures
+and the 60-second timelock.
+
+The actual drill passed: normal classical release; two classical-key canary
+drains; watcher-submitted alarm at block **10,475,594**; decoded `ClassicalFrozen`
+preflight rejection with unchanged vault balance; real PQ rescue of the remaining
+**0.0029 test QOR**. Final vault balance zero; PQ nonce 2. A separate initial
+0.001-QOR deposit/PQ-rescue test also passed. No mock verifier was deployed.
+
+Evidence: `docs/evidence/live-drill.json`, `product-smoke.json`, deployment manifest.
+The large atomic creation-query gas failure is documented in
+`audit/rpc-simulation.md`; the replacement smoke checker validates actual code,
+receipts and final state rather than labeling that failed query a pass.
+
+### Validation
+
+- 20 core Foundry unit/fuzz tests + 5 probe tests passed.
+- All **6 required invariants passed**, each with 256 campaigns × 500 actions:
+  no classical alarm leak; tighten-only classical policy; native conservation;
+  alarm latch except governance reset; PQ nonce/replay; old request invalidation.
+- 8 upstream/discovery Node tests passed at the prior checkpoint (backend unchanged).
+- 3 PQ client tests passed: real backup restoration/signing, bad password and
+  tamper rejection, domain/nonce/chain/recipient separation.
+- Watcher integration test passed; actual watcher also submitted the live alarm.
+- 10 desktop/mobile browser tests passed. TypeScript strict check passed.
+- Final production build and strict TypeScript check passed after live-state
+  additions. Public evidence uses fixed imports so the server bundle does not
+  trace the workspace. Browser screenshots/cover are in `docs/images/`.
+
+### Limits / remaining phases
+
+This is a **short-bound, single-operator testnet demonstration**, not an audited
+production deployment. Real external wallet-backed user migration/transactions,
+live token/approval scanning and selected revocation, full ceremony,
+resumable migration recovery, production-bounds deployment, Slither/solhint,
+both QCAI stages, public hosting/repository and final video remain incomplete.
+Registry lifetime capacity (16 entries including retired slots) needs a production
+rotation design before final deployment. Backend relay/capability integration
+must not request personal keys or invent QoreX EVM/QR support.
+
+Phase 1 core is implemented/deployed as a prototype. Phase 2 has governance and
+all six invariants, with audits/hardening open. Phase 3 has the client/watcher/UI
+foundation. Phase 4 has local product flows and a real CLI-driven testnet drill;
+general-user live flows remain open. No definition-of-done claim is made.
+
+The November 20 entries below are historical and superseded by this checkpoint.
+
 ## 20 November 2026 — QoreX mobile-only checkpoint (current)
 
 Human decision: QoreX mobile only. No second wallet or linked-key permissions

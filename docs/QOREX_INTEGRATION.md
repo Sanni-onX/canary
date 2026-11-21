@@ -1,5 +1,19 @@
 # QoreX-only integration investigation — 20 November 2026
 
+## 21 November: later human steering and successful deployment route
+
+Human now has QoreX extension as well as mobile, asked to prioritize the product,
+and offered keys if necessary. No personal secret was requested/provided.
+Instead a fresh local testnet-only account was generated; human funded it with
+5 test QOR. It registered its PQ key, opened bounded/target-scoped windows and
+deployed the core. Real PQ governance, watcher alarm and vault rescue succeeded.
+
+This solves the **builder deployment** path without adding a wallet app. It
+does not prove QoreX supports unsupported EVM sends or a QR handshake, and it
+does not complete general-user live migration. The current product has native
+QoreX connection, a clearly labeled interactive simulation and actual read-only
+testnet dashboard. Historical mobile-only investigation follows below.
+
 ## Human constraint
 
 Use QoreX **mobile only**. Do not require MetaMask, another wallet, secret export

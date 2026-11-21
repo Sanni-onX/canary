@@ -1,0 +1,72 @@
+{
+  "observedAt": "2026-11-21T04:13:25.419Z",
+  "network": "qorechain-diana",
+  "nativeAddress": "qor1mqfp8mfhqwpf8sc26850r94qarahf4ryfjvdpp",
+  "evmAddress": "0xd81213ed37038293c30ad1e8f196a0e8fb74d464",
+  "broadcast": false,
+  "reads": {
+    "balances": {
+      "httpStatus": 200,
+      "body": {
+        "balances": [
+          {
+            "denom": "uqor",
+            "amount": "5000000"
+          }
+        ],
+        "pagination": {
+          "next_key": null,
+          "total": "1"
+        }
+      }
+    },
+    "pqc": {
+      "httpStatus": 200,
+      "body": {
+        "found": false,
+        "account": null
+      }
+    },
+    "window": {
+      "httpStatus": 200,
+      "body": {
+        "found": false,
+        "live": false,
+        "opened_height": "0",
+        "expiry_height": "0",
+        "max_txs": "0",
+        "used_txs": "0",
+        "max_value": "",
+        "used_value": "",
+        "remaining_blocks": "0",
+        "remaining_txs": "0",
+        "remaining_value": "",
+        "native_only": false,
+        "allowed_targets": [],
+        "validators": [],
+        "staking_validators": [],
+        "ibc_receivers": []
+      }
+    },
+    "abstractAccount": {
+      "httpStatus": 404,
+      "body": {
+        "code": 5,
+        "message": "account qor1mqfp8mfhqwpf8sc26850r94qarahf4ryfjvdpp not found",
+        "details": []
+      }
+    },
+    "abstractConfig": {
+      "httpStatus": 200,
+      "body": {
+        "config": {
+          "enabled": true,
+          "max_session_keys": 10,
+          "max_spending_rules": 5,
+          "default_session_ttl": "86400"
+        }
+      }
+    }
+  },
+  "evmBalanceWei": "5000000000000000000"
+}

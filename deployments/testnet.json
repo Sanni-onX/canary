@@ -1,0 +1,211 @@
+{
+  "network": "qorechain-diana",
+  "chainId": 9800,
+  "bounds": "DEMO ONLY: 60s governance/vault minimum, 10s cooling-off minimum",
+  "deployer": {
+    "native": "qor1mqfp8mfhqwpf8sc26850r94qarahf4ryfjvdpp",
+    "evm": "0xd81213Ed37038293c30aD1e8f196a0E8Fb74D464"
+  },
+  "contracts": {
+    "PQGovernance": {
+      "address": "0xb933dc8be7b7044049e368c4ae61c2cad69fb952",
+      "transactionHash": "0xa4fc58770109b68c2ec0eb7f25f26e7ecd1d0b31d068cea3ba1289811186d8d4",
+      "blockNumber": "10475120",
+      "gasUsed": "808568"
+    },
+    "CanaryRegistry": {
+      "address": "0x3a6d15b3cf0b65c5e6db6217d353508136988ec9",
+      "transactionHash": "0x45b0690ce7dbbe01942f3f80648f419f668122c61bfd3ac69536a496b8877455",
+      "blockNumber": "10475122",
+      "gasUsed": "667747"
+    },
+    "VaultFactory": {
+      "address": "0x1d8cfb8bdd89021ead9c7c42f929d35d7452dfac",
+      "transactionHash": "0x4f598d42d509293cad132fc47eb0d08c95820452206f662b0ad988fc596c111c",
+      "blockNumber": "10475124",
+      "gasUsed": "2953541"
+    }
+  },
+  "transactions": [
+    {
+      "kind": "pqc_registration",
+      "nativeHash": "60DA3DA5C8D10386CBCF3BD938871DF3420E815E8E2E614C77E84B7130DB22A3"
+    },
+    {
+      "kind": "deployment_window",
+      "nativeHash": "1B1D2EBB64A9CE672C1D2B975D4A4F54754E378E08E5E6623353BFD9E7C09C84",
+      "scope": {
+        "blocks": "600",
+        "maxTxs": "12",
+        "maxValueUqor": "4000000",
+        "allowedTargets": [],
+        "purpose": "initial contract creation; replaced with target scope after deployment"
+      }
+    },
+    {
+      "kind": "deployment",
+      "name": "PQGovernance",
+      "hash": "0xa4fc58770109b68c2ec0eb7f25f26e7ecd1d0b31d068cea3ba1289811186d8d4"
+    },
+    {
+      "kind": "deployment",
+      "name": "CanaryRegistry",
+      "hash": "0x45b0690ce7dbbe01942f3f80648f419f668122c61bfd3ac69536a496b8877455"
+    },
+    {
+      "kind": "deployment",
+      "name": "VaultFactory",
+      "hash": "0x4f598d42d509293cad132fc47eb0d08c95820452206f662b0ad988fc596c111c"
+    },
+    {
+      "kind": "scoped_window",
+      "nativeHash": "EA1D10E56E1C9C468072420264DCCB5C86F0E759CF5C6B6DE4464EA0E779A6C1",
+      "scope": {
+        "blocks": "600",
+        "maxTxs": "20",
+        "maxValueUqor": "2000000",
+        "allowedTargets": [
+          "0xb933dc8be7b7044049e368c4ae61c2cad69fb952",
+          "0x3a6d15b3cf0b65c5e6db6217d353508136988ec9",
+          "0x1d8cfb8bdd89021ead9c7c42f929d35d7452dfac"
+        ]
+      }
+    },
+    {
+      "kind": "demo_vault_scoped_window",
+      "nativeHash": "FBAF5301AE36AD9B5C7B610ED0A85AA3CA2881B4B3A736850414D6AD8A1A8950",
+      "allowedTargets": [
+        "0xb933dc8be7b7044049e368c4ae61c2cad69fb952",
+        "0x3a6d15b3cf0b65c5e6db6217d353508136988ec9",
+        "0x1d8cfb8bdd89021ead9c7c42f929d35d7452dfac",
+        "0x7ff8A9F57f638A4347146687e1ef4F5b54E89Ae6"
+      ]
+    },
+    {
+      "kind": "seed_demo_window",
+      "nativeHash": "0F9E12C6B194F4DAFA72364541671789A1F7395261C6A78BF27EE4ED7E176B0C",
+      "allowedTargets": [
+        "0xb933dc8be7b7044049e368c4ae61c2cad69fb952",
+        "0x3a6d15b3cf0b65c5e6db6217d353508136988ec9",
+        "0x1d8cfb8bdd89021ead9c7c42f929d35d7452dfac",
+        "0x7ff8A9F57f638A4347146687e1ef4F5b54E89Ae6"
+      ]
+    },
+    {
+      "kind": "drill_funding_window",
+      "nativeHash": "D82EDEE626C13CBA64DAEC128F28E18F58176D3D2A27B81CFC8DF66C498F442A",
+      "allowedTargets": [
+        "0xb933dc8be7b7044049e368c4ae61c2cad69fb952",
+        "0x3a6d15b3cf0b65c5e6db6217d353508136988ec9",
+        "0x1d8cfb8bdd89021ead9c7c42f929d35d7452dfac",
+        "0x7ff8A9F57f638A4347146687e1ef4F5b54E89Ae6",
+        "0xB16f820A89A36Af0F2e4DcD00Fa160Cdc8318708"
+      ]
+    },
+    {
+      "kind": "drill_funding_window",
+      "nativeHash": "7B3D7D2F6B018593E35E5DD85F5F0EE1FA5692D299A39BA1A77B71516FCC5674",
+      "allowedTargets": [
+        "0xb933dc8be7b7044049e368c4ae61c2cad69fb952",
+        "0x3a6d15b3cf0b65c5e6db6217d353508136988ec9",
+        "0x1d8cfb8bdd89021ead9c7c42f929d35d7452dfac",
+        "0x7ff8A9F57f638A4347146687e1ef4F5b54E89Ae6",
+        "0xab98f9f1024814e3Aa2D81Fd7475def9b1d48e31"
+      ]
+    },
+    {
+      "kind": "drill_funding_window",
+      "nativeHash": "C0F500213A21069FF44DCE87CBD3EFB98110F9BD54D55A8689BE7F2EFEF58AB2",
+      "allowedTargets": [
+        "0xb933dc8be7b7044049e368c4ae61c2cad69fb952",
+        "0x3a6d15b3cf0b65c5e6db6217d353508136988ec9",
+        "0x1d8cfb8bdd89021ead9c7c42f929d35d7452dfac",
+        "0x7ff8A9F57f638A4347146687e1ef4F5b54E89Ae6",
+        "0xce1728DD7e6D53973aC58A4647E696C5343480C4"
+      ]
+    },
+    {
+      "kind": "live_drill_window",
+      "nativeHash": "5293617859C077C9F04CE3DBD5D6E03665A49CADCA789B632682F62D77E3F9A9",
+      "allowedTargets": [
+        "0xb933dc8be7b7044049e368c4ae61c2cad69fb952",
+        "0x3a6d15b3cf0b65c5e6db6217d353508136988ec9",
+        "0x1d8cfb8bdd89021ead9c7c42f929d35d7452dfac",
+        "0x7ff8A9F57f638A4347146687e1ef4F5b54E89Ae6"
+      ]
+    }
+  ],
+  "createdAt": "2026-11-21T04:17:05.311Z",
+  "updatedAt": "2026-11-21T04:17:29.882Z",
+  "demoVault": {
+    "address": "0x7ff8A9F57f638A4347146687e1ef4F5b54E89Ae6",
+    "owner": "0xd81213Ed37038293c30aD1e8f196a0E8Fb74D464",
+    "rescue": "0xd81213Ed37038293c30aD1e8f196a0E8Fb74D464",
+    "pqKeyHash": "0x5c5caea2e6b82ad2e700ffcf2652523d93b2f3b3b22d948e320ff3bda7b2b09e",
+    "creationHash": "0xd154c3dde568b50de1bf7bc279dc55566aa9f9f14ebd286baef5eabf51f1673b",
+    "blockNumber": "10475271",
+    "note": "Local operator-owned demo vault; no user PQ key stored on a server.",
+    "testDepositHash": "0x35c32fb3e5dfe1c8f941fafb41c67469f711d4e3ae931e3bc71cd4ac34d6a52a",
+    "pqExitHash": "0x15e3c2f851e3e1527eeb21627a82823ae5f07f38c3359b5ca6d9a725c2518d5c",
+    "pqExitGas": "750000"
+  },
+  "drillCanaries": [
+    {
+      "index": 0,
+      "nativeAddress": "qor1k9hcyz5f5d40puhymngqlgtqehyrrpcgxm5nf8",
+      "address": "0xB16f820A89A36Af0F2e4DcD00Fa160Cdc8318708",
+      "simulation": true,
+      "keyDestructionClaimed": false,
+      "fundingHash": "0xd328d1c05177284c3b6d281d43fe0f8b59e48ff32b7679679ad1bd617baf4a99",
+      "exposureTx": "74E5C8424C40A8FAF67948FC8007D2DA8D71400D89D47AC388AD596CDFA56D6B",
+      "windowHash": "82C262B49001C92A93DB7DAE67A91B95445863A297C9AFFCB9D6ABF245835FB0",
+      "baselineWei": "150000000000000000",
+      "proposal": {
+        "nonce": "0",
+        "deadline": "1795242253",
+        "digest": "0xe0df358e592e803f1484ba888bd1496c94b6fa42512a017fdaed8fa67128ef50",
+        "data": "0x99d215a8000000000000000000000000b16f820a89a36af0f2e4dcd00fa160cdc831870874E5C8424C40A8FAF67948FC8007D2DA8D71400D89D47AC388AD596CDFA56D6B",
+        "queueHash": "0xbe7b6ad61f6396c9fd86370465dd761485509d3bf95bfc8c832e4649dc40e75a"
+      },
+      "addedHash": "0xbc4079c550c573c972cd9d42f4b9c82acd04cbe482257222a22697f751db9d90"
+    },
+    {
+      "index": 1,
+      "nativeAddress": "qor14wv0nugzfq2w823ds87hgaw7lxcafr33s647xd",
+      "address": "0xab98f9f1024814e3Aa2D81Fd7475def9b1d48e31",
+      "simulation": true,
+      "keyDestructionClaimed": false,
+      "fundingHash": "0x1875f7415079bce342e60b61f804bd238faa7cae86f63777f1c3a0721ab2d1c9",
+      "exposureTx": "20D3287A2CDA55116C1E27D56DD73E453FDB0078E01EEBDDD10A00DB901E93EB",
+      "windowHash": "8CF7239A894F3031D321178A3371BAFE47AB2F12AE1E468C031987FF1047BD36",
+      "baselineWei": "150000000000000000",
+      "proposal": {
+        "nonce": "1",
+        "deadline": "1795242275",
+        "digest": "0x16de63f93549f4b6f72f6f7208751dd3f4ab49775a59fbb22c12302368d89798",
+        "data": "0x99d215a8000000000000000000000000ab98f9f1024814e3aa2d81fd7475def9b1d48e3120D3287A2CDA55116C1E27D56DD73E453FDB0078E01EEBDDD10A00DB901E93EB",
+        "queueHash": "0xcfafe9791caf3d72633f986adb6c389b6228991bcb820631c576accf5f3b6557"
+      },
+      "addedHash": "0x04105aebd1ae952f11aa04727be73d0bc0a7e4023e0cb32e72172d3c6f6b5bda"
+    },
+    {
+      "index": 2,
+      "nativeAddress": "qor1ectj3ht7d4fewwk93fry0e5kc56rfqxys7efvt",
+      "address": "0xce1728DD7e6D53973aC58A4647E696C5343480C4",
+      "simulation": true,
+      "keyDestructionClaimed": false,
+      "fundingHash": "0xbac55b99879db35c0bd9ccc8e1dabf82e19a5d30c4ef615a80724dd5417d9e15",
+      "exposureTx": "97F1051421C08A121BDA0B40748A735503B1F08E4AD7E3B442A4F284EF313514",
+      "windowHash": "9802B35A62F7AB93FDA5DC4B1C398C06081BEFB428210F2CA32794EB48192301",
+      "baselineWei": "150000000000000000",
+      "proposal": {
+        "nonce": "2",
+        "deadline": "1795242296",
+        "digest": "0x7554d5db0b29bf7bd67d340e18ca108a1e0f9a21592dcddbac70ee362d93d93a",
+        "data": "0x99d215a8000000000000000000000000ce1728dd7e6d53973ac58a4647e696c5343480c497F1051421C08A121BDA0B40748A735503B1F08E4AD7E3B442A4F284EF313514",
+        "queueHash": "0x05ae90087f2dd83e33a0bfd2e62547f468525b33717e6e6aa5a72859f1c0a9b2"
+      },
+      "addedHash": "0x80ef81c1c46691cee68d63b9f33dab0016faacc6e188a2ce81ed95e4123548f0"
+    }
+  ]
+}
