@@ -19,6 +19,7 @@ jobs:
       - run: npm run test:discovery
       - run: npm run test:pq
       - run: npm run test:coverage
+      - run: npm run test:ceremony
       - run: npm run test:watcher
       - run: npm run typecheck
       - run: npm run build

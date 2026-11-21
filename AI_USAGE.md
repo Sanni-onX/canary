@@ -16,6 +16,15 @@
   selected and opened the confirmation dialog. It displays 150 QOR on testnet.
   AI retained the tab and handed final confirmation to the human; no completed
   audit, payment or report is claimed at this point.
+- Human asked about the paying wallet and clarified that a 24-word phrase had
+  been restored in QoreX. AI read public wallet state only, found the documented
+  coin-60 versus default coin-118 account distinction, and provided account
+  selection instructions. AI cancelled the payment dialog and preserved the code;
+  no secret was revealed, wallet settings changed, audit run or payment made.
+- AI added a local finite-epoch ceremony script, public record and refusal tests.
+  One fresh unfunded account was generated locally; its public status showed zero
+  balance, no live window and no registry entry. No ceremony transaction or key
+  destruction was performed. Secret material remains ignored in .local/.
 
 ## 21 November 2026 — recovery, coverage and local security review
 

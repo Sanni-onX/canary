@@ -215,9 +215,14 @@ Slither 0.11.5 completed on revision 2 with **37 findings**, all individually ma
 and eight reviewed warnings. Neither is an independent audit or a QCAI stage.
 Install `audit/requirements.txt` into `.local/audit-venv`, then run
 `npm run audit:static`. The compiled, flattened QCAI input is in `audit/qcai/`;
-the human approved code sharing and it is now entered in the official auditor
-under Ethereum (EVM/Solidity). The 150-test-QOR confirmation is left to the human;
-no completed external audit or payment is claimed.
+the human approved code sharing and it is entered in the official auditor
+under Ethereum (EVM/Solidity). The 150-test-QOR confirmation was cancelled while
+wallet selection is resolved; no completed external audit or payment is claimed.
+
+Canary Lab's local script fallback is documented in [CEREMONY.md](docs/CEREMONY.md).
+Fresh unfunded preparation/status and three refusal guards are verified. Its
+funding/exposure/governance/destruction flow has not been exercised; it never
+accepts a personal wallet export or claims provable key destruction.
 
 ## Recover without giving the relay your key
 

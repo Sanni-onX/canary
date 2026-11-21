@@ -47,8 +47,10 @@ The flattened, compiling QCAI input and hash are in `audit/qcai/`. The external
 site is signed in on testnet. After explicit human approval to share code only,
 the complete revision-2 bundle (85,017 characters) was entered with the Ethereum
 (EVM/Solidity) setting. The Confirm Security Audit dialog displays 150 QOR.
-Its final confirmation is left to the human. No completed external audit,
-payment or report is claimed. These local reports are not QCAI.
+The human then reported an imported-phrase account mismatch. The payment dialog
+was cancelled without confirming, and the entered source retained. Public wallet
+selection is being resolved using the documented coin-60/coin-118 distinction.
+No completed external audit, payment or report is claimed. Local reports are not QCAI.
 
 Outstanding: both QCAI stages, independent review, production delay bounds,
 revision-2 rotation deployment and wallet-backed end-user flows. Drill account

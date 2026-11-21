@@ -22,9 +22,21 @@ has zero errors/eight reviewed warnings. The new flattened QCAI bundle compiles.
 The old revision-1 reports remain archived separately. Watcher regressions pass.
 QoreX session testing remains deferred. The human approved code-only external
 QCAI sharing. The complete revision-2 bundle was entered in the official auditor
-under Ethereum (EVM/Solidity); the Confirm Security Audit dialog displays 150 QOR
-on testnet. Payment confirmation was left to the human; no audit result or
-payment is claimed. The live browser tab is retained for that handoff.
+under Ethereum (EVM/Solidity). The human asked which wallet pays and reported a
+recovery-phrase address mismatch. Public dashboard state was checked, with no
+secret revealed. Official docs explain the dashboard coin-60 account versus
+QoreX's default coin-118 account. Instructions were provided to select the
+Ethereum account from the already imported phrase. The 150-QOR payment dialog
+was cancelled and code preserved while the wallet selection is resolved.
+No audit result or payment is claimed; the source form remains available.
+
+The CLI ceremony fallback now prepares isolated, unfunded local test accounts,
+checks public status, gates exposure behind --send, saves pending transaction
+hashes for reconciliation, and gates local file removal behind explicit consent,
+matching on-chain registration/exposure and at least 600 live blocks. Only
+unfunded preparation/status and three refusal guards have been exercised. No
+new funding, exposure, governance action or key destruction was performed.
+See `docs/CEREMONY.md`; it is not a completed burned-key demonstration.
 
 ## Earlier 21 November — live recovery and finite coverage epochs
 
