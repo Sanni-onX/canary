@@ -1,5 +1,12 @@
 # Canary architecture — deployed prototype
 
+Later 21 November client hardening: live vault/asset/allowance discovery, bounded
+decoded activity, encrypted-backup recovery, public migration reports, and
+preflight-checked public PQ rescue authorizations are implemented. QoreX session
+testing was deferred by the human; no account permissions changed. Live wallet
+sends remain gated. Canary coverage uses finite epochs; PQ-only renewal is not
+supported for ordinary windows. See `CANARY_EPOCHS.md` for verified limits.
+
 Status as of 21 November: core contracts are implemented and deployed on Diana
 with short demo bounds, plus a real watcher-triggered alarm/PQ-rescue drill.
 The browser has an interactive simulation and read-only live dashboard.

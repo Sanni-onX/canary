@@ -4,6 +4,7 @@ COPY package.json package-lock.json ./
 COPY contracts/package.json contracts/package.json
 COPY apps/web/package.json apps/web/package.json
 COPY packages/pq/package.json packages/pq/package.json
+COPY packages/coverage packages/coverage
 COPY services/watcher services/watcher
 RUN npm ci --workspace @canary/watcher --include-workspace-root --ignore-scripts
 ENV WATCHER_DB=/data/canary-watcher.sqlite

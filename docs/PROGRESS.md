@@ -1,6 +1,73 @@
 # Canary progress
 
-## 21 November 2026 — working deployed prototype (current)
+## Later 21 November — live recovery and finite coverage epochs (current)
+
+Human requested finishing the product, deferred the proposed session-key chain
+test, and proposed renewable PQ canary leases with a finite-epoch fallback if
+renewal requires the classical key. Verified that ordinary windows need both
+keys, cannot use authz, replace rather than overlap, and last at most 17,280
+blocks. Implemented that stated fallback; no renewal API or scheduler invented.
+
+### Added
+
+- Live owner-vault discovery, native/fUSD/custom-token balances, bounded approval
+  review and selected revocation plans. A real public portfolio read found the
+  deployed demo vault and fUSD without substituting sample values.
+- Decoded actual vault activity with explicit block-window/result caps and
+  incomplete-query handling.
+- Backup file/IndexedDB restoration, strict JSON validation, public/private key
+  consistency self-tests, vault-key binding, five-minute in-memory unlock and
+  cleanup. No plaintext key or password is persisted or posted.
+- Real local PQ rescue signing, local verification, same-origin preflight and
+  public authorization export. New relay CLI validates only public signed
+  payloads; its submit path is not claimed as live-tested.
+- Public-only resumable migration reports, policy snapshots and strict import
+  binding. Imported receipt references do not mark migration complete.
+- Shared epoch coverage model checks deadline, transaction/value/balance
+  capacity, permitted EOA recipient and conservative native transfer fee budget.
+  Overview/Canary Lab show Covered/Expiring/Lapsed/Unknown, exact expiry blocks,
+  estimated countdowns, stale-data handling and k+1 margin warnings.
+- Watcher persists epoch observations, emits coverage transition warnings and
+  exposes coverage/expiry/heartbeat status. Expiry alone never submits an alarm.
+- Slither 0.11.5: 38 findings individually triaged with IDs and regression links.
+  Solhint 6.2.5: zero errors/eight reviewed warnings. Raw reports/source hashes
+  retained; repeatable scripts and CI checks added. These are not QCAI audits.
+- Compiling flattened QCAI input, hosting Dockerfiles/Compose and secret-safe
+  build context. Docker engine unavailable, so container execution is untested.
+
+### Evidence and checks
+
+New core regressions passed: 22 unit/fuzz tests, including unauthorized release
+and full-precision drain threshold. Six previously passed stateful invariants
+and five probe tests are unchanged. Three PQ tests and two coverage tests pass.
+Two watcher integration tests pass, including expired-window/no-false-alarm.
+All **18 desktop/mobile product checks passed** against the production preview.
+The per-vault resume isolation regression also passed on desktop/mobile after
+the final namespace change. Production build and strict typecheck pass. Live
+watcher once-mode independently recorded the real expired windows and degraded
+coverage without submitting a transaction. Compose configuration validates;
+container runtime remains untested. Final screenshots are in `docs/images/`.
+
+`docs/evidence/protocol-coverage.json` records **zero currently covered intact
+canaries** and degraded coverage. The original three windows expired; two bait
+accounts were already drained. Historical drill receipts remain valid.
+
+### Blocked / not complete
+
+- QoreX wallet-backed sends: human explicitly deferred session testing. No
+  authenticator, rule, key permission or chain transaction was changed here.
+- External QCAI: automatic approval review blocked source entry pending explicit
+  sharing approval. Human asked why; the requirement was explained. Approval is
+  unresolved; no source or payment was submitted. Site displayed 150 test QOR.
+- Registry epoch rotation is still limited to 16 lifetime slots. No burned-key
+  demonstration, indefinite coverage, production-ready custody, public hosting,
+  public GitHub publication or completed submission is claimed.
+- Full ceremony, actual wallet deposits/revocations, production-bound deployment,
+  required QCAI stages and final video remain open.
+
+This is a client/security checkpoint, not the completed product.
+
+## Earlier 21 November 2026 — working deployed prototype
 
 Human steering: stop building a wallet diagnostic page and build the product.
 QoreX extension is now available as well as mobile. Human funded a fresh local

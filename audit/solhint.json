@@ -1,0 +1,77 @@
+[
+  {
+    "line": 54,
+    "column": 25,
+    "severity": "Warning",
+    "message": "GC: For [ creationNonce ] variable, increment/decrement by 1 using: [ ++variable ] to save gas",
+    "ruleId": "gas-increment-by-one",
+    "fix": null,
+    "filePath": "contracts\\src\\VaultFactory.sol"
+  },
+  {
+    "line": 115,
+    "column": 5,
+    "severity": "Warning",
+    "message": "Fallback function must be simple",
+    "ruleId": "no-complex-fallback",
+    "fix": null,
+    "filePath": "contracts\\src\\PQVault.sol"
+  },
+  {
+    "line": 167,
+    "column": 14,
+    "severity": "Warning",
+    "message": "GC: For [ withdrawalCount ] variable, increment/decrement by 1 using: [ ++variable ] to save gas",
+    "ruleId": "gas-increment-by-one",
+    "fix": null,
+    "filePath": "contracts\\src\\PQVault.sol"
+  },
+  {
+    "line": 250,
+    "column": 14,
+    "severity": "Warning",
+    "message": "GC: For [ changeCount ] variable, increment/decrement by 1 using: [ ++variable ] to save gas",
+    "ruleId": "gas-increment-by-one",
+    "fix": null,
+    "filePath": "contracts\\src\\PQVault.sol"
+  },
+  {
+    "line": 270,
+    "column": 14,
+    "severity": "Warning",
+    "message": "GC: For [ changeCount ] variable, increment/decrement by 1 using: [ ++variable ] to save gas",
+    "ruleId": "gas-increment-by-one",
+    "fix": null,
+    "filePath": "contracts\\src\\PQVault.sol"
+  },
+  {
+    "line": 68,
+    "column": 22,
+    "severity": "Warning",
+    "message": "Avoid to use low level calls.",
+    "ruleId": "avoid-low-level-calls",
+    "fix": null,
+    "filePath": "contracts\\src\\PQGovernance.sol"
+  },
+  {
+    "line": 17,
+    "column": 9,
+    "severity": "Warning",
+    "message": "Avoid to use inline assembly. It is acceptable only in rare cases",
+    "ruleId": "no-inline-assembly",
+    "fix": null,
+    "filePath": "contracts\\src\\DiscoveryCall.sol"
+  },
+  {
+    "line": 95,
+    "column": 67,
+    "severity": "Warning",
+    "message": "GC: For [ count ] variable, increment/decrement by 1 using: [ ++variable ] to save gas",
+    "ruleId": "gas-increment-by-one",
+    "fix": null,
+    "filePath": "contracts\\src\\CanaryRegistry.sol"
+  },
+  {
+    "conclusion": "8 problem/s (8 warning/s)"
+  }
+]

@@ -1,0 +1,17 @@
+.git
+.local
+.env
+.env.*
+**/node_modules
+**/.next
+**/out
+**/cache
+**/lib/forge-std
+**/*.tsbuildinfo
+**/*.sqlite*
+**/*.key
+**/*.pem
+.artifacts
+test-results
+playwright-report
+.starter

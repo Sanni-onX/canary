@@ -15,7 +15,7 @@ node scripts/forge.mjs test
 Pinned compiler: Solidity 0.8.28, Paris, optimizer 200, viaIR. OpenZeppelin 5.6.1
 and forge-std 1.9.7 are pinned. The root launcher supports Windows.
 
-Tests comprise 20 core unit/fuzz tests, 6 stateful invariants and 5 discovery
+Tests comprise 22 core unit/fuzz tests, 6 stateful invariants and 5 discovery
 probe tests. Mocks under `test/mocks/` test authorization plumbing only; real
 cryptographic verification is separately evidenced by actual testnet receipts.
 

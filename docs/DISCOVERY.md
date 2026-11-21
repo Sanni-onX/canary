@@ -1,5 +1,22 @@
 # Phase 0 discovery
 
+## Later 21 November: ordinary windows cannot provide PQ-only renewable leases
+
+The native window reference and installed 0.14.0 SDK agree: opening/replacing a
+window requires the account's classical plus ML-DSA-87 signature. These owner
+management messages cannot be granted through authz. Maximum window length is
+17,280 blocks; a new window replaces the previous one. Expiry and capacity are
+public native chain state via REST; no Solidity expiry getter is assumed.
+
+Thus the human's proposed PQ-only lease key cannot renew an ordinary window
+after the classical key is destroyed. Following the human's stated fallback,
+the product now implements finite coverage epochs. Live checks show all three
+original drill windows expired. This does not invalidate historical receipts,
+but it invalidates any claim of continuous current detector coverage. Full
+evidence and replacement limitations: `CANARY_EPOCHS.md` and
+`evidence/canary-window-coverage.json`. No new transaction tested renewal or
+changed account permissions in this session.
+
 ## 21 November update — deployed evidence supersedes initial pending items
 
 Core contracts, factory clone, 2-of-3 PQ governance and three retained-key drill

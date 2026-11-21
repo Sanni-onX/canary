@@ -1,5 +1,15 @@
 # QoreX-only integration investigation — 20 November 2026
 
+## Later 21 November: session test explicitly deferred
+
+Current docs still list QoreX EVM sending as unsupported. A concrete candidate
+test using a fresh owner, separate relay, one-hour EVM-only key, 0.1-test-QOR
+cap and factory-only scope was prepared. Automatic review required approval for
+the account-rule change; the human chose **Skip session testing for now**.
+The unexecuted experiment was removed. No account rule/session was changed.
+Wallet sends remain gated. Public reads, local key recovery and preflight-checked
+public authorizations do not claim this unverified route is usable in QoreX.
+
 ## 21 November: later human steering and successful deployment route
 
 Human now has QoreX extension as well as mobile, asked to prioritize the product,

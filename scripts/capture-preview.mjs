@@ -11,5 +11,14 @@ try {
   await page.goto('http://127.0.0.1:3000/?mode=testnet');
   await page.getByRole('heading', { name: 'On-chain alarm latched.' }).waitFor({ timeout: 30000 });
   await page.screenshot({ path: 'docs/images/live-dashboard.png', fullPage: true });
-  console.log('Captured product overview, 1600×900 cover and real testnet dashboard.');
+  await page.goto('http://127.0.0.1:3000/?mode=testnet&tab=Canary%20lab');
+  await page.getByRole('heading', { name: 'Prepare the next epoch' }).waitFor({ timeout: 30000 });
+  await page.getByText('Coverage degraded', { exact: true }).waitFor({ timeout: 30000 });
+  await page.screenshot({ path: 'docs/images/canary-epochs.png', fullPage: true });
+  await page.goto('http://127.0.0.1:3000/?mode=testnet&tab=Lifeboat');
+  await page.getByLabel('Owner EVM address').fill('0xd81213Ed37038293c30aD1e8f196a0E8Fb74D464');
+  await page.getByRole('button', { name: 'Discover vaults & review assets' }).click();
+  await page.getByRole('heading', { name: 'Your live PQ-Wrap vault' }).waitFor({ timeout: 45000 });
+  await page.screenshot({ path: 'docs/images/live-recovery.png', fullPage: true });
+  console.log('Captured overview, cover, live dashboard, epoch coverage and live recovery workspace.');
 } finally { await browser.close(); }

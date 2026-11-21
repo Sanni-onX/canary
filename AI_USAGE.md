@@ -1,5 +1,32 @@
 # AI usage record
 
+## 21 November 2026 — recovery, coverage and local security review
+
+- Human requested continuing to finish the product. AI investigated the
+  documented QoreX-native authenticator/relay route. Automatic approval review
+  blocked a prepared fresh-account spending-permission test. Human chose to
+  skip session testing; no test was broadcast and no permissions changed.
+- AI implemented live vault/token/allowance discovery, bounded decoded activity,
+  local encrypted-backup recovery, five-minute key locking, checked public PQ
+  authorizations, public-only resume reports and selected revocation plans.
+  Real general-user wallet sends remain gated; no plan is labeled a transaction.
+- AI ran Slither/solhint, retained raw reports and wrote per-finding triage.
+  Added regression tests for unauthorized fund release and precision-safe drain
+  thresholds. Prepared and compiled one flattened QCAI source bundle.
+- Automatic review blocked sharing unpublished source with the external QCAI
+  form. Human asked why; AI explained the two-stage fest requirement. No source
+  was submitted, no payment was made, and source-sharing approval is pending.
+- AI discovered all original canary windows expired and reported the detector
+  limitation. Human proposed renewable PQ leases if supported, otherwise finite
+  epochs, and specified coverage labels, countdowns and threshold margins.
+- AI verified renewal requires both classical/PQ keys, cannot use authz, and
+  ordinary windows are capped at 17,280 blocks. Implemented the human's finite
+  epoch fallback in a shared client/watcher package: deadline/capacity/scope
+  checks, k+1 margin, coverage warnings and no alarm on expiry alone.
+- Original drill keys remain retained. No burned-key or continuous-detection
+  claim was added. AI prepared hosting containers but Docker's engine was not
+  available; no public hosting or final submission was performed.
+
 ## 21 November 2026 — deployed product prototype
 
 - Human redirected work from wallet diagnostics to the actual Canary product,

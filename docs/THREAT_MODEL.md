@@ -29,6 +29,12 @@ Assets are vault funds, alarm integrity and availability of the PQ rescue exit.
   need analysis when showing worst-case pre-alarm loss.
 - Native windows already constrain classical account transactions. Canary adds
   application policy; it must not imply that EVM transaction signatures are PQ.
+- Drain coverage exists only during usable EVM windows. Renewal requires the
+  account's classical **and** PQ keys; a PQ key alone cannot renew a destroyed-key
+  canary. This build uses finite epochs, with coverage labels and k+1 monitoring.
+  Lapse never trips or resets the balance alarm. See `CANARY_EPOCHS.md`.
+- Canary addresses are public. An attacker can avoid the bait; the alarm cannot
+  promise detection of every classical-key compromise elsewhere.
 - Always available PQ exit is a contract policy objective, conditional on chain
   availability, active verifier, gas, submission and a safe rescue destination.
 - A plain classical rescue account can itself be attacked. Warn before binding.
@@ -43,4 +49,6 @@ alarm reset transitions are implemented and tested. External review is still
 needed. The prototype registry has 16 lifetime slots including retired entries;
 production rotation must address this. The demo's 2-of-3 keys are held by a
 single local operator and its delays are intentionally short. Relay availability,
-general-user live migration, secure hosting and recovery UX remain open.
+general-user live migration and secure public hosting remain open. Local
+encrypted-backup recovery and replay-bound rescue preparation are implemented;
+browser key handling remains conditional on a trustworthy device/frontend.

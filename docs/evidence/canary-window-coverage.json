@@ -1,0 +1,77 @@
+{
+  "observedAt": "2026-11-21T06:55:06.017Z",
+  "windows": [
+    {
+      "address": "0xB16f820A89A36Af0F2e4DcD00Fa160Cdc8318708",
+      "nativeAddress": "qor1k9hcyz5f5d40puhymngqlgtqehyrrpcgxm5nf8",
+      "window": {
+        "found": true,
+        "live": false,
+        "opened_height": "10475406",
+        "expiry_height": "10477206",
+        "max_txs": "2",
+        "used_txs": "1",
+        "max_value": "200000",
+        "used_value": "150000",
+        "remaining_blocks": "0",
+        "remaining_txs": "1",
+        "remaining_value": "50000",
+        "native_only": false,
+        "allowed_targets": [
+          "0xd81213ed37038293c30ad1e8f196a0e8fb74d464"
+        ],
+        "validators": [],
+        "staking_validators": [],
+        "ibc_receivers": []
+      }
+    },
+    {
+      "address": "0xab98f9f1024814e3Aa2D81Fd7475def9b1d48e31",
+      "nativeAddress": "qor14wv0nugzfq2w823ds87hgaw7lxcafr33s647xd",
+      "window": {
+        "found": true,
+        "live": false,
+        "opened_height": "10475421",
+        "expiry_height": "10477221",
+        "max_txs": "2",
+        "used_txs": "1",
+        "max_value": "200000",
+        "used_value": "150000",
+        "remaining_blocks": "0",
+        "remaining_txs": "1",
+        "remaining_value": "50000",
+        "native_only": false,
+        "allowed_targets": [
+          "0xd81213ed37038293c30ad1e8f196a0e8fb74d464"
+        ],
+        "validators": [],
+        "staking_validators": [],
+        "ibc_receivers": []
+      }
+    },
+    {
+      "address": "0xce1728DD7e6D53973aC58A4647E696C5343480C4",
+      "nativeAddress": "qor1ectj3ht7d4fewwk93fry0e5kc56rfqxys7efvt",
+      "window": {
+        "found": true,
+        "live": false,
+        "opened_height": "10475436",
+        "expiry_height": "10477236",
+        "max_txs": "2",
+        "used_txs": "0",
+        "max_value": "200000",
+        "used_value": "0",
+        "remaining_blocks": "0",
+        "remaining_txs": "2",
+        "remaining_value": "200000",
+        "native_only": false,
+        "allowed_targets": [
+          "0xd81213ed37038293c30ad1e8f196a0e8fb74d464"
+        ],
+        "validators": [],
+        "staking_validators": [],
+        "ibc_receivers": []
+      }
+    }
+  ]
+}

@@ -3,11 +3,14 @@ import { DatabaseSync } from 'node:sqlite';
 import { createPublicClient, createWalletClient, http, webSocket, isAddress, parseAbi, type Address } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { defineChain } from 'viem';
+import { parseEvmWindow, toQorAddress } from '@qorechain/evm';
+import { assessCoverage, summarizeCoverage, type WindowSnapshot, type Coverage } from '@canary/coverage';
 
 const address = process.env.CANARY_REGISTRY_ADDRESS;
 if (!address || !isAddress(address) || /^0x0{40}$/i.test(address)) throw new Error('Set CANARY_REGISTRY_ADDRESS to the deployed testnet registry.');
 const registry: Address = address;
 const rpc = process.env.QORE_EVM_RPC_URL ?? 'https://evm-testnet.qore.host';
+const nativeRest = process.env.QORE_REST_URL ?? (process.env.QORE_EVM_RPC_URL ? undefined : 'https://api-testnet.qore.host');
 const chain = defineChain({ id: 9800, name: 'QoreChain Diana testnet', nativeCurrency: { name: 'QOR', symbol: 'QOR', decimals: 18 }, rpcUrls: { default: { http: [rpc] } } });
 const publicClient = createPublicClient({ chain, transport: http(rpc, { timeout: 15000, retryCount: 2 }) });
 const abi = parseAbi([
@@ -27,6 +30,8 @@ let alarm = false;
 let drained = 0;
 let running = false;
 let stopped = false;
+let coverageState: ReturnType<typeof summarizeCoverage> | null = null;
+let epochStates: { index: number; coverage: Coverage }[] = [];
 
 function record(block: bigint, kind: string, detail: unknown) {
   const body = JSON.stringify(detail);
@@ -44,6 +49,7 @@ async function check() {
     if (Date.now() / 1000 - Number(block.timestamp) > 120) throw new Error('RPC latest block is more than two minutes old.');
     const read = <T>(functionName: string, args: readonly unknown[] = []) => publicClient.readContract({ address: registry, abi, functionName, args, blockNumber: block.number } as Parameters<typeof publicClient.readContract>[0]) as Promise<T>;
     const [count, k, tolerance, latched] = await Promise.all([read<bigint>('canaryCount'), read<bigint>('thresholdK'), read<bigint>('toleranceBps'), read<boolean>('alarmed')]);
+    const gasPrice = await publicClient.getGasPrice().catch(() => 0n);
     if (count > 16n || k === 0n || tolerance >= 10000n) throw new Error('Unexpected registry configuration.');
     const snapshots = await Promise.all(Array.from({ length: Number(count) }, async (_, index) => {
       const [account, baseline, , , retired] = await read<readonly [Address, bigint, string, bigint, boolean]>('canaries', [BigInt(index)]);
@@ -55,9 +61,41 @@ async function check() {
       const previous = db.prepare('SELECT balance FROM snapshots WHERE canary=? ORDER BY length(block) DESC,block DESC LIMIT 1').get(index) as { balance?: string } | undefined;
       if (previous?.balance !== undefined && BigInt(previous.balance) !== balance) record(block.number, 'balance_changed', { index, previous: previous.balance, balance: balance.toString() });
       insert.run(block.number.toString(), index, balance.toString(), baseline.toString());
-      return !retired && balance < baseline * (10000n - tolerance) / 10000n;
+      let window: WindowSnapshot | null = null;
+      let transferTargetVerified: boolean | null = null;
+      if (nativeRest && !retired) {
+        try {
+          const response = await fetch(`${nativeRest}/qorechain/pqc/v1/evm_window/${toQorAddress(account)}`, { signal: AbortSignal.timeout(10000) });
+          if (!response.ok) throw new Error('Window read failed.');
+          const raw = await response.json();
+          if (typeof raw.live !== 'boolean') throw new Error('Malformed window.');
+          const parsed = parseEvmWindow(raw);
+          window = { live: parsed.live, openedHeight: parsed.openedHeight.toString(), expiryHeight: parsed.expiryHeight.toString(),
+            remainingBlocks: parsed.remainingBlocks.toString(), remainingTxs: parsed.remainingTxs.toString(), remainingValueUqor: parsed.remainingValue.toString(),
+            nativeOnly: parsed.nativeOnly, allowedTargets: parsed.allowedTargets };
+          if (window.live) {
+            // Empty recipient scope admits any EOA; a different fixed testnet EOA suffices for this reachability check.
+            const targets = window.allowedTargets.length ? window.allowedTargets : ['0x000000000000000000000000000000000000dead'];
+            if (targets.length > 16 || targets.some(target => !isAddress(target))) throw new Error('Invalid window targets.');
+            const codes = await Promise.all(targets.map(target => publicClient.getCode({ address: target as Address, blockNumber: block.number })));
+            transferTargetVerified = targets.some((target, i) => target.toLowerCase() !== account.toLowerCase() && (!codes[i] || codes[i] === '0x'));
+          }
+        } catch { /* Coverage becomes unknown; balance alarm evaluation continues independently. */ }
+      }
+      return { retired, drained: !retired && balance < baseline * (10000n - tolerance) / 10000n,
+        coverage: assessCoverage({ retired, window, balanceWei: balance, baselineWei: baseline, toleranceBps: tolerance,
+          feePerGasWei: gasPrice * 2n, transferTargetVerified }) };
     }));
-    drained = snapshots.filter(Boolean).length;
+    coverageState = summarizeCoverage(snapshots, Number(k));
+    epochStates = snapshots.map((item, index) => ({ index, coverage: item.coverage }));
+    db.prepare('INSERT OR REPLACE INTO meta VALUES (?,?)').run('coverage_epochs', JSON.stringify(epochStates));
+    const signature = JSON.stringify({ ...coverageState, epochs: snapshots.map(item => [item.coverage.status, item.coverage.openedHeight, item.coverage.expiryHeight]) });
+    const priorCoverage = db.prepare("SELECT value FROM meta WHERE key='coverage'").get() as { value: string } | undefined;
+    if (signature !== priorCoverage?.value) record(block.number, coverageState.degraded ? 'coverage_degraded' : 'coverage_ready', {
+      ...coverageState, epochs: snapshots.map((item, index) => ({ index, ...item.coverage })),
+      action: 'Finite epochs: arrange replacement before expiry. PQ-only renewal is not supported; lapse is not an alarm.' });
+    db.prepare('INSERT OR REPLACE INTO meta VALUES (?,?)').run('coverage', signature);
+    drained = snapshots.filter(item => item.drained).length;
     const priorAlarm = alarm;
     alarm = latched;
     if (!latched && BigInt(drained) >= k) {
@@ -91,7 +129,8 @@ if (process.argv.includes('--once')) { db.close(); if (lastError) process.exitCo
 else {
   const status = () => ({ network: 'qorechain-diana', registry, alarm, drained, lastBlock,
     lastSuccess: lastSuccess ? new Date(lastSuccess).toISOString() : null, error: lastError,
-    submitterConfigured: Boolean(process.env.WATCHER_PRIVATE_KEY) });
+    submitterConfigured: Boolean(process.env.WATCHER_PRIVATE_KEY), coverage: coverageState,
+    coverageMode: 'finite-epochs', epochs: epochStates, nativeCoverageConfigured: Boolean(nativeRest) });
   const server = createServer((request, response) => {
     if (!['/health', '/status'].includes(request.url ?? '')) { response.writeHead(404); response.end(); return; }
     const healthy = !lastError && Date.now() - lastSuccess < 120000;

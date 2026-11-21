@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { generateKeypair, sign, verify, hashPublicKey, encryptKeyBlob, decryptKeyBlob, buildTypedDigest, withdrawalAction } from '../src/index.js';
+import { generateKeypair, sign, verify, hashPublicKey, encryptKeyBlob, decryptKeyBlob, parseEncryptedKeyBlob, buildTypedDigest, withdrawalAction } from '../src/index.js';
 import { zeroAddress, hexToBytes } from 'viem';
 
 test('encrypted backup roundtrips a real signing key and rejects wrong password/tampering', async () => {
@@ -24,10 +24,16 @@ test('encrypted backup roundtrips a real signing key and rejects wrong password/
 
 test('backup rejects weak passwords and malformed key material', async () => {
   const key = generateKeypair();
+  const other = generateKeypair();
   try {
     await assert.rejects(encryptKeyBlob(key, 'short'));
     await assert.rejects(encryptKeyBlob({ publicKey: key.publicKey.slice(1), secretKey: key.secretKey }, 'Strong test password 2026'));
-  } finally { key.secretKey.fill(0); }
+    await assert.rejects(encryptKeyBlob({ publicKey: key.publicKey, secretKey: other.secretKey }, 'Strong test password 2026'));
+    const blob = await encryptKeyBlob(key, 'Strong test password 2026');
+    for (const value of [null, {}, { ...blob, iterations: 1 }, { ...blob, salt: Array(16).fill(-1) },
+      { ...blob, iv: Array(12).fill(0.5) }, { ...blob, ciphertext: Array(7504).fill('0') },
+      { ...blob, publicKeyHash: 'not a key hash' }]) assert.throws(() => parseEncryptedKeyBlob(value));
+  } finally { key.secretKey.fill(0); other.secretKey.fill(0); }
 });
 
 test('digest-bound signatures do not replay across chain, vault, nonce, recipient or action', () => {

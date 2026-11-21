@@ -18,9 +18,14 @@ jobs:
       - run: node scripts/forge.mjs install foundry-rs/forge-std@v1.9.7 --no-git
       - run: npm run test:discovery
       - run: npm run test:pq
+      - run: npm run test:coverage
       - run: npm run test:watcher
       - run: npm run typecheck
       - run: npm run build
+      - run: npm run lint:solidity
+      - run: python -m venv .local/audit-venv
+      - run: .local/audit-venv/bin/pip install -r audit/requirements.txt
+      - run: npm run audit:static
       - run: node scripts/forge.mjs fmt --check
       - run: node scripts/forge.mjs test -vv
       - run: npx playwright install --with-deps chromium

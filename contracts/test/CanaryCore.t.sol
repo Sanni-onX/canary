@@ -10,6 +10,7 @@ import {PQAuth} from "../src/PQAuth.sol";
 import {MockBoundPQC} from "./mocks/MockBoundPQC.sol";
 import {MockToken, MockFeeToken} from "./mocks/MockToken.sol";
 import {MockReentrantRecipient} from "./mocks/MockReentrantRecipient.sol";
+import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 
 abstract contract CanaryFixture is Test {
     address constant VERIFIER = 0x0000000000000000000000000000000000000a01;
@@ -77,6 +78,32 @@ abstract contract CanaryFixture is Test {
 }
 
 contract CanaryCoreTest is CanaryFixture {
+    function testUnrelatedCallerCannotReleaseFundsOrQueueAWithdrawal() public {
+        uint256 beforeBalance = address(vault).balance;
+        vm.startPrank(recipient);
+        vm.expectRevert(PQVault.Unauthorized.selector);
+        vault.withdrawClassical(address(0), 1 ether, recipient);
+        vm.expectRevert(PQVault.Unauthorized.selector);
+        vault.requestWithdrawal(address(0), 2 ether, recipient);
+        vm.stopPrank();
+        assertEq(address(vault).balance, beforeBalance);
+        assertEq(vault.withdrawalCount(), 0);
+    }
+
+    function testFuzzDrainFloorMatchesFullPrecisionMath(uint256 baseline, uint16 tolerance) public {
+        baseline = bound(baseline, 10000, type(uint256).max);
+        tolerance = uint16(bound(uint256(tolerance), 0, 9999));
+        CanaryRegistry sentinel = new CanaryRegistry(address(this), 1, tolerance, 1);
+        address bait = address(0x12345);
+        vm.deal(bait, baseline);
+        sentinel.addCanary(bait, bytes32(uint256(1)));
+        uint256 floorBalance = Math.mulDiv(baseline, 10000 - uint256(tolerance), 10000);
+        vm.deal(bait, floorBalance);
+        assertEq(sentinel.drainedIndexes().length, 0);
+        vm.deal(bait, floorBalance - 1);
+        assertEq(sentinel.drainedIndexes().length, 1);
+    }
+
     function testReentrancyCannotUseAnOtherwiseValidNextPQAuthorization() public {
         MockReentrantRecipient attacker = new MockReentrantRecipient();
         uint256 deadline = block.timestamp + 1 hours;

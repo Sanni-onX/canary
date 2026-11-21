@@ -18,6 +18,24 @@ export function buildTypedDigest(input: { vault: Address; chainId: bigint; nonce
 export type EncryptedKeyBlob = { version: 1; algorithm: 'ML-DSA-87'; kdf: 'PBKDF2-SHA256'; iterations: 310000;
   salt: number[]; iv: number[]; ciphertext: number[]; publicKeyHash: Hex };
 
+/** Validate untrusted JSON before allocating or passing bytes to WebCrypto. */
+export function parseEncryptedKeyBlob(input: unknown): EncryptedKeyBlob {
+  if (!input || typeof input !== 'object') throw new Error('Unsupported or damaged backup.');
+  const blob = input as Record<string, unknown>;
+  const bytes = (value: unknown, length: number): value is number[] => Array.isArray(value) && value.length === length
+    && value.every(byte => Number.isInteger(byte) && byte >= 0 && byte <= 255);
+  if (blob.version !== 1 || blob.algorithm !== 'ML-DSA-87' || blob.kdf !== 'PBKDF2-SHA256' || blob.iterations !== 310000
+    || !bytes(blob.salt, 16) || !bytes(blob.iv, 12) || !bytes(blob.ciphertext, 7504)
+    || typeof blob.publicKeyHash !== 'string' || !/^0x[0-9a-f]{64}$/.test(blob.publicKeyHash)) throw new Error('Unsupported or damaged backup.');
+  return { version: 1, algorithm: 'ML-DSA-87', kdf: 'PBKDF2-SHA256', iterations: 310000,
+    salt: [...blob.salt], iv: [...blob.iv], ciphertext: [...blob.ciphertext], publicKeyHash: blob.publicKeyHash as Hex };
+}
+
+function checkKeypair(keys: Keypair) {
+  const challenge = new TextEncoder().encode('CANARY_BACKUP_SELF_TEST_V1');
+  if (!verify(keys.publicKey, challenge, sign(keys, challenge))) throw new Error('Backup signing key does not match its public key.');
+}
+
 function arrayBuffer(value: Uint8Array): ArrayBuffer { return Uint8Array.from(value).buffer; }
 async function encryptionKey(password: string, salt: Uint8Array, usage: 'encrypt' | 'decrypt') {
   const material = await crypto.subtle.importKey('raw', arrayBuffer(new TextEncoder().encode(password)), 'PBKDF2', false, ['deriveKey']);
@@ -28,6 +46,7 @@ async function encryptionKey(password: string, salt: Uint8Array, usage: 'encrypt
 export async function encryptKeyBlob(keys: Keypair, password: string): Promise<EncryptedKeyBlob> {
   if (keys.publicKey.length !== 2592 || keys.secretKey.length !== 4896) throw new Error('Invalid ML-DSA-87 key size.');
   if (password.length < 12) throw new Error('Use a backup password of at least 12 characters.');
+  checkKeypair(keys);
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const plaintext = new Uint8Array(2592 + 4896);
@@ -41,17 +60,39 @@ export async function encryptKeyBlob(keys: Keypair, password: string): Promise<E
   } finally { plaintext.fill(0); }
 }
 
-export async function decryptKeyBlob(blob: EncryptedKeyBlob, password: string): Promise<Keypair> {
-  if (blob.version !== 1 || blob.algorithm !== 'ML-DSA-87' || blob.kdf !== 'PBKDF2-SHA256' || blob.iterations !== 310000
-    || blob.salt.length !== 16 || blob.iv.length !== 12 || blob.ciphertext.length !== 7504) throw new Error('Unsupported or damaged backup.');
+export async function decryptKeyBlob(input: unknown, password: string): Promise<Keypair> {
+  const blob = parseEncryptedKeyBlob(input);
   const key = await encryptionKey(password, Uint8Array.from(blob.salt), 'decrypt');
   const plaintext = new Uint8Array(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: arrayBuffer(Uint8Array.from(blob.iv)),
     additionalData: arrayBuffer(new TextEncoder().encode(blob.publicKeyHash)) }, key, arrayBuffer(Uint8Array.from(blob.ciphertext))));
   try {
     const keys = { publicKey: plaintext.slice(0, 2592), secretKey: plaintext.slice(2592) };
-    if (hashPublicKey(keys.publicKey) !== blob.publicKeyHash) { keys.secretKey.fill(0); throw new Error('Backup public key mismatch.'); }
+    try {
+      if (hashPublicKey(keys.publicKey) !== blob.publicKeyHash) throw new Error('Backup public key mismatch.');
+      checkKeypair(keys);
+    } catch (error) { keys.secretKey.fill(0); throw error; }
     return keys;
   } finally { plaintext.fill(0); }
+}
+
+/** List only validated encrypted records; never returns plaintext signing keys. */
+export async function loadEncryptedBackups(): Promise<EncryptedKeyBlob[]> {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('canary-keys', 1);
+    request.onupgradeneeded = () => request.result.createObjectStore('encrypted');
+    request.onerror = () => reject(new Error('Encrypted key storage is unavailable. Import your downloaded file.'));
+    request.onsuccess = () => {
+      const db = request.result;
+      const tx = db.transaction('encrypted', 'readonly');
+      const read = tx.objectStore('encrypted').getAll();
+      read.onsuccess = () => {
+        try { resolve(read.result.map(parseEncryptedKeyBlob)); }
+        catch (error) { reject(error); }
+      };
+      tx.oncomplete = () => db.close();
+      tx.onerror = () => { db.close(); reject(new Error('Encrypted key storage could not be read.')); };
+    };
+  });
 }
 
 /** Store encrypted material only. No signing key is placed into localStorage or sent to a server. */

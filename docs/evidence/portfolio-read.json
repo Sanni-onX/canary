@@ -1,0 +1,48 @@
+{
+  "chainId": 9800,
+  "owner": "0xd81213Ed37038293c30aD1e8f196a0E8Fb74D464",
+  "block": "10481672",
+  "timestamp": "1795247612",
+  "balance": "2012223162500000000",
+  "vaults": [
+    {
+      "address": "0x7ff8A9F57f638A4347146687e1ef4F5b54E89Ae6",
+      "owner": "0xd81213Ed37038293c30aD1e8f196a0E8Fb74D464",
+      "rescue": "0xd81213Ed37038293c30aD1e8f196a0E8Fb74D464",
+      "keyHash": "0x5c5caea2e6b82ad2e700ffcf2652523d93b2f3b3b22d948e320ff3bda7b2b09e",
+      "nonce": "2",
+      "locked": false,
+      "alarm": true,
+      "balance": "0",
+      "dailyLimit": "100000000000000000",
+      "delay": "60",
+      "coolingOff": "10",
+      "spent": "100000000000000",
+      "pending": [],
+      "pendingTruncated": false
+    }
+  ],
+  "assets": [
+    {
+      "token": "0x97143B771D34ddb9130b807b135Ae675A5a963CA",
+      "symbol": "fUSD",
+      "decimals": 6,
+      "balance": "0",
+      "vaultBalances": [
+        {
+          "vault": "0x7ff8A9F57f638A4347146687e1ef4F5b54E89Ae6",
+          "balance": "0"
+        }
+      ],
+      "approvals": [],
+      "completeWindow": true
+    }
+  ],
+  "warnings": [],
+  "approvalScan": {
+    "from": "10473672",
+    "to": "10481672",
+    "exhaustive": false
+  },
+  "factory": "0x1d8cfb8bdd89021ead9c7c42f929d35d7452dfac"
+}

@@ -1,0 +1,23 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - "127.0.0.1:3000:3000"
+    restart: unless-stopped
+  watcher:
+    build:
+      context: .
+      dockerfile: services/watcher/Dockerfile
+    environment:
+      CANARY_REGISTRY_ADDRESS: "0x3a6d15b3cf0b65c5e6db6217d353508136988ec9"
+      WATCHER_DB: /data/canary-watcher.sqlite
+      WATCHER_HOST: 0.0.0.0
+    ports:
+      - "127.0.0.1:8787:8787"
+    volumes:
+      - watcher-data:/data
+    restart: unless-stopped
+volumes:
+  watcher-data:

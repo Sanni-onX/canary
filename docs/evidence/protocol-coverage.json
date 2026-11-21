@@ -1,0 +1,187 @@
+{
+  "configured": true,
+  "network": "qorechain-diana",
+  "chainId": 9800,
+  "block": "10482313",
+  "observedAt": "2026-11-21T07:08:50.349Z",
+  "bounds": "DEMO ONLY: 60s governance/vault minimum, 10s cooling-off minimum",
+  "alarm": true,
+  "lastAlarmBlock": "10475594",
+  "registryReady": true,
+  "threshold": 2,
+  "toleranceBps": 100,
+  "canaries": [
+    {
+      "index": 0,
+      "address": "0xB16f820A89A36Af0F2e4DcD00Fa160Cdc8318708",
+      "baselineWei": "150000000000000000",
+      "balanceWei": "1837500000000000",
+      "exposureTx": "0x74e5c8424c40a8faf67948fc8007d2da8d71400d89d47ac388ad596cdfa56d6b",
+      "addedAt": "1795238725",
+      "retired": false,
+      "window": {
+        "live": false,
+        "openedHeight": "10475406",
+        "expiryHeight": "10477206",
+        "remainingBlocks": "0",
+        "remainingTxs": "1",
+        "remainingValueUqor": "50000",
+        "nativeOnly": false,
+        "allowedTargets": [
+          "0xd81213ed37038293c30ad1e8f196a0e8fb74d464"
+        ]
+      },
+      "coverage": {
+        "status": "Lapsed",
+        "reason": "Window expired, closed or exhausted.",
+        "remainingBlocks": "0",
+        "expiryHeight": "10477206",
+        "openedHeight": "10475406"
+      },
+      "drained": true
+    },
+    {
+      "index": 1,
+      "address": "0xab98f9f1024814e3Aa2D81Fd7475def9b1d48e31",
+      "baselineWei": "150000000000000000",
+      "balanceWei": "1837500000000000",
+      "exposureTx": "0x20d3287a2cda55116c1e27d56dd73e453fdb0078e01eebddd10a00db901e93eb",
+      "addedAt": "1795238744",
+      "retired": false,
+      "window": {
+        "live": false,
+        "openedHeight": "10475421",
+        "expiryHeight": "10477221",
+        "remainingBlocks": "0",
+        "remainingTxs": "1",
+        "remainingValueUqor": "50000",
+        "nativeOnly": false,
+        "allowedTargets": [
+          "0xd81213ed37038293c30ad1e8f196a0e8fb74d464"
+        ]
+      },
+      "coverage": {
+        "status": "Lapsed",
+        "reason": "Window expired, closed or exhausted.",
+        "remainingBlocks": "0",
+        "expiryHeight": "10477221",
+        "openedHeight": "10475421"
+      },
+      "drained": true
+    },
+    {
+      "index": 2,
+      "address": "0xce1728DD7e6D53973aC58A4647E696C5343480C4",
+      "baselineWei": "150000000000000000",
+      "balanceWei": "150000000000000000",
+      "exposureTx": "0x97f1051421c08a121bda0b40748a735503b1f08e4ad7e3b442a4f284ef313514",
+      "addedAt": "1795238766",
+      "retired": false,
+      "window": {
+        "live": false,
+        "openedHeight": "10475436",
+        "expiryHeight": "10477236",
+        "remainingBlocks": "0",
+        "remainingTxs": "2",
+        "remainingValueUqor": "200000",
+        "nativeOnly": false,
+        "allowedTargets": [
+          "0xd81213ed37038293c30ad1e8f196a0e8fb74d464"
+        ]
+      },
+      "coverage": {
+        "status": "Lapsed",
+        "reason": "Window expired, closed or exhausted.",
+        "remainingBlocks": "0",
+        "expiryHeight": "10477236",
+        "openedHeight": "10475436"
+      },
+      "drained": false
+    }
+  ],
+  "vault": {
+    "address": "0x7ff8A9F57f638A4347146687e1ef4F5b54E89Ae6",
+    "owner": "0xd81213Ed37038293c30aD1e8f196a0E8Fb74D464",
+    "rescue": "0xd81213Ed37038293c30aD1e8f196a0E8Fb74D464",
+    "nonce": "2",
+    "locked": false,
+    "balanceWei": "0",
+    "spentWei": "100000000000000",
+    "dailyLimitWei": "100000000000000000",
+    "timelockSeconds": "60",
+    "coolingOffSeconds": "10",
+    "creationHash": "0xd154c3dde568b50de1bf7bc279dc55566aa9f9f14ebd286baef5eabf51f1673b",
+    "pqExitHash": "0x15e3c2f851e3e1527eeb21627a82823ae5f07f38c3359b5ca6d9a725c2518d5c"
+  },
+  "contracts": {
+    "PQGovernance": {
+      "address": "0xb933dc8be7b7044049e368c4ae61c2cad69fb952",
+      "transactionHash": "0xa4fc58770109b68c2ec0eb7f25f26e7ecd1d0b31d068cea3ba1289811186d8d4",
+      "blockNumber": "10475120",
+      "gasUsed": "808568"
+    },
+    "CanaryRegistry": {
+      "address": "0x3a6d15b3cf0b65c5e6db6217d353508136988ec9",
+      "transactionHash": "0x45b0690ce7dbbe01942f3f80648f419f668122c61bfd3ac69536a496b8877455",
+      "blockNumber": "10475122",
+      "gasUsed": "667747"
+    },
+    "VaultFactory": {
+      "address": "0x1d8cfb8bdd89021ead9c7c42f929d35d7452dfac",
+      "transactionHash": "0x4f598d42d509293cad132fc47eb0d08c95820452206f662b0ad988fc596c111c",
+      "blockNumber": "10475124",
+      "gasUsed": "2953541"
+    }
+  },
+  "coverage": {
+    "covered": 0,
+    "expiring": 0,
+    "lapsed": 1,
+    "unknown": 0,
+    "threshold": 2,
+    "margin": 1,
+    "desired": 3,
+    "tripFeasible": false,
+    "degraded": true,
+    "blockSeconds": 1.4166666666666667,
+    "note": "Finite coverage epochs. Renewal requires both classical and PQ keys. Destroyed-key canaries cannot be renewed; new accounts and governance additions are needed before expiry."
+  },
+  "drill": {
+    "completedAt": "2026-11-21T04:28:43.452Z",
+    "checks": {
+      "normalClassicalSucceeded": true,
+      "watcherTrippedAlarm": true,
+      "alarmClassicalBlocked": true,
+      "classicalRejection": "ClassicalFrozen decoded from eth_call; rejected before broadcast; vault balance unchanged",
+      "alarmPQRescueSucceeded": true
+    },
+    "transactions": [
+      {
+        "kind": "demo_deposit",
+        "hash": "0xbc401b01fb634555b2d24289684719419eadb3a34002f9505e9c432e0016866c"
+      },
+      {
+        "kind": "normal_classical_withdrawal",
+        "hash": "0xbec48802acb2354baeba97950c78e320d33c521994ed3f214154233848b491e4"
+      },
+      {
+        "kind": "drain_0",
+        "hash": "0x856cd46b860292cd6ae7d897f9ce9a129e9d88cd4f359e77a69269930319383d"
+      },
+      {
+        "kind": "drain_1",
+        "hash": "0xf0db6c35c34aedfd54f59effeadba74c375caf31643940a924190bac49729b12"
+      },
+      {
+        "kind": "watcher_alarm",
+        "hash": "0xa7ebd09c693290bb8ff112043836dc7dc13dced1066429047bed76b2c3922c5d"
+      },
+      {
+        "kind": "alarm_pq_rescue",
+        "hash": "0xed5f13dc0c0780f0756796488f625ccf9499468ff3e4c767cf24e2e4f518e27b",
+        "gasUsed": "750000",
+        "amountWei": "2900000000000000"
+      }
+    ]
+  }
+}

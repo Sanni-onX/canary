@@ -7,17 +7,21 @@
     "contracts",
     "apps/web",
     "packages/pq",
+    "packages/coverage",
     "services/watcher"
   ],
   "scripts": {
     "discovery": "node scripts/discovery.mjs",
     "test:discovery": "node --test scripts/discovery.test.mjs",
     "test:pq": "node --import tsx --test packages/pq/test/pq.test.ts",
+    "test:coverage": "node --import tsx --test packages/coverage/test/coverage.test.ts",
     "test:watcher": "node --test services/watcher/test/once.test.mjs",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "dev": "npm run dev --workspace @canary/web",
     "build": "npm run build --workspace @canary/web",
     "test:web": "playwright test",
+    "audit:static": "node scripts/static-checks.mjs",
+    "lint:solidity": "solhint --disc --noPoster --max-warnings 8 \"contracts/src/**/*.sol\"",
     "watcher": "npm run start --workspace @canary/watcher",
     "forge": "node scripts/forge.mjs"
   },
@@ -26,6 +30,7 @@
     "@qorechain/pqc": "0.2.3",
     "qrcode": "^1.5.4",
     "solc": "0.8.28",
+    "solhint": "6.2.5",
     "viem": "^2.0.0"
   },
   "engines": {

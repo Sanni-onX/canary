@@ -7,6 +7,13 @@ and Lifeboat guides migration into a separately PQ-authorized vault.
 Built for the QoreChain Developer Fest, Post-Quantum dApp track.
 **Working testnet prototype, not audited or production-ready. Testnet only.**
 
+**Coverage is finite:** ordinary QoreChain window renewal needs both classical
+and PQ signatures. A PQ key alone cannot renew a canary after its classical key
+is destroyed. The app and watcher now show coverage epochs, expiry and k+1
+feasibility separately from the drain alarm. The original drill windows have
+expired; historical alarm/rescue proof is not continuous current coverage.
+See [verified epoch design](docs/CANARY_EPOCHS.md).
+
 ![Canary product overview, labeled local simulation](docs/images/overview.png)
 
 ## What works today
@@ -24,6 +31,14 @@ Built for the QoreChain Developer Fest, Post-Quantum dApp track.
   PBKDF2-SHA256 (310,000 iterations); encrypted blobs only in IndexedDB.
 - **Watcher:** block subscription plus HTTP fallback/backoff, SQLite history,
   permissionless alarm submission, `/status`, `/health`, and `--once`.
+- **Live workspace:** discover owned vaults, native/fUSD/user-added token
+  balances, scoped allowance review, and decoded on-chain activity. Export
+  selected, preflight-checked revocation plans without claiming they were sent.
+- **Recovery:** restore encrypted backups from file or IndexedDB, check vault
+  key binding, unlock locally for five minutes, and export a real PQ rescue
+  authorization only after local signature verification and chain preflight.
+- **Resume records:** save/export public owner/vault/key/policy snapshots and
+  receipt references; imported labels never establish completion.
 
 The browser's migration and transfer controls are **local simulation**. Live
 testnet mode currently monitors the operator-owned demonstration; general-user
@@ -115,12 +130,15 @@ npm run test:watcher
 node scripts/forge.mjs fmt --check
 node scripts/forge.mjs test
 npm run test:web
+npm run test:coverage
+npm run lint:solidity
 npm run build
 ```
 
-Current checkpoint: **31 Foundry tests** (20 core, 5 probe, 6 invariants),
-**8 discovery tests**, **3 PQ client tests**, **1 watcher integration test**, and
-**10 desktop/mobile browser tests**. Each invariant ran 256 campaigns of 500
+Current checkpoint: **33 Foundry tests** (22 core, 5 probe, 6 invariants),
+**8 discovery tests**, **3 PQ client tests**, **2 coverage tests**,
+**2 watcher integration tests**, and **18 desktop/mobile browser tests**.
+Each invariant ran 256 campaigns of 500
 actions. Browser tests use isolated test providers; they are not a claim of
 real QoreX extension/mobile signing. PQ cryptography in browser tests is real.
 Nonces and pre-alarm requests also have invariant coverage; cross-chain/cross-vault
@@ -181,9 +199,46 @@ deltas do not prove future token behavior.
 The prototype registry has 16 lifetime slots, including retired entries; rotation
 capacity must be addressed before a production deployment. Rolling transfer
 capacity, governance operations and rescue UX need additional hardening.
-General-user live Lifeboat, live approval revocation, complete ceremony,
-production-bounds deployment, Slither/solhint, two-stage QCAI, public hosting,
+General-user live Lifeboat transactions, actual approval revocation, complete
+ceremony, production-bounds deployment, two-stage QCAI, public hosting,
 public repository and the final demo video remain incomplete.
+
+Slither 0.11.5 completed with **38 findings**, all individually mapped in
+[static analysis review](audit/slither.md). Solhint 6.2.5 reports zero errors
+and eight reviewed warnings. Neither is an independent audit or a QCAI stage.
+Install `audit/requirements.txt` into `.local/audit-venv`, then run
+`npm run audit:static`. The compiled, flattened QCAI input is in `audit/qcai/`;
+it has not been submitted externally. Source-sharing approval is pending.
+
+## Recover without giving the relay your key
+
+In Live testnet → My vault/Lifeboat, discover the owner address and choose a
+vault. Import its encrypted backup, unlock it locally, review the registered
+rescue address and amount, then choose **Sign & check rescue authorization**.
+The downloaded public authorization expires in five minutes and binds the
+chain, vault, current nonce, recipient and amount. Its signature cannot be used
+for another transaction. Keep your encrypted backup and password separate.
+
+The local relay can check this public file without reading any signing key:
+
+```powershell
+node scripts/pq-rescue.mjs path/to/canary-pq-rescue-authorization.json
+```
+
+Adding `--submit` uses the fresh local testnet operator's own gas account,
+opens a 30-block/one-transaction window scoped to the exact vault, simulates
+again and broadcasts. No user PQ secret is accepted. This helper has syntax
+and browser-payload verification; its new `--submit` path has not been exercised
+live. The earlier real testnet drill used `run-testnet-drill.mjs` instead.
+
+## Hosting preparation
+
+`apps/web/Dockerfile`, `compose.yaml` and `.dockerignore` prepare the web app and
+persistent read-only-by-default watcher without copying `.local/` or secrets.
+Docker's engine was unavailable on the build machine, so container execution
+has not been verified. No public deployment was made. QoreX mobile still needs
+a public HTTPS URL. Docker Compose's watcher has no signer configured; health
+means fresh RPC monitoring, while coverage degradation is reported separately.
 
 See [threat model](docs/THREAT_MODEL.md), [architecture](docs/ARCHITECTURE.md),
 [current progress](docs/PROGRESS.md), [audit status](docs/AUDIT.md),
@@ -208,6 +263,8 @@ proof by actual successful deployments and transactions, not hidden as a pass.
   (Apache-2.0); TypeScript (Apache-2.0), tsx (MIT), CosmJS (Apache-2.0),
   Foundry 1.7.1 / forge-std v1.9.7 (MIT/Apache-2.0), solc 0.8.28 (GPL-3.0 tool),
   Node.js (MIT, including SQLite runtime). The archived web reference uses Vite (MIT).
+- Slither 0.11.5 (AGPL-3.0 analyzer) and solhint 6.2.5 (MIT linter) are local
+  development tools; their reports and triage do not substitute for an audit.
 
 New Canary code: [MIT](LICENSE). Upstream files retain original notices. No
 mock verifier has been deployed. AI/human contributions: [AI_USAGE.md](AI_USAGE.md).

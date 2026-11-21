@@ -1,0 +1,18 @@
+{
+  "preparedAt": "2026-11-21T06:48:59.346Z",
+  "setting": "Ethereum (EVM/Solidity)",
+  "file": "Canary.flattened.sol",
+  "sha256": "fece2f6d71d382686613b740daf5348e738787c11315b65b35973248b97901d2",
+  "bytes": 83906,
+  "contracts": [
+    "CanaryRegistry",
+    "PQAuth",
+    "PQGovernance",
+    "PQVault",
+    "VaultFactory"
+  ],
+  "compiledSuccessfully": true,
+  "stage1Report": null,
+  "stage2Report": null,
+  "note": "Prepared source, not a completed QCAI audit. Use the same setting for both stages."
+}
