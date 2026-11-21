@@ -46,8 +46,10 @@ Assets are vault funds, alarm integrity and availability of the PQ rescue exit.
 
 Cooling-off reversals, bounded rolling accounting, delayed key rotation and
 alarm reset transitions are implemented and tested. External review is still
-needed. The prototype registry has 16 lifetime slots including retired entries;
-production rotation must address this. The demo's 2-of-3 keys are held by a
+needed. The deployed revision-1 registry has 16 lifetime slots including retired
+entries. Revision-2 source adds governed replacement, permanently rejects reused
+accounts, and observes old drain thresholds before changing slots. It needs a
+new deployment and cannot upgrade existing vaults. The demo's 2-of-3 keys are held by a
 single local operator and its delays are intentionally short. Relay availability,
 general-user live migration and secure public hosting remain open. Local
 encrypted-backup recovery and replay-bound rescue preparation are implemented;

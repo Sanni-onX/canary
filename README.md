@@ -14,6 +14,12 @@ feasibility separately from the drain alarm. The original drill windows have
 expired; historical alarm/rescue proof is not continuous current coverage.
 See [verified epoch design](docs/CANARY_EPOCHS.md).
 
+**Source revision 2, deployed revision 1:** local registry source now supports
+timelocked, governance-only slot replacement with permanent address-use history.
+It preserves old threshold evidence before replacement/retirement. The live
+demo is immutable and still uses revision 1 from commit `287b799`. No upgrade or
+revision-2 deployment has occurred. The next deployment uses a separate manifest.
+
 ![Canary product overview, labeled local simulation](docs/images/overview.png)
 
 ## What works today
@@ -135,7 +141,7 @@ npm run lint:solidity
 npm run build
 ```
 
-Current checkpoint: **33 Foundry tests** (22 core, 5 probe, 6 invariants),
+Current source: **39 Foundry tests** (22 core, 5 rotation, 5 probe, 7 invariants),
 **8 discovery tests**, **3 PQ client tests**, **2 coverage tests**,
 **2 watcher integration tests**, and **18 desktop/mobile browser tests**.
 Each invariant ran 256 campaigns of 500
@@ -196,19 +202,22 @@ chain availability, gas, transaction inclusion, the verifier and a secure rescue
 address. Rebasing and fee-on-transfer tokens are unsupported; observed deposit
 deltas do not prove future token behavior.
 
-The prototype registry has 16 lifetime slots, including retired entries; rotation
-capacity must be addressed before a production deployment. Rolling transfer
+The deployed revision-1 registry has 16 lifetime slots, including retired
+entries. Revision-2 slot rotation is locally tested and requires review plus a
+new deployment. It cannot change existing immutable vaults. Rolling transfer
 capacity, governance operations and rescue UX need additional hardening.
 General-user live Lifeboat transactions, actual approval revocation, complete
 ceremony, production-bounds deployment, two-stage QCAI, public hosting,
 public repository and the final demo video remain incomplete.
 
-Slither 0.11.5 completed with **38 findings**, all individually mapped in
+Slither 0.11.5 completed on revision 2 with **37 findings**, all individually mapped in
 [static analysis review](audit/slither.md). Solhint 6.2.5 reports zero errors
 and eight reviewed warnings. Neither is an independent audit or a QCAI stage.
 Install `audit/requirements.txt` into `.local/audit-venv`, then run
 `npm run audit:static`. The compiled, flattened QCAI input is in `audit/qcai/`;
-it has not been submitted externally. Source-sharing approval is pending.
+the human approved code sharing and it is now entered in the official auditor
+under Ethereum (EVM/Solidity). The 150-test-QOR confirmation is left to the human;
+no completed external audit or payment is claimed.
 
 ## Recover without giving the relay your key
 

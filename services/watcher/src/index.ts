@@ -55,7 +55,7 @@ async function check() {
       const [account, baseline, , , retired] = await read<readonly [Address, bigint, string, bigint, boolean]>('canaries', [BigInt(index)]);
       const priorState = db.prepare('SELECT address,retired FROM canary_state WHERE canary=?').get(index) as { address: string; retired: number } | undefined;
       if (priorState && !priorState.retired && retired) record(block.number, 'canary_retired', { index, account });
-      if (priorState && priorState.address !== account) record(block.number, 'canary_replaced', { index, account });
+      if (priorState && priorState.address !== account) record(block.number, 'canary_replaced', { index, previous: priorState.address, account });
       db.prepare('INSERT OR REPLACE INTO canary_state VALUES (?,?,?)').run(index, account, retired ? 1 : 0);
       const balance = await publicClient.getBalance({ address: account, blockNumber: block.number });
       const previous = db.prepare('SELECT balance FROM snapshots WHERE canary=? ORDER BY length(block) DESC,block DESC LIMIT 1').get(index) as { balance?: string } | undefined;

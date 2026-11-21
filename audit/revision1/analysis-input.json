@@ -1,0 +1,19 @@
+{
+  "analyzedAt": "2026-11-21T06:51:00.350Z",
+  "slither": "0.11.5",
+  "solhint": "6.2.5",
+  "compiler": "0.8.28 / Paris / optimizer 200 / viaIR",
+  "excluded": [
+    "dependencies",
+    "test",
+    "script",
+    "Discovery probes"
+  ],
+  "sourceSha256": {
+    "CanaryRegistry.sol": "2fa502c820dc46d68ed5114692a8b69f7e07e932db31f8f38c70ae6d985364e3",
+    "PQAuth.sol": "bc2909575fdfe17091b1d0e223f502d034ea56232c39aa807a25e2d3dc7cdf90",
+    "PQGovernance.sol": "de196a73a6c5d815868f38192b20fb23d9669ebccb29b2adc140b23bd799c9c3",
+    "PQVault.sol": "d4dc238f5375f76cb682266561ef3ee4bf872ef5a05bcebf012eff6911976b50",
+    "VaultFactory.sol": "68cef58e52a1a2262c3729d5f3efb448491dc24343c3f66350e22f573fe36a54"
+  }
+}

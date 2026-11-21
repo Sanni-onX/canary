@@ -1,5 +1,11 @@
 # Canary architecture — deployed prototype
 
+Current local registry source is revision 2: governed replacement of any current
+slot, no historical account reuse, old-epoch threshold latching before mutation,
+and a fixed 16-slot scan. The deployed manifest still describes revision 1 from
+commit 287b799. Replacement is not an upgrade mechanism; revision-2 contracts
+need review and separate deployment. The web continues to monitor revision 1.
+
 Later 21 November client hardening: live vault/asset/allowance discovery, bounded
 decoded activity, encrypted-backup recovery, public migration reports, and
 preflight-checked public PQ rescue authorizations are implemented. QoreX session

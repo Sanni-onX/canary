@@ -2,6 +2,24 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { createPublicClient, createWalletClient, defineChain, http, keccak256, toHex } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { mldsa87 } from '@qorechain/pqc';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+if (!process.argv.includes('--revision-2')) {
+  throw new Error('No transaction sent. After reviewing revision 2, use --revision-2 to create deployments/testnet-v2.json. The revision-1 manifest is preserved.');
+}
+const root = fileURLToPath(new URL('../', import.meta.url));
+const gitState = spawnSync('git', ['status', '--porcelain', '--', 'contracts/src', 'contracts/foundry.toml', 'contracts/package.json', 'package-lock.json'], { cwd: root, encoding: 'utf8' });
+if (gitState.status !== 0 || gitState.stdout.trim()) throw new Error('Commit reviewed contract/compiler inputs before deployment. No transaction sent.');
+const commit = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' });
+if (commit.status !== 0) throw new Error('Cannot identify the deployment source commit.');
+const sourceCommit = commit.stdout.trim();
+const build = spawnSync(process.execPath, [fileURLToPath(new URL('./forge.mjs', import.meta.url)), 'build'], { cwd: root, stdio: 'inherit' });
+if (build.status !== 0) throw new Error('Contract compilation failed. No transaction sent.');
+const artifactHashes = {};
+for (const name of ['PQGovernance', 'CanaryRegistry', 'VaultFactory']) {
+  const artifact = JSON.parse(await readFile(new URL(`../contracts/out/${name}.sol/${name}.json`, import.meta.url), 'utf8'));
+  artifactHashes[name] = keccak256(artifact.bytecode.object);
+}
 await import('./preload-sdk.mjs');
 const { unifiedAccountFromSeed, fetchPqcStatus, isRegisteredPqcKey, EthNativeSigner,
   buildRegisterPqcKeyMsg, signProofOfPossession, openEvmWindowMsg } = await import('@qorechain/sdk');
@@ -19,13 +37,15 @@ seed.fill(0);
 const account = privateKeyToAccount(local.classicalSeedHex);
 const wallet = createWalletClient({ account, chain, transport: http(RPC) });
 await mkdir(new URL('../deployments/', import.meta.url), { recursive: true });
-const manifestPath = new URL('../deployments/testnet.json', import.meta.url);
+const manifestPath = new URL('../deployments/testnet-v2.json', import.meta.url);
 let manifest;
 try { manifest = JSON.parse(await readFile(manifestPath, 'utf8')); }
 catch (error) { if (error.code !== 'ENOENT') throw error;
-  manifest = { network: 'qorechain-diana', chainId: 9800, bounds: 'DEMO ONLY: 60s governance/vault minimum, 10s cooling-off minimum',
+  manifest = { network: 'qorechain-diana', chainId: 9800, protocolRevision: 2, sourceCommit, artifactHashes, bounds: 'DEMO ONLY: 60s governance/vault minimum, 10s cooling-off minimum',
     deployer: { native: unified.cosmos, evm: account.address }, contracts: {}, transactions: [], createdAt: new Date().toISOString() }; }
 if (manifest.deployer.evm.toLowerCase() !== account.address.toLowerCase()) throw new Error('Manifest belongs to a different deployer.');
+if (manifest.protocolRevision !== 2) throw new Error('Revision mismatch. No revision-1 manifest may be resumed with revision-2 sources.');
+if (JSON.stringify(manifest.artifactHashes) !== JSON.stringify(artifactHashes)) throw new Error('Compiled deployment inputs changed. Refusing to mix artifacts in one manifest.');
 const save = () => writeFile(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
 const funded = await client.getBalance({ address: account.address });
 if (funded < 1500000000000000000n) throw new Error('Fresh deployer needs test QOR before setup/deployment.');

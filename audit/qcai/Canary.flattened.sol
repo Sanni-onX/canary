@@ -25,8 +25,12 @@ contract CanaryRegistry {
         bool retired;
     }
     Canary[] public canaries;
+    mapping(address => bool) public usedCanary;
     event CanaryAdded(uint256 indexed index, address indexed account, uint256 baseline, bytes32 exposureTx);
     event CanaryRetired(uint256 indexed index);
+    event CanaryReplaced(
+        uint256 indexed index, address indexed previous, address indexed account, uint256 baseline, bytes32 exposureTx
+    );
     event AlarmTripped(uint256[] drainedIndexes, uint256 blockNumber);
     event AlarmReset(bytes32 indexed evidenceHash, uint256 retainedAlarmBlock);
 
@@ -61,15 +65,29 @@ contract CanaryRegistry {
 
     /// @notice Add an already exposed, funded bait account after governance's timelock.
     function addCanary(address account, bytes32 exposureTx) external onlyGovernance {
-        if (
-            account == address(0) || account.balance < 10000 || exposureTx == bytes32(0)
-                || canaries.length >= MAX_CANARIES
-        ) revert InvalidCanary();
-        for (uint256 i; i < canaries.length; ++i) {
-            if (canaries[i].addr == account) revert InvalidCanary();
-        }
+        if (canaries.length >= MAX_CANARIES) revert InvalidCanary();
+        _requireFresh(account, exposureTx);
+        usedCanary[account] = true;
         canaries.push(Canary(account, account.balance, exposureTx, uint64(block.timestamp), false));
         emit CanaryAdded(canaries.length - 1, account, account.balance, exposureTx);
+    }
+
+    /// @notice Rotate one slot through timelocked governance without increasing the bounded scan size.
+    /// @dev Old accounts can never be reused. Replacement never clears alarm/history.
+    function replaceCanary(uint256 index, address account, bytes32 exposureTx) external onlyGovernance {
+        if (index >= canaries.length) revert InvalidCanary();
+        _requireFresh(account, exposureTx);
+        _checkAndTrip(); // Observe the old epoch before replacing any drain evidence.
+        address previous = canaries[index].addr;
+        usedCanary[account] = true;
+        canaries[index] = Canary(account, account.balance, exposureTx, uint64(block.timestamp), false);
+        emit CanaryReplaced(index, previous, account, account.balance, exposureTx);
+    }
+
+    function _requireFresh(address account, bytes32 exposureTx) private view {
+        if (account == address(0) || account.balance < 10000 || exposureTx == bytes32(0) || usedCanary[account]) {
+            revert InvalidCanary();
+        }
     }
 
     /// @notice Retire a canary; never leave fewer active canaries than the threshold.
@@ -80,6 +98,7 @@ contract CanaryRegistry {
             if (!canaries[i].retired) ++active;
         }
         if (active <= thresholdK) revert InvalidConfiguration();
+        _checkAndTrip(); // Retirement cannot erase a threshold breach before the watcher observes it.
         canaries[index].retired = true;
         emit CanaryRetired(index);
     }
@@ -103,6 +122,10 @@ contract CanaryRegistry {
 
     /// @notice Permissionless, idempotent threshold evaluation; alarm latches until governance resets.
     function checkAndTrip() external returns (bool) {
+        return _checkAndTrip();
+    }
+
+    function _checkAndTrip() private returns (bool) {
         if (alarmed) return true;
         uint256[] memory indexes = drainedIndexes();
         if (indexes.length >= thresholdK) {

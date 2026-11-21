@@ -1,6 +1,8 @@
 {
   "network": "qorechain-diana",
   "chainId": 9800,
+  "protocolRevision": 1,
+  "sourceCommit": "287b799",
   "bounds": "DEMO ONLY: 60s governance/vault minimum, 10s cooling-off minimum",
   "deployer": {
     "native": "qor1mqfp8mfhqwpf8sc26850r94qarahf4ryfjvdpp",

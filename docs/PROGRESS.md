@@ -1,6 +1,32 @@
 # Canary progress
 
-## Later 21 November — live recovery and finite coverage epochs (current)
+## Continued 21 November — revision-2 epoch rotation (current)
+
+Client/coverage checkpoint saved as bdc821c. The build and 18 browser checks
+passed before this continuation; the local preview has been restored.
+
+Revision-2 source adds governance-only replacement of active or retired slots,
+bounded current capacity of 16, historical address-use rejection, and a distinct
+replacement event. Retirement/replacement first latch any old-epoch threshold
+breach so maintenance cannot erase evidence before a watcher check. Neither
+operation clears an alarm or revives old withdrawals. Five new regressions
+passed. Stateful tests now also exercise epoch rotation and registry readiness.
+
+The active deployed revision remains **1**, pinned to source commit 287b799 in
+its manifest. There is no upgrade path. Revision-2 deployment requires a new
+manifest and explicit CLI flag; no deployment was performed. The updated seven
+invariants passed 256 campaigns × 500 calls each, including random rotation.
+All current contract checks comprise 39 tests: 22 core, five rotation, five
+probes, seven invariants. Slither regenerated with 37 reviewed findings; solhint
+has zero errors/eight reviewed warnings. The new flattened QCAI bundle compiles.
+The old revision-1 reports remain archived separately. Watcher regressions pass.
+QoreX session testing remains deferred. The human approved code-only external
+QCAI sharing. The complete revision-2 bundle was entered in the official auditor
+under Ethereum (EVM/Solidity); the Confirm Security Audit dialog displays 150 QOR
+on testnet. Payment confirmation was left to the human; no audit result or
+payment is claimed. The live browser tab is retained for that handoff.
+
+## Earlier 21 November — live recovery and finite coverage epochs
 
 Human requested finishing the product, deferred the proposed session-key chain
 test, and proposed renewable PQ canary leases with a finite-epoch fallback if

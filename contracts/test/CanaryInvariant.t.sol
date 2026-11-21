@@ -20,6 +20,7 @@ contract VaultHandler is Test {
     bool public alarmExpected;
     bool public replayLeak;
     bool public preAlarmRequestLeak;
+    uint256 private epochCount;
     bytes private publicKey;
 
     constructor(PQVault v, CanaryRegistry r, address account, address first, address second, bytes memory pk) {
@@ -56,6 +57,19 @@ contract VaultHandler is Test {
         vm.deal(bait2, 0);
         registry.checkAndTrip();
         alarmExpected = true;
+    }
+
+    function rotateEpoch(uint8 raw) external {
+        uint256 index = uint256(raw) % 2;
+        address fresh = address(uint160(0x500000 + epochCount++));
+        vm.deal(fresh, 1 ether);
+        bool shouldLatch = registry.alarmed() || registry.drainedIndexes().length >= registry.thresholdK();
+        // Governance authorization is covered by the quorum/timelock unit suite.
+        vm.prank(registry.governance());
+        registry.replaceCanary(index, fresh, keccak256(abi.encode("epoch", epochCount)));
+        if (index == 0) bait1 = fresh;
+        else bait2 = fresh;
+        alarmExpected = shouldLatch;
     }
 
     function advance(uint32 secondsForward) external {
@@ -162,5 +176,13 @@ contract CanaryInvariantTest is StdInvariant, CanaryFixture {
 
     function invariantPreAlarmRequestsNeverRevive() public view {
         assertFalse(handler.preAlarmRequestLeak());
+    }
+
+    function invariantEpochRotationKeepsBoundedReadyRegistry() public view {
+        assertEq(registry.canaryCount(), 2);
+        assertTrue(registry.usedCanary(handler.bait1()));
+        assertTrue(registry.usedCanary(handler.bait2()));
+        (,, bool ready) = registry.securityState();
+        assertTrue(ready);
     }
 }

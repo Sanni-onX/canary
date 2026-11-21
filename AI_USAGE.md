@@ -1,5 +1,22 @@
 # AI usage record
 
+## 21 November 2026 — continued epoch-rotation hardening
+
+- Human said to continue after an automatic-review usage-limit interruption.
+  AI saved the client/coverage checkpoint and resumed the local preview.
+- AI added revision-2 governance-only slot replacement, permanent account-use
+  history, and mandatory pre-mutation drain checks for replacement/retirement.
+  Added five regressions and a rotation action/readiness invariant.
+- The active revision-1 manifest is pinned to source commit 287b799. Revision-2
+  deployment writes a separate manifest behind an explicit local CLI flag.
+  No chain transaction, account rule change, audit upload or payment was made.
+- Human subsequently approved sharing the revision-2 code-only bundle with
+  QoreChain's auditor for Stage 1. Any payment remains for the human to confirm.
+- AI entered the complete 85,017-character bundle with Ethereum (EVM/Solidity)
+  selected and opened the confirmation dialog. It displays 150 QOR on testnet.
+  AI retained the tab and handed final confirmation to the human; no completed
+  audit, payment or report is claimed at this point.
+
 ## 21 November 2026 — recovery, coverage and local security review
 
 - Human requested continuing to finish the product. AI investigated the

@@ -76,9 +76,16 @@ governance additions **before** destruction and leave enough overlap between
 different accounts' epochs for the governance delay. Observe coverage, then
 attest the actual destruction procedure without claiming it is provable.
 
-There is a further production constraint: this immutable registry has **16
-lifetime slots**, including retired entries. It cannot provide indefinite
-epoch rotation. A reviewed replacement/rotation design and a new deployment
-are required before a sustained production service. Migration of existing vaults
-to another immutable registry cannot be silently performed by an administrator.
-The current release remains a bounded testnet prototype.
+The active immutable revision-1 registry has **16 lifetime slots**, including
+retired entries. Revision-2 source now adds governance-only `replaceCanary`:
+it keeps at most 16 current slots, refuses every previously used address,
+preserves historical records through events, and checks/latches the old epoch's
+threshold before changing or retiring a slot. Replacement never resets the alarm
+or its historical block. Address history grows by one mapping entry per canary;
+scan loops remain bounded to 16. Active or retired slots can be replaced.
+
+Revision 2 is locally tested, **not deployed**. It needs renewed static/QCAI
+review and a separate deployment; its code does not upgrade the active registry.
+Migration of existing vaults to another immutable registry cannot be silently
+performed by an administrator. The current release remains a bounded testnet
+prototype until the new deployment and ceremony flow are verified.

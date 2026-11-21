@@ -63,7 +63,7 @@
     "filePath": "contracts\\src\\DiscoveryCall.sol"
   },
   {
-    "line": 95,
+    "line": 114,
     "column": 67,
     "severity": "Warning",
     "message": "GC: For [ count ] variable, increment/decrement by 1 using: [ ++variable ] to save gas",
