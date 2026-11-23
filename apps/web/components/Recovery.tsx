@@ -72,6 +72,7 @@ export default function Recovery({ vault, refresh }: { vault: { address: Address
       if (!response.ok || !result.success) throw new Error(result.error || 'Chain simulation failed. Refresh vault state.');
       if (!alive.current) return;
       if (submit) {
+        clearKey();
         const hash = await sendQorexNative(vault.owner, sender => ({ typeUrl:'/qorechain.crossvm.v1.MsgCrossVMCall', value:crossVmBytes(sender,vault.address,data) }));
         clearKey(); await refresh?.();
         if (alive.current) setStatus(`PQ rescue confirmed on Diana: ${hash}. Recovery key locked.`);

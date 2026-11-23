@@ -1,6 +1,6 @@
 import { getQorexNative } from '@qorechain/qorex-types';
 import { toEvmAddress } from '@qorechain/evm';
-import { hexToBytes, isAddress, type Address, type Hex } from 'viem';
+import { createPublicClient, http, hexToBytes, isAddress, type Address, type Hex } from 'viem';
 const utf8 = new TextEncoder();
 function varint(value: number): number[] {
   const out = []; do { const byte = value % 128; value = Math.floor(value / 128); out.push(byte | (value ? 128 : 0)); } while (value); return out;
@@ -39,4 +39,12 @@ export async function sendQorexNative(owner: Address, build: (sender: string) =>
     await new Promise(resolve=>setTimeout(resolve,2000));
   }
   throw new Error(`Confirmation pending for ${hash}. Check the explorer before retrying.`);
+}
+
+export async function sendCheckedContract(owner:Address,target:Address,data:Hex){
+  const client=createPublicClient({transport:http('https://evm-testnet.qore.host')});
+  if(await client.getChainId()!==9800)throw new Error('Diana testnet required.');
+  if(!isAddress(target)||!/^0x([0-9a-fA-F]{2})+$/.test(data))throw new Error('Invalid contract call');
+  await client.call({account:owner,to:target,data,gas:2000000n});
+  return sendQorexNative(owner,sender=>({typeUrl:'/qorechain.crossvm.v1.MsgCrossVMCall',value:crossVmBytes(sender,target,data)}));
 }

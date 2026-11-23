@@ -1,33 +1,58 @@
-# Submission checklist
+# Canary submission packet
 
-Verified 21 November 2026 against https://build.qorechain.io/faq,
-https://build.qorechain.io/start and https://build.qorechain.io/rules.
+Category: Post-Quantum dApp. New Canary code is MIT licensed.
 
-## Addresses to list on Canary's project page
+## Description
 
-- Registered QoreX account: `qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z`.
-- Fresh local testnet deployer: `qor1mqfp8mfhqwpf8sc26850r94qarahf4ryfjvdpp`.
-  EVM encoding: `0xd81213Ed37038293c30aD1e8f196a0E8Fb74D464`.
-  Human funded it with 5 test QOR on 21 November. No user secret was supplied.
+Canary is a testnet early-warning and recovery system for classical-key
+compromise. A threshold of depleted bait accounts latches an alarm that freezes
+classical withdrawals from PQ-Wrap vaults, while separately authorized
+ML-DSA-87 rescue remains available. Lifeboat guides backup creation, vault
+discovery, deposits, approval review and recovery.
 
-The registration wallet does **not** have to deploy every contract. The FAQ's
-"Which addresses are checked?" says checks use every address on the project
-page plus the linked QoreX address. It explicitly instructs builders to add
-the addresses they actually use, then press Check again. A transaction from
-an unlisted address does not count for those checks. Keep the registered
-wallet linked; add this deployment account rather than replacing it.
+## How it is made
 
-Adding the deployer on the project page has not yet been observed or confirmed.
-Actual contract addresses and successful receipts are now recorded in
-`deployments/testnet.json`; the complete testnet drill is in
-`docs/evidence/live-drill.json`. The 1600×900 cover is `docs/images/cover.png`.
+Solidity vaults, an immutable clone factory, bounded canary registry and
+timelocked PQ governance run on Diana. PQ authorizations bind chain, contract,
+action, nonce and deadline. The Next.js app performs local ML-DSA key handling
+and encrypted recovery backups. A persistent Railway watcher reads canaries
+and uses a dedicated PQ-registered bot to submit native hybrid alarm calls.
+Coverage is finite: replacement deadlines are monitored and fresh epochs use
+local PQ-governed slot replacement. QoreX transaction controls use native
+signAndBroadcast and cross-VM calls; installed-wallet approval remains an
+explicit verification gap, not a claimed completed end-user migration.
 
-## Remaining delivery items
+Both QCAI EVM reviews scored 72/100. The original PDFs and every finding's
+disposition are in docs/audit/ and docs/AUDIT.md. Automated QCAI reviews are
+not independent security audits. AI assistance and open-source credits are
+documented in AI_USAGE.md and README.md.
 
-- Public original-work repository with MIT license and credits.
-- README with real deployment addresses, tests, limitations and audit links.
-- Scoped EVM window evidence and actual pqcVerify use.
-- Dated QCAI Stage 1/2 PDFs and finding response mapping.
-- Featured cover, working video at most 3 minutes, AI_USAGE.md.
-- Every team member registered; project form lists all testnet addresses/kits.
-- Target submission: 2 December 2026, 12:00 UTC / 13:00 Lagos.
+## Links and evidence
+
+- App: https://web-production-2863d083.up.railway.app/?mode=testnet
+- Watcher: https://watcher-production-64b80e30.up.railway.app/status
+- Active addresses/receipts: deployments/testnet-v2.json
+- Automatic alarm: docs/evidence/automatic-alarm-test.json
+- PQ withdrawal and native call/deposit: deployment manifest and docs/evidence/
+- Audit findings and responses: docs/AUDIT.md
+- Cover: docs/images/cover.png
+- Protocol preview: docs/demo/canary-protocol-demo.mp4; full migration recording remains pending. Captioned simulation plus separate live testnet evidence;
+  do not describe the simulation as wallet-signed fund movement.
+
+Keep the registered QoreX address linked. Add build accounts to the project:
+
+- Registered: qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z
+- Dashboard coin-60: qor1z84y95u0t2zmm3a46f5pmy2k2qtcxdp502m5r3
+- Deployment operator: qor1mqfp8mfhqwpf8sc26850r94qarahf4ryfjvdpp
+- Alarm bot: qor1st9rkt8535uejhwcdau4nw3zesafdhkqparqnv
+
+## Before submission
+
+Publish the public GitHub repository and link it here and on the project page;
+install the QoreChain Build GitHub App; verify hosted CI; upload the video;
+review project category, checked features and team registration. Record a real
+QoreX approval result. Review coverage and alarm status immediately before a
+live demonstration. No Q-Day Survivor participation is claimed.
+
+Official procedure checked 23 November 2026:
+https://build.qorechain.io/start and https://build.qorechain.io/faq .

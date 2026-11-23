@@ -119,6 +119,12 @@
   independently verified the human's registration and makes no audit claim.
 # 23 November release continuation
 
+Lifeboat continuation: Codex implemented token approval/deposit/revocation,
+delayed withdrawal management and PQ-governed policy controls. Live browser
+checks verify rendering and precision refusal, not actual user wallet approval.
+The submission demo separates local simulation from on-chain receipts. No
+personal credentials were used for recording or repository preparation.
+
 Automatic alarm continuation: the user funded a dedicated testnet bot and
 explicitly approved its credential export to Railway. Codex registered its PQ
 key, configured native hybrid alarm submission and verified the hosted bot's

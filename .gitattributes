@@ -1,0 +1,6 @@
+*.pdf -text
+*.png -text
+*.jpg -text
+*.webp -text
+*.webm -text
+*.mp4 -text

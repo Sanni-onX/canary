@@ -15,6 +15,11 @@ export const vaultAbi = parseAbi([
   'function depositToken(address,uint256)', 'function withdrawClassical(address,uint256,address)',
   'function requestWithdrawal(address,uint256,address) returns(uint256)', 'function executeWithdrawal(uint256)',
   'function cancelWithdrawal(uint256)', 'function lock()',
+  'function tighten(address,(uint256 dailyLimit,uint64 timelockDelay,uint64 coolingOff))',
+  'function announceLoosen(address,(uint256 dailyLimit,uint64 timelockDelay,uint64 coolingOff),address,bool,uint256,bytes,bytes) returns(uint256)',
+  'function applyLoosen(uint256)', 'function changeCount() view returns(uint256)',
+  'function authorizationDigest(bytes32,uint256,uint256) view returns(bytes32)',
+  'function pendingChanges(uint256) view returns(address token,(uint256 dailyLimit,uint64 timelockDelay,uint64 coolingOff) policy,address rescue,bytes32 newKey,bytes32 authorizingKey,bool unlock,uint256 readyAt,bool done)',
   'function withdrawPQ(address,uint256,address,uint256,bytes,bytes)',
 ]);
 export const erc20Abi = parseAbi([

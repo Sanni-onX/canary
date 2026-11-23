@@ -6,8 +6,9 @@ import { generateKeypair, encryptKeyBlob, decryptKeyBlob, hashPublicKey, sign, t
 import manifest from '../../../deployments/testnet-v2.json';
 import { factoryAbi, vaultAbi } from '../lib/contracts';
 import { crossVmBytes, bankSendBytes, sendQorexNative } from '../lib/qorex-transactions';
+import {parseExactAmount} from '../lib/amounts';
 const client = createPublicClient({transport:http('https://evm-testnet.qore.host')});
-export default function QorexVaultActions({owner, vault, refresh}:{owner:Address;vault?:Address;refresh:()=>Promise<void>}) {
+export default function QorexVaultActions({owner, vault, refresh}:{owner:Address;vault?:Address;refresh:(selected?:Address)=>Promise<void>}) {
   const [rescue,setRescue]=useState(owner), [password,setPassword]=useState('');
   const [backup,setBackup]=useState<EncryptedKeyBlob|null>(null), [saved,setSaved]=useState(false);
   const [amount,setAmount]=useState('0.001'), [to,setTo]=useState(owner);
@@ -46,19 +47,21 @@ export default function QorexVaultActions({owner, vault, refresh}:{owner:Address
       const args=[owner,hashPublicKey(pair.publicKey),rescue,policy,toHex(pair.publicKey),toHex(sign(pair,hexToBytes(digest)))] as const;
       await client.simulateContract({account:owner,address:factory,abi:factoryAbi,functionName:'createVault',args,gas:2000000n});
       const data=encodeFunctionData({abi:factoryAbi,functionName:'createVault',args});
+      pair.secretKey.fill(0);
       const receipt=await sendQorexNative(owner,sender=>({typeUrl:'/qorechain.crossvm.v1.MsgCrossVMCall',value:crossVmBytes(sender,factory,data)}));
       setHash(receipt);setPassword('');
       const vaults=await client.readContract({address:factory,abi:factoryAbi,functionName:'vaultsOf',args:[owner]});
       const hashes=await Promise.all(vaults.map(address=>client.readContract({address,abi:vaultAbi,functionName:'pqPkHash'})));
-      if(!hashes.includes(hashPublicKey(pair.publicKey)))throw new Error('Transaction confirmed, but the expected vault key binding was not found. Check the receipt before retrying.');
-      await refresh();setStatus('Vault creation and recovery-key binding confirmed. Review the discovered vault below.');
+      const created=vaults[hashes.findIndex(hash=>hash===hashPublicKey(pair.publicKey))];
+      if(!created)throw new Error('Transaction confirmed, but the expected vault key binding was not found. Check the receipt before retrying.');
+      await refresh(created);setStatus('Vault creation and recovery-key binding confirmed. The newly created vault is selected below.');
     } finally {pair.secretKey.fill(0);}
   });}
   async function transfer(deposit:boolean){await run(async()=>{
     if(!vault)throw new Error('Select a vault first.');
     const actualOwner=await client.readContract({address:vault,abi:vaultAbi,functionName:'owner'});
     if(actualOwner.toLowerCase()!==owner.toLowerCase())throw new Error('Vault owner changed or does not match.');
-    const value=parseEther(amount);if(value<=0n)throw new Error('Enter a positive amount.');
+    const value=parseExactAmount(amount,18);
     let receipt:string;
     if(deposit){
       if(value%1000000000000n!==0n)throw new Error('Native QOR deposits support at most 6 decimal places.');
@@ -93,7 +96,7 @@ export default function QorexVaultActions({owner, vault, refresh}:{owner:Address
       <button className="primary" onClick={()=>void transfer(true)}>Deposit with QoreX</button>
       <label className="field-label" htmlFor="qvx-to">Withdrawal recipient</label><input id="qvx-to" value={to} onChange={e=>setTo(e.target.value as Address)}/>
       <button className="secondary" onClick={()=>void transfer(false)}>Withdraw within daily limit</button>
-      <p className="helper">Native deposits credit the vault balance directly; they do not invoke its Solidity receive event. Alarm, lock and daily-limit checks still apply to classical withdrawals.</p>
+      <p className="helper">Native deposits credit the vault balance directly; they do not invoke Solidity receive or open a cooling-off reversal window. Alarm, lock and daily-limit checks still apply to classical withdrawals.</p>
     </fieldset>}
     <p role="status">{status}</p>{hash&&<a href={`https://explore.qore.network/tx/${hash}`} target="_blank" rel="noreferrer">View confirmed native receipt ↗</a>}
   </section>;

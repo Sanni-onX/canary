@@ -1,5 +1,35 @@
 # Canary progress
 
+## 23 November — expanded Lifeboat and release packet
+
+Added exact ERC-20 approvals, separate token deposits, allowance revocation,
+queued withdrawal execution/cancellation, immediate policy tightening and
+PQ-signed delayed policy/rescue/unlock announcements and application. Calls
+are simulated before QoreX approval, and live postconditions are checked after
+native receipts. Excess decimal precision is rejected rather than rounded.
+Receipt references are retained in the public migration record; unavailable
+device storage does not change a confirmed transaction into a claimed failure.
+Newly created vaults are automatically selected after binding verification.
+
+Typecheck/build passed, exact-amount regression passed, and six relevant
+contract regressions passed. Live browser smoke found token/policy controls and
+verified precision refusal before signing. Actual installed-QoreX approval is
+still pending and no user-wallet transaction is claimed. Token rebasing and
+fee-on-transfer remain unsupported. Native QOR bank deposits do not invoke
+Solidity receive or its cooling-off reversal window; the UI now states this.
+
+Prepared docs/SUBMISSION.md and a captioned demonstration separating the browser
+simulation from live chain evidence. Public repository creation remains pending:
+the connected GitHub tools expose no repository-creation method, and Windows
+browser control stopped because it could not reliably determine the current URL.
+No workaround was used to bypass that browser-control policy stop.
+
+Video QA excluded an incomplete Lifeboat recording segment. The retained
+55.64-second docs/demo/canary-protocol-demo.mp4 is an honest protocol preview,
+not a full migration walkthrough. The original draft is preserved in ignored
+.artifacts/demo/. The recorder has been corrected for future full recording;
+actual QoreX approval is still needed before claiming a complete user journey.
+
 ## 23 November — automatic alarm and coverage operations
 
 Dedicated alarm bot prepared, funded by the user and PQ-registered. The user

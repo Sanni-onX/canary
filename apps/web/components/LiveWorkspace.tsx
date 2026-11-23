@@ -1,12 +1,15 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { toEvmAddress } from '@qorechain/evm';
-import { encodeFunctionData, formatEther, formatUnits, isAddress, zeroAddress, type Address, type Hex } from 'viem';
+import { createPublicClient,http,encodeFunctionData, formatEther, formatUnits, isAddress, zeroAddress, type Address, type Hex } from 'viem';
 import { erc20Abi } from '../lib/contracts';
 import { migrationStorageKey, parseMigrationRecord, type MigrationRecord } from '../lib/migration';
 import Recovery from './Recovery';
 import QorexVaultActions from './QorexVaultActions';
 import MobileWalletHelp from './MobileWalletHelp';
+import AssetTransactions from './AssetTransactions';
+import PolicyTransactions from './PolicyTransactions';
+import {sendCheckedContract} from '../lib/qorex-transactions';
 
 type Vault = { address: Address; owner: Address; rescue: Address; keyHash: Hex; nonce: string; locked: boolean; alarm: boolean;
   balance: string; dailyLimit: string; delay: string; coolingOff: string; spent: string; pendingTruncated: boolean;
@@ -67,7 +70,7 @@ export default function LiveWorkspace({ wallet, tab }: { wallet: string; tab: st
       else setRecord(null);
     } catch { setRecord(null); setStatus('Saved migration record could not be read. Live vault state is unaffected.'); }
   }, [portfolio, vault]);
-  async function scan(keepVisible = false) {
+  async function scan(keepVisible = false,preferred?:Address) {
     if (!isAddress(owner) || owner === zeroAddress) { setError('Enter your canonical EVM address or connect QoreX.'); return; }
     setBusy(true); setError(''); if (!keepVisible) setPortfolio(null); setSelectedApprovals([]);
     const generation = ++scanGeneration.current;
@@ -78,7 +81,7 @@ export default function LiveWorkspace({ wallet, tab }: { wallet: string; tab: st
       if (generation !== scanGeneration.current) return;
       const data = result as Portfolio;
       setPortfolio(data);
-      setSelected(current => data.vaults.some(item => item.address.toLowerCase() === current.toLowerCase()) ? current : data.vaults[0]?.address ?? '');
+      setSelected(current => preferred&&data.vaults.some(item=>item.address.toLowerCase()===preferred.toLowerCase())?preferred:data.vaults.some(item => item.address.toLowerCase() === current.toLowerCase()) ? current : data.vaults[0]?.address ?? '');
     } catch (problem) { if (generation === scanGeneration.current) setError(problem instanceof Error ? problem.message : 'Live scan failed.'); }
     finally { if (generation === scanGeneration.current) setBusy(false); }
   }
@@ -94,6 +97,34 @@ export default function LiveWorkspace({ wallet, tab }: { wallet: string; tab: st
           coolingOffSeconds: vault.coolingOff, observedBlock: portfolio.block } });
       setStatus('Migration record saved on this device. Vault discovery and backup recovery work after a refresh.');
     } catch { setStatus('Device storage is unavailable. Export a report instead.'); }
+  }
+  function recordReceipt(hash:string,purpose:string){
+    if(!portfolio||!vault||!/^[0-9a-fA-F]{64}$/.test(hash))return;
+    const storageKey=migrationStorageKey(portfolio.owner,vault.address);
+    let previous:MigrationRecord|null=null;
+    try{const raw=localStorage.getItem(storageKey);if(raw)previous=parseMigrationRecord(JSON.parse(raw));}catch{/* Retain only the current verified binding. */}
+    if(previous&&(previous.keyHash!==vault.keyHash||previous.vault.toLowerCase()!==vault.address.toLowerCase()))previous=null;
+    const receiptHash=`0x${hash}` as Hex;
+    try{saveRecord({version:1,chainId:9800,owner:portfolio.owner,vault:vault.address,keyHash:vault.keyHash,updatedAt:new Date().toISOString(),
+      receipts:[...(previous?.receipts??[]).filter(item=>item.hash!==receiptHash),{hash:receiptHash,purpose:`native:${purpose}`}].slice(-100),
+      snapshot:{rescue:vault.rescue,dailyLimitWei:vault.dailyLimit,timelockSeconds:vault.delay,coolingOffSeconds:vault.coolingOff,observedBlock:portfolio.block}});}catch{setStatus(`Transaction confirmed (${hash}), but device storage could not save its receipt reference. Keep the explorer receipt.`);}
+  }
+  async function revokeSelected(){
+    if(!portfolio||!vault)return;setBusy(true);setStatus('Each selected revocation requires its own wallet approval.');
+    let completed=0;
+    try{
+      for(const asset of portfolio.assets)for(const approval of asset.approvals){
+        if(!selectedApprovals.includes(`${asset.token}:${approval.spender}`))continue;
+        const data=encodeFunctionData({abi:erc20Abi,functionName:'approve',args:[approval.spender,0n]});
+        const hash=await sendCheckedContract(portfolio.owner,asset.token,data);recordReceipt(hash,'revoke-approval');
+        const client=createPublicClient({transport:http('https://evm-testnet.qore.host')});
+        if(await client.readContract({address:asset.token,abi:erc20Abi,functionName:'allowance',args:[portfolio.owner,approval.spender]})!==0n)throw new Error('Transaction confirmed, but the selected allowance remains nonzero.');
+        completed++;
+        setStatus(`${completed} revocation transactions confirmed. Continuing selected approvals…`);
+      }
+      await scan(true);setStatus(`${completed} selected revocations confirmed. Review refreshed allowances.`);
+    }catch(error){setStatus(`${completed} revocations confirmed before stopping. ${error instanceof Error?error.message:'Wallet action failed'}`);}
+    finally{setBusy(false);}
   }
   async function importReport(file?: File) {
     try {
@@ -135,13 +166,15 @@ export default function LiveWorkspace({ wallet, tab }: { wallet: string; tab: st
       <div className="warning-box">QoreX native transaction actions are available below after discovery. Chain execution is verified; approval of cross-VM messages still depends on your installed wallet. Token migration and PQ recovery submission remain separate flows.</div>
     </section>
     {portfolio && <>
-      {tab !== 'Activity' && <QorexVaultActions key={portfolio.owner} owner={portfolio.owner} vault={vault?.address} refresh={() => scan(true)} />}
+      {tab !== 'Activity' && <QorexVaultActions key={portfolio.owner} owner={portfolio.owner} vault={vault?.address} refresh={address => scan(true,address)} />}
       {tab === 'Activity' && <section className="panel"><h2>Decoded on-chain activity</h2>{activityError ? <p className="warning-box" role="alert">{activityError}</p> : !activity ? <p className="helper">Reading vault events…</p> : <><p className="helper">Blocks {activity.from}–{activity.to}. Latest 100 events from up to 16 owned vaults. Older history may be missing.</p>{!activity.completeWindow && <p className="warning-box">Some log queries failed. This history is incomplete.</p>}{activity.truncated && <p className="helper">Results were capped. Use the explorer for the complete history.</p>}{!activity.events.length && <p className="helper">No events found within this window.</p>}{activity.events.map(event => <article className="asset-review" key={`${event.hash}:${event.logIndex}`}><strong>{event.name}</strong><p className="helper">Block {event.block} · {event.vault}</p><code className="key-hash">{JSON.stringify(event.args)}</code><a className="text-button" href={`https://explore.qore.network/tx/${event.hash}`} target="_blank" rel="noreferrer">Transaction receipt ↗</a></article>)}</>}</section>}
       <div className="metrics"><div className="metric"><small>Wallet QOR</small><strong>{formatEther(BigInt(portfolio.balance))}</strong><span>Live block {portfolio.block}</span></div><div className="metric"><small>Protected vaults found</small><strong>{portfolio.vaults.length}</strong><span>Deployed factory only</span></div></div>
       {portfolio.warnings.map(warning => <p className="warning-box" key={warning}>{warning}</p>)}
-      {!portfolio.vaults.length ? <section className="panel empty-state">No vault from Canary’s deployed factory belongs to this address. Live vault creation remains gated by wallet transaction support.</section> : <section className="panel"><label className="field-label" htmlFor="live-vault">Select protected vault</label><select id="live-vault" value={selected} onChange={event => setSelected(event.target.value)}>{portfolio.vaults.map(item => <option key={item.address} value={item.address}>{item.address}</option>)}</select></section>}
+      {!portfolio.vaults.length ? <section className="panel empty-state">No vault from Canary’s deployed factory belongs to this address. Create a vault above with QoreX, then rediscover it after confirmation.</section> : <section className="panel"><label className="field-label" htmlFor="live-vault">Select protected vault</label><select id="live-vault" value={selected} onChange={event => setSelected(event.target.value)}>{portfolio.vaults.map(item => <option key={item.address} value={item.address}>{item.address}</option>)}</select></section>}
       {vault && <>
-        <section className="panel"><div className="panel-heading"><h2>Your live PQ-Wrap vault</h2><span className={vault.alarm || vault.locked ? 'mode-badge frozen' : 'mode-badge'}>{vault.alarm || vault.locked ? 'FROZEN' : 'NORMAL'}</span></div><code className="key-hash">{vault.address}</code><dl><div><dt>Vault QOR</dt><dd>{formatEther(BigInt(vault.balance))}</dd></div><div><dt>Rolling daily cap / spent</dt><dd>{formatEther(BigInt(vault.dailyLimit))} / {formatEther(BigInt(vault.spent))} QOR</dd></div><div><dt>Above-limit delay</dt><dd>{delayLabel(vault.delay)}</dd></div><div><dt>Rescue destination</dt><dd className="mono">{vault.rescue}</dd></div></dl><p className="helper">This factory uses short minimum demo bounds. Your policy is displayed above; deployment remains unaudited.</p>
+        <AssetTransactions key={`assets:${vault.address}`} owner={portfolio.owner} vault={vault.address} assets={portfolio.assets} pending={vault.pending} refresh={()=>scan(true)} onReceipt={recordReceipt}/>
+        <PolicyTransactions key={`policy:${vault.address}`} owner={portfolio.owner} vault={vault} assets={portfolio.assets} refresh={()=>scan(true)} onReceipt={recordReceipt}/>
+        <section className="panel"><div className="panel-heading"><h2>Your live PQ-Wrap vault</h2><span className={vault.alarm || vault.locked ? 'mode-badge frozen' : 'mode-badge'}>{vault.alarm || vault.locked ? 'FROZEN' : 'NORMAL'}</span></div><code className="key-hash">{vault.address}</code><dl><div><dt>Vault QOR</dt><dd>{formatEther(BigInt(vault.balance))}</dd></div><div><dt>Rolling daily cap / spent</dt><dd>{formatEther(BigInt(vault.dailyLimit))} / {formatEther(BigInt(vault.spent))} QOR</dd></div><div><dt>Above-limit delay</dt><dd>{delayLabel(vault.delay)}</dd></div><div><dt>Rescue destination</dt><dd className="mono">{vault.rescue}</dd></div></dl><p className="helper">This factory uses short minimum demo bounds. Your policy is displayed above; QCAI reviews are recorded; independent security review remains pending.</p>
           <h3>Pending withdrawals</h3>{!vault.pending.length && <p className="helper">No withdrawal requests found.</p>}{vault.pendingTruncated && <p className="helper">Showing the latest 20 requests.</p>}{vault.pending.map(item => <div className="pending-row" key={item.id}><strong>#{item.id} · {item.token === zeroAddress ? `${formatEther(BigInt(item.amount))} QOR` : `${item.amount} token base units`}</strong><span>{item.done ? 'Closed' : item.invalidated ? 'Permanently invalidated by alarm' : item.ready ? 'Delay elapsed' : `Ready ${new Date(Number(item.readyAt) * 1000).toLocaleString()}`}</span></div>)}
         </section>
         <Recovery key={vault.address} vault={vault} refresh={() => scan(true)} />
@@ -150,6 +183,7 @@ export default function LiveWorkspace({ wallet, tab }: { wallet: string; tab: st
         <p className="helper">fUSD plus your selected token addresses. Approval events scanned from block {portfolio.approvalScan.from} to {portfolio.approvalScan.to}, plus supplied spenders. This is not an exhaustive wallet or approval scan; older approvals and unlisted tokens may be missing.</p>
         {portfolio.assets.map(asset => <article className="asset-review" key={asset.token}><h3>{asset.symbol} · {formatUnits(BigInt(asset.balance), asset.decimals)}</h3><code className="key-hash">{asset.token}</code>{!asset.completeWindow && <p className="warning-box">Approval history query was incomplete. Listed allowances were read directly; missing entries do not mean no approvals exist.</p>}{vault && <p className="helper">Selected vault balance: {formatUnits(BigInt(asset.vaultBalances.find(item => item.vault === vault.address)?.balance ?? '0'), asset.decimals)} {asset.symbol}</p>}{!asset.approvals.length && <p className="helper">No nonzero allowances found within this review’s scope.</p>}{asset.approvals.map(approval => { const id = `${asset.token}:${approval.spender}`; return <label className="approval-choice" key={id}><input type="checkbox" checked={selectedApprovals.includes(id)} onChange={event => setSelectedApprovals(current => event.target.checked ? [...current, id] : current.filter(item => item !== id))} /><span><code>{approval.spender}</code><small>{formatUnits(BigInt(approval.allowance), asset.decimals)} {asset.symbol} allowance</small></span></label>; })}</article>)}
         <button className="secondary" disabled={!vault || busy || !selectedApprovals.length} onClick={() => void prepareRevocations()}>Check selected revocations & export plan</button>
+        <button className="primary" disabled={!vault || busy || !selectedApprovals.length} onClick={() => void revokeSelected()}>Revoke selected approvals with QoreX</button>
       </section>
       {vault && <section className="panel"><h2>Resume your migration</h2><p className="helper">Only public addresses, policy snapshots, key hash and receipt references are saved. The live vault is rediscovered from the factory; encrypted key backups are recovered separately.</p><div className="wizard-actions"><button className="secondary" onClick={startRecord}>{record ? 'Restart migration record' : 'Save migration record'}</button><button className="primary" onClick={() => download('canary-migration-report.json', record ?? { version: 1, chainId: 9800, owner: portfolio.owner, vault: vault.address, keyHash: vault.keyHash, updatedAt: new Date().toISOString(), receipts: [], snapshot: { rescue: vault.rescue, dailyLimitWei: vault.dailyLimit, timelockSeconds: vault.delay, coolingOffSeconds: vault.coolingOff, observedBlock: portfolio.block } })}>Export public migration report</button></div><label className="field-label" htmlFor="migration-report">Restore a migration report</label><input id="migration-report" type="file" accept=".json,application/json" onChange={event => void importReport(event.target.files?.[0])} />{record && <p className="helper">Saved {new Date(record.updatedAt).toLocaleString()} · {record.receipts.length} receipt references. Completion is determined by live state, not imported labels.</p>}</section>}
     </>}
