@@ -5,6 +5,7 @@ import { encodeFunctionData, formatEther, formatUnits, isAddress, zeroAddress, t
 import { erc20Abi } from '../lib/contracts';
 import { migrationStorageKey, parseMigrationRecord, type MigrationRecord } from '../lib/migration';
 import Recovery from './Recovery';
+import QorexVaultActions from './QorexVaultActions';
 
 type Vault = { address: Address; owner: Address; rescue: Address; keyHash: Hex; nonce: string; locked: boolean; alarm: boolean;
   balance: string; dailyLimit: string; delay: string; coolingOff: string; spent: string; pendingTruncated: boolean;
@@ -65,9 +66,9 @@ export default function LiveWorkspace({ wallet, tab }: { wallet: string; tab: st
       else setRecord(null);
     } catch { setRecord(null); setStatus('Saved migration record could not be read. Live vault state is unaffected.'); }
   }, [portfolio, vault]);
-  async function scan() {
+  async function scan(keepVisible = false) {
     if (!isAddress(owner) || owner === zeroAddress) { setError('Enter your canonical EVM address or connect QoreX.'); return; }
-    setBusy(true); setError(''); setPortfolio(null); setSelectedApprovals([]);
+    setBusy(true); setError(''); if (!keepVisible) setPortfolio(null); setSelectedApprovals([]);
     const generation = ++scanGeneration.current;
     try {
       const response = await fetch(`/api/portfolio?${new URLSearchParams({ owner, tokens, spenders })}`, { cache: 'no-store' });
@@ -129,9 +130,10 @@ export default function LiveWorkspace({ wallet, tab }: { wallet: string; tab: st
       <details><summary>Additional tokens and approval checks</summary><label className="field-label" htmlFor="live-tokens">Custom token addresses · comma separated, up to 8</label><input id="live-tokens" value={tokens} onChange={event => setTokens(event.target.value)} /><label className="field-label" htmlFor="live-spenders">Known spender addresses · comma separated, up to 8</label><input id="live-spenders" value={spenders} onChange={event => setSpenders(event.target.value)} /></details>
       <button className="primary" disabled={busy} onClick={() => void scan()}>{busy ? 'Reading testnet…' : 'Discover vaults & review assets'}</button>
       {error && <p className="warning-box" role="alert">{error}</p>}
-      <div className="warning-box">Wallet transaction sending is gated while QoreX’s supported route is verified. This workspace reads real state, restores backups and prepares checked authorizations; it never reports an unsigned plan as a completed migration.</div>
+      <div className="warning-box">QoreX native transaction actions are available below after discovery. Chain execution is verified; approval of cross-VM messages still depends on your installed wallet. Token migration and PQ recovery submission remain separate flows.</div>
     </section>
     {portfolio && <>
+      {tab !== 'Activity' && <QorexVaultActions key={portfolio.owner} owner={portfolio.owner} vault={vault?.address} refresh={() => scan(true)} />}
       {tab === 'Activity' && <section className="panel"><h2>Decoded on-chain activity</h2>{activityError ? <p className="warning-box" role="alert">{activityError}</p> : !activity ? <p className="helper">Reading vault events…</p> : <><p className="helper">Blocks {activity.from}–{activity.to}. Latest 100 events from up to 16 owned vaults. Older history may be missing.</p>{!activity.completeWindow && <p className="warning-box">Some log queries failed. This history is incomplete.</p>}{activity.truncated && <p className="helper">Results were capped. Use the explorer for the complete history.</p>}{!activity.events.length && <p className="helper">No events found within this window.</p>}{activity.events.map(event => <article className="asset-review" key={`${event.hash}:${event.logIndex}`}><strong>{event.name}</strong><p className="helper">Block {event.block} · {event.vault}</p><code className="key-hash">{JSON.stringify(event.args)}</code><a className="text-button" href={`https://explore.qore.network/tx/${event.hash}`} target="_blank" rel="noreferrer">Transaction receipt ↗</a></article>)}</>}</section>}
       <div className="metrics"><div className="metric"><small>Wallet QOR</small><strong>{formatEther(BigInt(portfolio.balance))}</strong><span>Live block {portfolio.block}</span></div><div className="metric"><small>Protected vaults found</small><strong>{portfolio.vaults.length}</strong><span>Deployed factory only</span></div></div>
       {portfolio.warnings.map(warning => <p className="warning-box" key={warning}>{warning}</p>)}
@@ -140,7 +142,7 @@ export default function LiveWorkspace({ wallet, tab }: { wallet: string; tab: st
         <section className="panel"><div className="panel-heading"><h2>Your live PQ-Wrap vault</h2><span className={vault.alarm || vault.locked ? 'mode-badge frozen' : 'mode-badge'}>{vault.alarm || vault.locked ? 'FROZEN' : 'NORMAL'}</span></div><code className="key-hash">{vault.address}</code><dl><div><dt>Vault QOR</dt><dd>{formatEther(BigInt(vault.balance))}</dd></div><div><dt>Rolling daily cap / spent</dt><dd>{formatEther(BigInt(vault.dailyLimit))} / {formatEther(BigInt(vault.spent))} QOR</dd></div><div><dt>Above-limit delay</dt><dd>{delayLabel(vault.delay)}</dd></div><div><dt>Rescue destination</dt><dd className="mono">{vault.rescue}</dd></div></dl><p className="helper">This factory uses short minimum demo bounds. Your policy is displayed above; deployment remains unaudited.</p>
           <h3>Pending withdrawals</h3>{!vault.pending.length && <p className="helper">No withdrawal requests found.</p>}{vault.pendingTruncated && <p className="helper">Showing the latest 20 requests.</p>}{vault.pending.map(item => <div className="pending-row" key={item.id}><strong>#{item.id} · {item.token === zeroAddress ? `${formatEther(BigInt(item.amount))} QOR` : `${item.amount} token base units`}</strong><span>{item.done ? 'Closed' : item.invalidated ? 'Permanently invalidated by alarm' : item.ready ? 'Delay elapsed' : `Ready ${new Date(Number(item.readyAt) * 1000).toLocaleString()}`}</span></div>)}
         </section>
-        <Recovery key={vault.address} vault={vault} />
+        <Recovery key={vault.address} vault={vault} refresh={() => scan(true)} />
       </>}
       <section className="panel"><div className="panel-heading"><h2>Wallet assets & approvals</h2><span className="subtle-pill">LIVE READS</span></div>
         <p className="helper">fUSD plus your selected token addresses. Approval events scanned from block {portfolio.approvalScan.from} to {portfolio.approvalScan.to}, plus supplied spenders. This is not an exhaustive wallet or approval scan; older approvals and unlisted tokens may be missing.</p>

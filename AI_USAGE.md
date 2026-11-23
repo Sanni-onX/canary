@@ -119,6 +119,12 @@
   independently verified the human's registration and makes no audit claim.
 # 23 November release continuation
 
+QoreX continuation: Codex proved native cross-VM owner identity and a native
+bank deposit against the operator's revision-2 vault, then implemented QoreX
+signAndBroadcast flows with local encrypted PQ backups and checked receipts.
+Three codec/account-safety tests and a public browser smoke passed. These are
+not claims that the user's installed QoreX has decoded or approved the calls.
+
 Codex reviewed the supplied QCAI Stage 1 report against source, added two
 targeted regression tests and defense documentation, and prepared the Stage 2
 response bundle. No executable contract changes were needed for those findings.

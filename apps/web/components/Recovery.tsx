@@ -4,12 +4,13 @@ import { decryptKeyBlob, parseEncryptedKeyBlob, loadEncryptedBackups, hashPublic
   buildTypedDigest, withdrawalAction, type Keypair, type EncryptedKeyBlob } from '@canary/pq';
 import { encodeFunctionData, hexToBytes, toHex, parseEther, zeroAddress, type Address } from 'viem';
 import { vaultAbi } from '../lib/contracts';
+import { crossVmBytes, sendQorexNative } from '../lib/qorex-transactions';
 
 function download(name: string, body: unknown) {
   const url = URL.createObjectURL(new Blob([JSON.stringify(body, null, 2)], { type: 'application/json' }));
   const a = document.createElement('a'); a.href = url; a.download = name; a.click(); URL.revokeObjectURL(url);
 }
-export default function Recovery({ vault }: { vault: { address: Address; owner: Address; rescue: Address; keyHash: string; nonce: string; balance: string } }) {
+export default function Recovery({ vault, refresh }: { vault: { address: Address; owner: Address; rescue: Address; keyHash: string; nonce: string; balance: string }; refresh?:()=>Promise<void> }) {
   const [backups, setBackups] = useState<EncryptedKeyBlob[]>([]);
   const [blob, setBlob] = useState<EncryptedKeyBlob | null>(null);
   const [password, setPassword] = useState('');
@@ -51,7 +52,7 @@ export default function Recovery({ vault }: { vault: { address: Address; owner: 
     } catch { setStatus('Could not unlock this backup. Check the file and password.'); }
     finally { if (alive.current) setBusy(false); }
   }
-  async function prepareRescue() {
+  async function prepareRescue(submit = false) {
     if (!key.current) return;
     setBusy(true);
     try {
@@ -70,6 +71,12 @@ export default function Recovery({ vault }: { vault: { address: Address; owner: 
       const result = await response.json();
       if (!response.ok || !result.success) throw new Error(result.error || 'Chain simulation failed. Refresh vault state.');
       if (!alive.current) return;
+      if (submit) {
+        const hash = await sendQorexNative(vault.owner, sender => ({ typeUrl:'/qorechain.crossvm.v1.MsgCrossVMCall', value:crossVmBytes(sender,vault.address,data) }));
+        clearKey(); await refresh?.();
+        if (alive.current) setStatus(`PQ rescue confirmed on Diana: ${hash}. Recovery key locked.`);
+        return;
+      }
       download('canary-pq-rescue-authorization.json', transaction);
       setStatus('Chain simulation passed. Public signed authorization downloaded; expires in five minutes. No transaction was sent.');
     } catch (error) { if (alive.current) setStatus(error instanceof Error ? error.message : 'Could not prepare rescue.'); }
@@ -84,7 +91,8 @@ export default function Recovery({ vault }: { vault: { address: Address; owner: 
     <dl><div><dt>Rescue destination</dt><dd className="mono">{vault.rescue}</dd></div><div><dt>Current PQ nonce</dt><dd>{vault.nonce}</dd></div></dl>
     <label className="field-label" htmlFor="recovery-amount">PQ rescue amount in QOR</label><input id="recovery-amount" type="text" inputMode="decimal" value={amount} onChange={event => setAmount(event.target.value)} />
     <button className="primary" disabled={!unlocked || busy} onClick={() => void prepareRescue()}>{busy ? 'Checking…' : 'Sign & check rescue authorization'}</button>
-    <p className="helper">Submission currently uses the local relay command documented in the README. Wallet sending is still gated. Refresh vault state before each authorization.</p>
+    <button className="secondary" disabled={!unlocked || busy} onClick={() => void prepareRescue(true)}>Sign & submit PQ rescue with QoreX</button>
+    <p className="helper">QoreX approves the native transaction; your separate vault PQ key authorizes rescue. The export route remains available for a local relay. Refresh vault state before each authorization.</p>
     <p className="action-result" role="status">{status}</p>
   </section>;
 }

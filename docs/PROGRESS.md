@@ -1,5 +1,24 @@
 # Canary progress
 
+## 23 November — QoreX native transaction slice
+
+Deployment check: three message/account-safety tests pass; live browser smoke
+discovers the revision-2 operator vault, renders deposit and PQ-rescue actions,
+and refuses missing-wallet submission. Native receipt endpoint confirms the
+actual cross-VM probe (code 0, height 10617697). Installed-wallet approval is
+the remaining test and is not represented by a browser fixture.
+
+Native hybrid cross-VM call on the empty operator demo vault confirmed owner
+identity by successfully invoking lock(). Native bank deposit of one uqor
+credited the same EVM vault exactly. No user account or session rule changed.
+Added browser QoreX flows for encrypted PQ backup, vault creation, QOR deposit,
+daily-limit withdrawal and PQ rescue. Native receipts are confirmed via a fixed
+read-only API; account mismatch refuses before signing. Token migration and
+policy actions remain separate. Production build/typecheck passed. Actual
+QoreX decoder/approval testing is still required; chain proofs are not wallet
+approval evidence. This supersedes the blanket native-wallet-send gate, not
+the user's deferred session-permission test.
+
 ## 23 November — revision-2 activation
 
 Three retained-key drill accounts were added through 2-of-3 PQ governance and

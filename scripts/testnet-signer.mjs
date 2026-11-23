@@ -17,7 +17,7 @@ export async function testnetSigner(localOverride) {
   const unified = unifiedAccountFromSeed(seed, { recoveryCode: local.pqcRecoveryCode }); seed.fill(0);
   const account = privateKeyToAccount(local.classicalSeedHex);
   const wallet = createWalletClient({ account, chain, transport: http(RPC) });
-  async function nativeBroadcast(mode, messages) {
+  async function nativeBroadcast(mode, messages, gas = '800000', feeUqor = '100000') {
     const response = await fetch(`${REST}/cosmos/auth/v1beta1/accounts/${unified.cosmos}`, { signal: AbortSignal.timeout(20000) });
     const body = await response.json(); const base = body.account?.base_account ?? body.account;
     if (!response.ok || base?.sequence === undefined) throw new Error('Native account query failed');
@@ -25,7 +25,7 @@ export async function testnetSigner(localOverride) {
     try {
       const signer = new EthNativeSigner(unified, { signMode: mode, rest: REST });
       const result = await signer.signAndBroadcast(transport, { chainId: 'qorechain-diana', accountNumber: BigInt(base.account_number), sequence: BigInt(base.sequence),
-        fee: { amount: [{ denom: 'uqor', amount: '100000' }], gas: '800000' },
+        fee: { amount: [{ denom: 'uqor', amount: feeUqor }], gas },
         messages });
       if (result.code !== undefined && result.code !== 0) throw new Error(`Native transaction failed: ${result.code}`);
       return result.transactionHash;
@@ -44,5 +44,5 @@ export async function testnetSigner(localOverride) {
     const proof = signProofOfPossession({ chainId: 'qorechain-diana', account: unified.cosmos, keypair: unified.pqc });
     return nativeBroadcast('classical', [buildRegisterPqcKeyMsg(unified.cosmos, { pqcKeypair: unified.pqc, proofOfPossession: proof })]);
   }
-  return { client, wallet, account, nativeAddress: unified.cosmos, openWindow, ensurePqc, dispose: () => unified.pqc.secretKey.fill(0) };
+  return { client, wallet, account, nativeAddress: unified.cosmos, openWindow, ensurePqc, nativeBroadcast, dispose: () => unified.pqc.secretKey.fill(0) };
 }

@@ -1,5 +1,34 @@
 # QoreX-only integration investigation — 20 November 2026
 
+## 23 November: native cross-VM route proven; QoreX approval pending
+
+The native MsgCrossVMCall route now works on Diana without a session key or
+second wallet. A hybrid-signed call locked only the empty operator-owned
+revision-2 vault, proving owner msg.sender preservation. See
+docs/evidence/native-evm-probe.json. The live params endpoint returns fields
+at top level; MsgCrossVMCall is not circuit-paused. Unlike the SDK helper's
+default sourceVm=evm, validation requires source and target to differ:
+sourceVm=cosmwasm, targetVm=evm succeeded. No personal account was modified.
+
+A one-uqor native MsgSend to the vault's qor1 encoding increased its EVM balance
+by exactly 10^12 wei: docs/evidence/native-deposit-probe.json. It does not invoke
+the Solidity receive event. Browser flows now support encrypted-backup creation,
+PQ-bound vault creation, native QOR deposit, within-limit classical withdrawal
+and PQ rescue submission via QoreX native signAndBroadcast. Token actions and
+policy editing are not included in this transaction slice.
+
+The UI checks the actual wallet account, simulates contract calls, verifies
+committed native receipts, and checks vault creation binding/deposit balance.
+PQ secrets stay on the device; backup buffers are cleared after use.
+Official protobuf decoding tests cover message encodings and owner mismatch.
+An installed QoreX wallet still must approve the exact cross-VM message: chain
+proof is not proof of the wallet decoder. Unknown-message refusal remains final;
+no key export or session permission change is used as a fallback.
+
+Sources: https://docs.qorechain.io/developer-guide/cross-vm-reference/ and
+https://docs.qorechain.io/qorex/browser-extension/ . Earlier notes below are
+historical and describe the prior session-key-only investigation.
+
 ## Later 21 November: session test explicitly deferred
 
 Current docs still list QoreX EVM sending as unsupported. A concrete candidate

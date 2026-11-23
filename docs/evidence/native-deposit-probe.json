@@ -1,0 +1,9 @@
+{
+  "observedAt": "2026-11-23T12:54:09.758Z",
+  "vault": "0x73fc8909324a0360B53d4763fD98cDFAcC0c2d64",
+  "nativeHash": "0DB17AA79401F28DBBCFD46899EAD23ACA7748A23BDD0E149AE7B9967458BE77",
+  "amountUqor": "1",
+  "beforeWei": "0",
+  "afterWei": "1000000000000",
+  "nativeDepositVerified": true
+}

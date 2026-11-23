@@ -7,6 +7,6 @@ export default function ThreatModel() {
     <h3>The limits, plainly</h3><p>A drain is not proof of a quantum computer. Operators can retain keys or setup can be compromised. An attacker can avoid public bait, race detection or top up accounts to hide loss. JavaScript cannot prove destruction.</p>
     <p>The daily cap does not bound matured large withdrawals. Keep pending requests under review. Recovery depends on chain availability, gas, inclusion, the verifier, a trustworthy device/frontend and a secure rescue address.</p>
     <p>Fee-on-transfer and rebasing tokens are unsupported. One balance-delta check cannot establish future token behavior. The revision-2 registry has 16 current slots with timelocked replacement; retired or replaced account addresses can never be reused within that registry.</p>
-    <p>QCAI Stage 1 and Stage 2 completed on 21 and 23 November 2026, each scoring 72/100 with five findings. Every finding has a documented source-based disposition and relevant regression evidence. These automated reviews are not independent security audits. Live wallet sends remain gated.</p>
+    <p>QCAI Stage 1 and Stage 2 completed on 21 and 23 November 2026, each scoring 72/100 with five findings. Every finding has a documented source-based disposition and relevant regression evidence. These automated reviews are not independent security audits. QoreX native transaction controls are available; the chain route is tested, while installed-wallet approval still needs confirmation.</p>
   </section>;
 }

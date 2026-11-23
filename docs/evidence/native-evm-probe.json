@@ -1,0 +1,10 @@
+{
+  "observedAt": "2026-11-23T12:51:11.639Z",
+  "nativeHash": "4E4B3D92B94B12C43D62C49BF32A182AF77B7E02640499E9572069BD0A18A154",
+  "vault": "0x73fc8909324a0360B53d4763fD98cDFAcC0c2d64",
+  "owner": "0xd81213Ed37038293c30aD1e8f196a0E8Fb74D464",
+  "locked": true,
+  "nativeToEvmSenderVerified": true,
+  "noUserAccountChanged": true,
+  "qorexWalletDecoderTested": false
+}
