@@ -1,9 +1,9 @@
 {
-  "preparedAt": "2026-11-21T09:37:05.717Z",
+  "preparedAt": "2026-11-23T12:00:41.359Z",
   "setting": "Ethereum (EVM/Solidity)",
   "file": "Canary.flattened.sol",
-  "sha256": "5887afbd3dc7e950bafd381f49354ec8a9df80a9831b1baf279d577abd835b7e",
-  "bytes": 85149,
+  "sha256": "b91643999e7edc02be8fb15a6fe4c5a98c15684d3c9d54f00f76119386a71069",
+  "bytes": 85615,
   "contracts": [
     "CanaryRegistry",
     "PQAuth",

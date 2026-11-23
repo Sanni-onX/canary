@@ -9,7 +9,7 @@ playwright-report/
 .artifacts/
 .local/
 dist/
-coverage/
+/coverage/
 contracts/cache/
 contracts/out/
 contracts/broadcast/

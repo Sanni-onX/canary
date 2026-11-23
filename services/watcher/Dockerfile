@@ -7,6 +7,7 @@ COPY packages/pq/package.json packages/pq/package.json
 COPY packages/coverage packages/coverage
 COPY services/watcher services/watcher
 RUN npm ci --workspace @canary/watcher --include-workspace-root --ignore-scripts
+RUN npm rebuild esbuild
 ENV WATCHER_DB=/data/canary-watcher.sqlite
 ENV WATCHER_HOST=0.0.0.0
 EXPOSE 8787

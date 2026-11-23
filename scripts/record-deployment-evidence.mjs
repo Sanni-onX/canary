@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { createPublicClient, http, parseAbi, keccak256 } from 'viem';
-const manifest = JSON.parse(await readFile(new URL('../deployments/testnet.json', import.meta.url), 'utf8'));
+const revision2 = process.argv.includes('--revision-2');
+const manifest = JSON.parse(await readFile(new URL(revision2 ? '../deployments/testnet-v2.json' : '../deployments/testnet.json', import.meta.url), 'utf8'));
 const client = createPublicClient({ transport: http('https://evm-testnet.qore.host') });
 if (await client.getChainId() !== 9800) throw new Error('Testnet only');
 const compiler = { version: '0.8.28', optimizer: true, optimizerRuns: 200, viaIR: true, evmVersion: 'paris', openZeppelin: '5.6.1' };
@@ -36,5 +37,5 @@ for (const entry of drill.transactions) {
   evidence.drillGas[entry.kind] = { hash: entry.hash, gasUsed: receipt.gasUsed.toString(), effectiveGasPrice: receipt.effectiveGasPrice.toString() };
 }
 evidence.remainingDeployerWei = (await client.getBalance({ address: manifest.deployer.evm })).toString();
-await writeFile(new URL('../audit/deployment-evidence.json', import.meta.url), JSON.stringify(evidence, null, 2) + '\n');
+await writeFile(new URL(revision2 ? '../audit/deployment-evidence-v2.json' : '../audit/deployment-evidence.json', import.meta.url), JSON.stringify(evidence, null, 2) + '\n');
 console.log(JSON.stringify({ allRuntimeOpcodesMatch: true, contracts: addresses, drillGas: evidence.drillGas, remainingDeployerWei: evidence.remainingDeployerWei }, null, 2));

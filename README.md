@@ -5,7 +5,7 @@ canaries trigger a latching alarm, PQ-Wrap vaults freeze classical fund release,
 and Lifeboat guides migration into a separately PQ-authorized vault.
 
 Built for the QoreChain Developer Fest, Post-Quantum dApp track.
-**Working testnet prototype, not audited or production-ready. Testnet only.**
+**Working testnet prototype. QCAI Stage 1 reviewed; Stage 2 pending. Testnet only.**
 
 **Coverage is finite:** ordinary QoreChain window renewal needs both classical
 and PQ signatures. A PQ key alone cannot renew a canary after its classical key
@@ -14,11 +14,13 @@ feasibility separately from the drain alarm. The original drill windows have
 expired; historical alarm/rescue proof is not continuous current coverage.
 See [verified epoch design](docs/CANARY_EPOCHS.md).
 
-**Source revision 2, deployed revision 1:** local registry source now supports
+**Revision 2 deployed; hosted app still monitors revision 1:** registry source supports
 timelocked, governance-only slot replacement with permanent address-use history.
 It preserves old threshold evidence before replacement/retirement. The live
-demo is immutable and still uses revision 1 from commit `287b799`. No upgrade or
-revision-2 deployment has occurred. The next deployment uses a separate manifest.
+demo is immutable and still uses revision 1 from commit `287b799`. The separate
+revision-2 deployment and real PQ withdrawal are recorded in
+[testnet-v2.json](deployments/testnet-v2.json). Runtime comparisons passed;
+canary activation is pending, so the hosted app has not switched registries.
 
 ![Canary product overview, labeled local simulation](docs/images/overview.png)
 
@@ -215,9 +217,9 @@ Slither 0.11.5 completed on revision 2 with **37 findings**, all individually ma
 and eight reviewed warnings. Neither is an independent audit or a QCAI stage.
 Install `audit/requirements.txt` into `.local/audit-venv`, then run
 `npm run audit:static`. The compiled, flattened QCAI input is in `audit/qcai/`;
-the human approved code sharing and it is entered in the official auditor
-under Ethereum (EVM/Solidity). The 150-test-QOR confirmation was cancelled while
-wallet selection is resolved; no completed external audit or payment is claimed.
+Stage 1 completed on 21 November 2026 (72/100, medium risk). All five findings
+have documented dispositions in [the audit response](docs/AUDIT.md). Stage 2
+remains pending; the automated review is not an independent security audit.
 
 Canary Lab's local script fallback is documented in [CEREMONY.md](docs/CEREMONY.md).
 Fresh unfunded preparation/status and three refusal guards are verified. Its

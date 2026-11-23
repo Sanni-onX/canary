@@ -137,7 +137,7 @@ else {
     response.writeHead(request.url === '/health' && !healthy ? 503 : 200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
     response.end(JSON.stringify({ ...status(), healthy }));
   });
-  server.listen(Number(process.env.WATCHER_PORT ?? 8787), process.env.WATCHER_HOST ?? '127.0.0.1');
+  server.listen(Number(process.env.PORT ?? process.env.WATCHER_PORT ?? 8787), process.env.WATCHER_HOST ?? '127.0.0.1');
   const websocketUrl = process.env.QORE_EVM_WS_URL ?? (process.env.QORE_EVM_RPC_URL ? undefined : 'wss://evm-ws-testnet.qore.host');
   const stream = websocketUrl ? createPublicClient({ chain, transport: webSocket(websocketUrl) }) : null;
   const unwatch = stream?.watchBlocks({ emitMissed: true,

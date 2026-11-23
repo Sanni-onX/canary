@@ -1,6 +1,31 @@
 # Audit status
 
-No external audit has been run. Contracts are not ready for custody.
+QCAI Stage 1 was completed on 2026-11-21. The original report is preserved in
+`docs/audit/2026-11-21-stage-1.pdf`: score 72/100, medium risk, five findings.
+Contracts are not ready for custody. Stage 2 remains pending.
+
+## Stage 1 finding dispositions
+
+The report contains brief recommendations without exploit traces. Its line
+numbers do not consistently match the individual source files; dispositions
+therefore refer to the named functions in the submitted revision-2 source.
+
+| Finding | Disposition | Source evidence |
+| --- | --- | --- |
+| HIGH: missing reentrancy guard on withdrawPQ | False positive; no contract change | `PQVault.withdrawPQ` already declares `external nonReentrant`. |
+| MEDIUM: rolling spend overflow | No change: checked arithmetic already used | Solidity 0.8.28 checks `total += entry.amount`; there is no unchecked block. Classical releases also enforce `used <= limit` and `amount <= limit - used` before recording spend. |
+| MEDIUM: vault creation front-running | False positive under current authority model | `createVault` requires `owner == msg.sender`; the PQ binding includes owner, chain, factory, initial policy, rescue, key hash and the owner's creation nonce. Another sender cannot consume that owner's nonce by copying the transaction arguments. |
+| LOW: unbounded canary loop | False positive; bounded by design | `MAX_CANARIES = 16`; insertion refuses a seventeenth slot. Epoch replacement reuses a slot rather than growing the array. |
+| INFO: missing ERC-165 | No change: no required discoverable interface | The vault does not claim ERC-165 or NFT receiver interface support. QOR/ERC-20 custody does not require implementing IERC165. Adding an interface declaration without a consumer requirement adds no protection. |
+
+Validation on 2026-11-21: all 27 core and rotation tests passed, including
+`testReentrancyCannotUseAnOtherwiseValidNextPQAuthorization`,
+`testFactoryRequiresOwnerAndProofAndInitializationIsOneTime`,
+`testRollingTransferStorageBoundFailsClosed`,
+`testFuzzClassicalAuthorityNeverExceedsRollingBudget` (256 runs), and
+`testRepeatedEpochRotationKeepsSixteenSlotsAndReadiness`.
+These are source-based dispositions, not a claim that the score establishes
+security. The second QCAI review remains required to close this workflow.
 
 Follow https://build.qorechain.io/faq using the same EVM/Solidity setting for
 both QCAI stages. EVM quantum readiness showing Not scored is expected.
@@ -28,12 +53,15 @@ inputs. Executable runtime comparison passed for governance, registry, factory
 and vault implementation, excluding compiler metadata and declared immutable
 slots only. This is not explorer verification or an external audit.
 
-Current revision-2 source has 39 Foundry tests (22 core, 5 rotation, 7 invariants,
+Current revision-2 source has 41 Foundry tests (24 core, 5 rotation, 7 invariants,
 5 probes). The expanded invariants each passed 256 campaigns of 500 calls,
 including random epoch rotation. Replacement/retirement cannot erase a threshold
 breach before watcher inclusion, and reused historical addresses are refused.
-The active deployment remains revision 1; its reports are archived separately
-under `audit/revision1/` and its source commit is pinned in the manifest.
+The hosted app remains on revision 1. Revision 2 deployed on 23 November; all
+four executable runtimes match the compiled source, recorded separately in
+`audit/deployment-evidence-v2.json` and `deployments/testnet-v2.json`. The new
+registry has not yet been activated with canaries. Revision-1 evidence remains
+archived separately under `audit/revision1/`.
 
 PQ backup/domain tests,
 watcher integration and desktop/mobile product tests passed. Slither 0.11.5
@@ -43,15 +71,15 @@ The high arbitrary-send finding is reviewed as authorized withdrawal plumbing,
 not silently suppressed. New unauthorized-release and full-precision drain-floor
 fuzz tests passed. Solhint 6.2.5 reports zero errors/eight reviewed warnings.
 
-The flattened, compiling QCAI input and hash are in `audit/qcai/`. The external
-site is signed in on testnet. After explicit human approval to share code only,
-the complete revision-2 bundle (85,017 characters) was entered with the Ethereum
-(EVM/Solidity) setting. The Confirm Security Audit dialog displays 150 QOR.
-The human then reported an imported-phrase account mismatch. The payment dialog
-was cancelled without confirming, and the entered source retained. Public wallet
-selection is being resolved using the documented coin-60/coin-118 distinction.
-No completed external audit, payment or report is claimed. Local reports are not QCAI.
+The flattened, compiling QCAI input and hash are in `audit/qcai/`. The user
+completed Stage 1 with the Ethereum setting and supplied the original report.
+Its findings and dispositions appear above. Local static reports remain
+separate evidence from QCAI.
 
-Outstanding: both QCAI stages, independent review, production delay bounds,
-revision-2 rotation deployment and wallet-backed end-user flows. Drill account
+The Stage 2 packet is ready in `audit/qcai/STAGE2-RESPONSE.md`. Its bundle adds
+defense explanations; executable contract behavior is unchanged. Two new
+targeted regressions passed, making 29 core/rotation tests on 23 November.
+
+Outstanding: QCAI Stage 2, independent review, production delay bounds,
+revision-2 canary activation and wallet-backed end-user flows. Drill account
 keys were deliberately retained; no destruction ceremony is claimed.

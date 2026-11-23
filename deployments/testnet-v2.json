@@ -1,0 +1,102 @@
+{
+  "network": "qorechain-diana",
+  "chainId": 9800,
+  "protocolRevision": 2,
+  "sourceCommit": "24e5132d5dfacbf7c797e4020f25dc3e1dd7ca71",
+  "artifactHashes": {
+    "PQGovernance": "0xc1a8fd3788e054ff8d180d4465f5a31c9a17aa44e35864a5541ac64321a14561",
+    "CanaryRegistry": "0xc292adc706de1f0f51cc4c8e40591e46266670cde78e88f41928350b3dd926ea",
+    "VaultFactory": "0x22de7cdb75d7b6080438128819e61e01673ce99d4a6daa7cea37da624635d9e9"
+  },
+  "bounds": "DEMO ONLY: 60s governance/vault minimum, 10s cooling-off minimum",
+  "deployer": {
+    "native": "qor1mqfp8mfhqwpf8sc26850r94qarahf4ryfjvdpp",
+    "evm": "0xd81213Ed37038293c30aD1e8f196a0E8Fb74D464"
+  },
+  "contracts": {
+    "PQGovernance": {
+      "address": "0x8906dca5d2b1ec2d7d54808e5537b8371d96a8de",
+      "transactionHash": "0xcfe4667c2d21478139e69bb10f20b26764eb23a846022b7e42cbf6a37c256eea",
+      "blockNumber": "10615518",
+      "gasUsed": "808568"
+    },
+    "CanaryRegistry": {
+      "address": "0xc4d00be73ac4307c4550312fe2df553c835c9230",
+      "transactionHash": "0x2903e8fbaf6036358f72301c848bbfad3a5a374dc7ccabf75990963bf0b2fc20",
+      "blockNumber": "10615520",
+      "gasUsed": "765468"
+    },
+    "VaultFactory": {
+      "address": "0xeacad1b5d4c146b6aa2180d10c0ae9ab6876d502",
+      "transactionHash": "0x4b5e8b95130f8864b792002820645df977768c759e36e0a498eb431729e126e8",
+      "blockNumber": "10615523",
+      "gasUsed": "2953541"
+    }
+  },
+  "transactions": [
+    {
+      "kind": "deployment_window",
+      "nativeHash": "002BBE3C6845E5E2DEBBAE3FA33780F41FD6402E4234E8545A8579F6D1E8E819",
+      "scope": {
+        "blocks": "600",
+        "maxTxs": "12",
+        "maxValueUqor": "4000000",
+        "allowedTargets": [],
+        "purpose": "initial contract creation; replaced with target scope after deployment"
+      }
+    },
+    {
+      "kind": "deployment",
+      "name": "PQGovernance",
+      "hash": "0xcfe4667c2d21478139e69bb10f20b26764eb23a846022b7e42cbf6a37c256eea"
+    },
+    {
+      "kind": "deployment",
+      "name": "CanaryRegistry",
+      "hash": "0x2903e8fbaf6036358f72301c848bbfad3a5a374dc7ccabf75990963bf0b2fc20"
+    },
+    {
+      "kind": "deployment",
+      "name": "VaultFactory",
+      "hash": "0x4b5e8b95130f8864b792002820645df977768c759e36e0a498eb431729e126e8"
+    },
+    {
+      "kind": "scoped_window",
+      "nativeHash": "9A0FE826F693532483EA1A8B1B2C1621A8B76445E32465B1E98CB6E1D839A3DB",
+      "scope": {
+        "blocks": "600",
+        "maxTxs": "20",
+        "maxValueUqor": "2000000",
+        "allowedTargets": [
+          "0x8906dca5d2b1ec2d7d54808e5537b8371d96a8de",
+          "0xc4d00be73ac4307c4550312fe2df553c835c9230",
+          "0xeacad1b5d4c146b6aa2180d10c0ae9ab6876d502"
+        ]
+      }
+    },
+    {
+      "kind": "demo_vault_scoped_window",
+      "nativeHash": "7A1D2B640C135A74CE1DD0A088BCD2465B92C3DF7B65BAE9E27898EEA0C40831",
+      "allowedTargets": [
+        "0x8906dca5d2b1ec2d7d54808e5537b8371d96a8de",
+        "0xc4d00be73ac4307c4550312fe2df553c835c9230",
+        "0xeacad1b5d4c146b6aa2180d10c0ae9ab6876d502",
+        "0x73fc8909324a0360B53d4763fD98cDFAcC0c2d64"
+      ]
+    }
+  ],
+  "createdAt": "2026-11-23T11:58:59.293Z",
+  "updatedAt": "2026-11-23T11:59:21.766Z",
+  "demoVault": {
+    "address": "0x73fc8909324a0360B53d4763fD98cDFAcC0c2d64",
+    "owner": "0xd81213Ed37038293c30aD1e8f196a0E8Fb74D464",
+    "rescue": "0xd81213Ed37038293c30aD1e8f196a0E8Fb74D464",
+    "pqKeyHash": "0x10a2938e238e1327bbad6ed36329cbe6fd5a830f78d6999451ea1ea7ff4bded9",
+    "creationHash": "0xe773ad3447fc84bf143f91a83c93843934284d228e5fbda28e602d06bf4a06d5",
+    "blockNumber": "10615631",
+    "note": "Local operator-owned demo vault; no user PQ key stored on a server.",
+    "testDepositHash": "0x9e81868942bbb3818b66d15c22c713e65776fca746039ffbd7a883ba67bb1656",
+    "pqExitHash": "0xee9262ab4a28852252dc09988b9fadb593ec73bdb1dba303387ca6bd3288f5ae",
+    "pqExitGas": "750000"
+  }
+}

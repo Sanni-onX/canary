@@ -5,14 +5,15 @@ import { testnetSigner } from './testnet-signer.mjs';
 
 const connection = await testnetSigner();
 const { client, wallet, account, openWindow } = connection;
-const manifestPath = new URL('../deployments/testnet.json', import.meta.url);
+const revision2 = process.argv.includes('--revision-2');
+const manifestPath = new URL(revision2 ? '../deployments/testnet-v2.json' : '../deployments/testnet.json', import.meta.url);
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
 const artifact = async name => JSON.parse(await readFile(new URL(`../contracts/out/${name}.sol/${name}.json`, import.meta.url), 'utf8'));
 const factoryArtifact = await artifact('VaultFactory'); const vaultArtifact = await artifact('PQVault');
 const factory = manifest.contracts.VaultFactory.address;
 const targets = Object.values(manifest.contracts).map(entry => entry.address);
 const save = () => writeFile(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
-const keyPath = new URL('../.local/demo-vault-key.json', import.meta.url);
+const keyPath = new URL(revision2 ? '../.local/demo-vault-v2-key.json' : '../.local/demo-vault-key.json', import.meta.url);
 let pair;
 try { const data = JSON.parse(await readFile(keyPath, 'utf8')); pair = { publicKey: Uint8Array.from(Buffer.from(data.publicKey, 'base64')), secretKey: Uint8Array.from(Buffer.from(data.secretKey, 'base64')) }; }
 catch (error) { if (error.code !== 'ENOENT') throw error;

@@ -54,6 +54,7 @@ contract CanaryRegistry {
     }
 
     /// @notice Atomically read security state; incomplete registries must deny classical release.
+    /// @dev At most MAX_CANARIES (16) slots: addCanary enforces the cap and replacement never appends.
     function securityState() external view returns (bool alarm, uint256 lastBlock, bool ready) {
         uint256 active;
         for (uint256 i; i < canaries.length; ++i) {

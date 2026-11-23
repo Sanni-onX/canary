@@ -78,6 +78,37 @@ abstract contract CanaryFixture is Test {
 }
 
 contract CanaryCoreTest is CanaryFixture {
+    function testAuditCopiedCreationProofCannotConsumeOwnerNonce() public {
+        uint256 nonce = factory.creationNonce(alice);
+        bytes32 digest = factory.bindingDigest(alice, keccak256(pk), rescue, policy);
+        bytes memory proof = _sig(pk, digest);
+        vm.prank(recipient);
+        vm.expectRevert(VaultFactory.InvalidOwner.selector);
+        factory.createVault(alice, keccak256(pk), rescue, policy, pk, proof);
+        assertEq(factory.creationNonce(alice), nonce);
+        vm.prank(alice);
+        factory.createVault(alice, keccak256(pk), rescue, policy, pk, proof);
+        assertEq(factory.creationNonce(alice), nonce + 1);
+        vm.prank(alice);
+        vm.expectRevert(PQAuth.InvalidPQProof.selector);
+        factory.createVault(alice, keccak256(pk), rescue, policy, pk, proof);
+    }
+
+    function testAuditRegistryRejectsSeventeenthSlot() public {
+        for (uint256 i = 2; i < 16; ++i) {
+            address bait = address(uint160(0x90000 + i));
+            vm.deal(bait, 1 ether);
+            registry.addCanary(bait, bytes32(i + 1));
+        }
+        address extra = address(0x99999);
+        vm.deal(extra, 1 ether);
+        vm.expectRevert(CanaryRegistry.InvalidCanary.selector);
+        registry.addCanary(extra, bytes32(uint256(17)));
+        assertEq(registry.canaryCount(), 16);
+        (,, bool ready) = registry.securityState();
+        assertTrue(ready);
+    }
+
     function testUnrelatedCallerCannotReleaseFundsOrQueueAWithdrawal() public {
         uint256 beforeBalance = address(vault).balance;
         vm.startPrank(recipient);

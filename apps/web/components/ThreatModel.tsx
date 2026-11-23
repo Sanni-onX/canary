@@ -7,6 +7,6 @@ export default function ThreatModel() {
     <h3>The limits, plainly</h3><p>A drain is not proof of a quantum computer. Operators can retain keys or setup can be compromised. An attacker can avoid public bait, race detection or top up accounts to hide loss. JavaScript cannot prove destruction.</p>
     <p>The daily cap does not bound matured large withdrawals. Keep pending requests under review. Recovery depends on chain availability, gas, inclusion, the verifier, a trustworthy device/frontend and a secure rescue address.</p>
     <p>Fee-on-transfer and rebasing tokens are unsupported. One balance-delta check cannot establish future token behavior. The immutable registry has 16 lifetime slots, so sustained epoch rotation needs further design and deployment.</p>
-    <p>Local security scans and regression tests are engineering checks. No independent audit or QCAI report has been completed. Live wallet sends remain gated.</p>
+    <p>QCAI Stage 1 completed on 21 November 2026 with five findings; each has a documented source-based disposition and regression evidence. Stage 2 is pending. This automated review is not an independent security audit. Live wallet sends remain gated.</p>
   </section>;
 }

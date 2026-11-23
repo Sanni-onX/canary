@@ -41,6 +41,7 @@ contract VaultFactory {
     }
 
     /// @notice Create and initialize a vault only when both the owner transaction and PQ proof consent.
+    /// @dev A copied proof cannot consume another owner's nonce: msg.sender must be owner before verification or mutation.
     function createVault(
         address owner,
         bytes32 keyHash,

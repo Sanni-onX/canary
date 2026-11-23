@@ -138,6 +138,7 @@ contract PQVault is ReentrancyGuard {
     }
 
     /// @notice Exact spend in the trailing 24 hours, bounded to 64 classical releases per token.
+    /// @dev Solidity 0.8 checked addition fails closed on overflow; accepted releases also enforce the rolling budget.
     function rollingSpent(address token) public view returns (uint256 total) {
         for (uint256 i; i < MAX_ROLLING_TRANSFERS; ++i) {
             Spend storage entry = spends[token][i];
@@ -217,6 +218,7 @@ contract PQVault is ReentrancyGuard {
     }
 
     /// @notice Withdraw with PQ authority in any mode; during alarm, the destination must be rescue.
+    /// @dev nonReentrant covers recipient/token callbacks, including callbacks carrying a valid next-nonce PQ proof.
     function withdrawPQ(
         address token,
         uint256 amount,

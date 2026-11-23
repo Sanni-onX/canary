@@ -1,5 +1,26 @@
 # Canary progress
 
+## 23 November — release continuation
+
+Stage 1 report preserved (72/100, medium, five findings). All findings have
+source-based dispositions. Existing executable protections already address
+the report; explanatory contract comments and two targeted audit regressions
+were added. All 29 core/rotation tests, two coverage tests and two watcher
+integration tests passed. Stage 2 packet compiles and is prepared at
+`audit/qcai/STAGE2-RESPONSE.md`; no second external report exists yet.
+
+Revision 2 deployed using the previously funded operator. All four executable
+runtimes matched compiler artifacts. New demo vault creation, 0.001 test QOR
+deposit and real ML-DSA withdrawal succeeded; receipts are in
+`deployments/testnet-v2.json`. Its registry has no canaries yet, so the hosted
+app/watcher deliberately continue monitoring revision 1. User QoreX permissions
+were not modified. Session testing remains deferred by the user's prior choice.
+
+Railway web and watcher are running; live API returned HTTP 200 on this date.
+Watcher volume is attached. Stage 2 external access, finite-epoch activation,
+wallet-backed migration, public repository and video remain release gates.
+The older entries below are historical checkpoints, not current completion status.
+
 ## Continued 21 November — revision-2 epoch rotation (current)
 
 Client/coverage checkpoint saved as bdc821c. The build and 18 browser checks

@@ -117,3 +117,11 @@
   actual mobile wallet and public HTTPS preview are still pending.
 - Test counts/results and limits are in `docs/PROGRESS.md`. The AI has not
   independently verified the human's registration and makes no audit claim.
+# 23 November release continuation
+
+Codex reviewed the supplied QCAI Stage 1 report against source, added two
+targeted regression tests and defense documentation, and prepared the Stage 2
+response bundle. No executable contract changes were needed for those findings.
+Codex deployed revision 2 with the authorized fresh testnet operator, compared
+runtime bytecode and verified a real PQ withdrawal from a new demo vault.
+User wallet secrets were not provided or uploaded. Stage 2 is still pending.
