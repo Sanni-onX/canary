@@ -14,13 +14,14 @@ feasibility separately from the drain alarm. The original drill windows have
 expired; historical alarm/rescue proof is not continuous current coverage.
 See [verified epoch design](docs/CANARY_EPOCHS.md).
 
-**Revision 2 deployed; hosted app still monitors revision 1:** registry source supports
+**Revision 2 deployed and activated:** registry source supports
 timelocked, governance-only slot replacement with permanent address-use history.
-It preserves old threshold evidence before replacement/retirement. The live
-demo is immutable and still uses revision 1 from commit `287b799`. The separate
+It preserves old threshold evidence before replacement/retirement. The historical
+demo is immutable and uses revision 1 from commit `287b799`. The separate
 revision-2 deployment and real PQ withdrawal are recorded in
 [testnet-v2.json](deployments/testnet-v2.json). Runtime comparisons passed;
-canary activation is pending, so the hosted app has not switched registries.
+three retained-key drill canaries were activated through PQ governance. The
+hosted app uses revision 2 and labels revision-1 drill receipts as historical.
 
 ![Canary product overview, labeled local simulation](docs/images/overview.png)
 

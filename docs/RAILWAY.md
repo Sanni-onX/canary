@@ -13,6 +13,13 @@ canary coverage. This deployment does not constitute revision-2 activation.
 Watcher has a persistent `/data` Railway volume; web explicitly uses PORT=3000.
 Current services use CLI source uploads, not GitHub autodeploys.
 
+23 November update: web and watcher switched to revision-2 registry
+`0xc4d00be73ac4307c4550312fe2df553c835c9230` after three canary additions passed
+PQ governance. The watcher now uses `/data/canary-v2.sqlite`; the original
+database is retained. Watcher health reported 3 covered, threshold 2, margin 1,
+no degraded coverage at activation. It remains read-only with no bot signer;
+finite windows expire and this does not establish continuous coverage.
+
 Create two services from the repository root (do not set a subdirectory root).
 Use `/railway.web.json` for web and `/railway.watcher.json` for watcher as the
 service's custom config file. Both builds use the existing Dockerfiles.

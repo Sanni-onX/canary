@@ -83,6 +83,19 @@
         "0xeacad1b5d4c146b6aa2180d10c0ae9ab6876d502",
         "0x73fc8909324a0360B53d4763fD98cDFAcC0c2d64"
       ]
+    },
+    {
+      "kind": "seed_demo_window",
+      "nativeHash": "2F319D2BCA4840D6DE948D73FE55200A117B6A21F0059746771A262BFFD07731",
+      "allowedTargets": [
+        "0x8906dca5d2b1ec2d7d54808e5537b8371d96a8de",
+        "0xc4d00be73ac4307c4550312fe2df553c835c9230",
+        "0xeacad1b5d4c146b6aa2180d10c0ae9ab6876d502",
+        "0x73fc8909324a0360B53d4763fD98cDFAcC0c2d64",
+        "0xB16f820A89A36Af0F2e4DcD00Fa160Cdc8318708",
+        "0xab98f9f1024814e3Aa2D81Fd7475def9b1d48e31",
+        "0xce1728DD7e6D53973aC58A4647E696C5343480C4"
+      ]
     }
   ],
   "createdAt": "2026-11-23T11:58:59.293Z",
@@ -98,5 +111,64 @@
     "testDepositHash": "0x9e81868942bbb3818b66d15c22c713e65776fca746039ffbd7a883ba67bb1656",
     "pqExitHash": "0xee9262ab4a28852252dc09988b9fadb593ec73bdb1dba303387ca6bd3288f5ae",
     "pqExitGas": "750000"
-  }
+  },
+  "drillCanaries": [
+    {
+      "index": 0,
+      "nativeAddress": "qor1k9hcyz5f5d40puhymngqlgtqehyrrpcgxm5nf8",
+      "address": "0xB16f820A89A36Af0F2e4DcD00Fa160Cdc8318708",
+      "simulation": true,
+      "keyDestructionClaimed": false,
+      "fundingHash": "0x9a23ad5349b3e730717a4255b6a0c35ed425a28ad9d2d2ea9d09c793226ca83a",
+      "exposureTx": "74E5C8424C40A8FAF67948FC8007D2DA8D71400D89D47AC388AD596CDFA56D6B",
+      "windowHash": "A77C41A1259AD3321E255F0B4FE12C382FCD3AA71AB83D76BE82A39B3F11D6B9",
+      "baselineWei": "30000000000000000",
+      "proposal": {
+        "nonce": "0",
+        "deadline": "1795443072",
+        "digest": "0xa37386f87a826222085ebc72e31c671326f1ae1f8833bedec93719286c809338",
+        "data": "0x99d215a8000000000000000000000000b16f820a89a36af0f2e4dcd00fa160cdc831870874E5C8424C40A8FAF67948FC8007D2DA8D71400D89D47AC388AD596CDFA56D6B",
+        "queueHash": "0x60122a7a0ee71489c39c5c83aa07b5b2922ff0eeb48b46590f37636ff56a1998"
+      },
+      "addedHash": "0xf1afabdec3d4310830a04a072ef5ec963e45d2d3d30d5c15756893e86912db06"
+    },
+    {
+      "index": 1,
+      "nativeAddress": "qor14wv0nugzfq2w823ds87hgaw7lxcafr33s647xd",
+      "address": "0xab98f9f1024814e3Aa2D81Fd7475def9b1d48e31",
+      "simulation": true,
+      "keyDestructionClaimed": false,
+      "fundingHash": "0x13d85965054197da8f7d0b213ac8303929172dd67fc2cd7c918a34122d8edd10",
+      "exposureTx": "20D3287A2CDA55116C1E27D56DD73E453FDB0078E01EEBDDD10A00DB901E93EB",
+      "windowHash": "BC9E011FDE1E8BEEE863E5C0C15F7E83A8E66C33959D823A75C5563F2638C639",
+      "baselineWei": "30000000000000000",
+      "proposal": {
+        "nonce": "1",
+        "deadline": "1795443156",
+        "digest": "0xb9febf41471b0c8b7d205b6b7f9ddb6e483aac50e46c7d8dd7f32e476c3c82f7",
+        "data": "0x99d215a8000000000000000000000000ab98f9f1024814e3aa2d81fd7475def9b1d48e3120D3287A2CDA55116C1E27D56DD73E453FDB0078E01EEBDDD10A00DB901E93EB",
+        "queueHash": "0x9d5660009004271f5bd19f1dc836041c30215cbbfa9720d8165f1b8f1a1e0048"
+      },
+      "addedHash": "0x45a42e903ace50c5052bca7598158acaf027312eeaf6f001f3db5917240f2ee9"
+    },
+    {
+      "index": 2,
+      "nativeAddress": "qor1ectj3ht7d4fewwk93fry0e5kc56rfqxys7efvt",
+      "address": "0xce1728DD7e6D53973aC58A4647E696C5343480C4",
+      "simulation": true,
+      "keyDestructionClaimed": false,
+      "fundingHash": "0x0b4a0c0bc8c1de060c5fbcd73b6e0cab67d2d175861f3c11812869fab4ec37e0",
+      "exposureTx": "97F1051421C08A121BDA0B40748A735503B1F08E4AD7E3B442A4F284EF313514",
+      "windowHash": "2DA08A16C82E58468E669D517226BB151B397452D2B89808865535715024C9C4",
+      "baselineWei": "50000000000000000",
+      "proposal": {
+        "nonce": "2",
+        "deadline": "1795443174",
+        "digest": "0x80d9c0eecb38a41e35be43e12fef2d5109406ed02ce15007ecd3038b5dd8fe77",
+        "data": "0x99d215a8000000000000000000000000ce1728dd7e6d53973ac58a4647e696c5343480c497F1051421C08A121BDA0B40748A735503B1F08E4AD7E3B442A4F284EF313514",
+        "queueHash": "0x6e6521a5e39ef12292d2e98af5c9a4a586f99942cba02054fd832889dbcbda37"
+      },
+      "addedHash": "0xe478831b83e80c11c49e44b5f8de23f11df5533cd57a4c7c3db1bd9033fb4a27"
+    }
+  ]
 }

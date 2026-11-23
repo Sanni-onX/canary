@@ -1,4 +1,4 @@
-import manifest from '../../../../../deployments/testnet.json';
+import manifest from '../../../../../deployments/testnet-v2.json';
 import drill from '../../../../../docs/evidence/live-drill.json';
 import { createPublicClient, http, parseAbi, isAddress, type Address } from 'viem';
 import { toQorAddress, parseEvmWindow } from '@qorechain/evm';

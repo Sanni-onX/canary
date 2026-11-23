@@ -77,10 +77,11 @@ Current revision-2 source has 41 Foundry tests (24 core, 5 rotation, 7 invariant
 5 probes). The expanded invariants each passed 256 campaigns of 500 calls,
 including random epoch rotation. Replacement/retirement cannot erase a threshold
 breach before watcher inclusion, and reused historical addresses are refused.
-The hosted app remains on revision 1. Revision 2 deployed on 23 November; all
+The hosted app uses revision 2. Revision 2 deployed on 23 November; all
 four executable runtimes match the compiled source, recorded separately in
 `audit/deployment-evidence-v2.json` and `deployments/testnet-v2.json`. The new
-registry has not yet been activated with canaries. Revision-1 evidence remains
+registry has three retained-key drill canaries activated through PQ governance.
+Their finite windows are reported independently of the balance alarm. Revision-1 evidence remains
 archived separately under `audit/revision1/`.
 
 PQ backup/domain tests,
@@ -101,5 +102,5 @@ defense explanations; executable contract behavior is unchanged. Two new
 targeted regressions passed, making 29 core/rotation tests on 23 November.
 
 Outstanding: independent review, production delay bounds,
-revision-2 canary activation and wallet-backed end-user flows. Drill account
+wallet-backed end-user flows and continuous operational coverage. Drill account
 keys were deliberately retained; no destruction ceremony is claimed.

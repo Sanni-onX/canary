@@ -1,5 +1,15 @@
 # Canary progress
 
+## 23 November — revision-2 activation
+
+Three retained-key drill accounts were added through 2-of-3 PQ governance and
+its 60-second demo timelock. Confirmed securityState: alarm=false, ready=true;
+canaryCount=3. Exposure references and queue/execute receipts are saved in
+deployments/testnet-v2.json. This is a finite epoch, not a destruction ceremony.
+App APIs now use revision 2; revision-1 drill receipts are labelled historical.
+Watcher uses /data/canary-v2.sqlite to preserve the original registry database.
+PQ, ceremony refusal and all workspace typechecks passed; production build passed.
+
 ## 23 November — release continuation
 
 Update: Stage 2 PDF received and preserved in docs/audit/2026-11-23-stage-2.pdf.

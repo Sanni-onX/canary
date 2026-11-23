@@ -1,5 +1,5 @@
 import { createPublicClient, http, isAddress, zeroAddress, type Address } from 'viem';
-import manifest from '../../../../../deployments/testnet.json';
+import manifest from '../../../../../deployments/testnet-v2.json';
 import { defaultTokens, erc20Abi, factoryAbi, vaultAbi } from '../../../lib/contracts';
 
 export const dynamic = 'force-dynamic';

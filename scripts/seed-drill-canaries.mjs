@@ -7,11 +7,14 @@ await import('./preload-sdk.mjs');
 const { generatePqcRecoveryCode } = await import('@qorechain/sdk');
 
 const main = await testnetSigner();
-const manifestPath = new URL('../deployments/testnet.json', import.meta.url);
+const revision2 = process.argv.includes('--revision-2');
+const manifestPath = new URL(revision2 ? '../deployments/testnet-v2.json' : '../deployments/testnet.json', import.meta.url);
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+const prior = revision2 ? JSON.parse(await readFile(new URL('../deployments/testnet.json', import.meta.url), 'utf8')) : null;
 const registry = manifest.contracts.CanaryRegistry.address;
 const governance = manifest.contracts.PQGovernance.address;
-const targets = [...Object.values(manifest.contracts).map(c => c.address), manifest.demoVault.address];
+const targets = [...Object.values(manifest.contracts).map(c => c.address), manifest.demoVault.address,
+  ...(prior?.drillCanaries.map(c => c.address) ?? [])];
 const registryArtifact = JSON.parse(await readFile(new URL('../contracts/out/CanaryRegistry.sol/CanaryRegistry.json', import.meta.url), 'utf8'));
 const governanceArtifact = JSON.parse(await readFile(new URL('../contracts/out/PQGovernance.sol/PQGovernance.json', import.meta.url), 'utf8'));
 const keyPath = new URL('../.local/drill-accounts.json', import.meta.url);
@@ -26,8 +29,10 @@ const save = () => writeFile(manifestPath, JSON.stringify(manifest, null, 2) + '
 const guardianData = JSON.parse(await readFile(new URL('../.local/governance-keys.json', import.meta.url), 'utf8'));
 const guardianPairs = guardianData.slice(0, 2).map(g => ({ publicKey: Uint8Array.from(Buffer.from(g.publicKey, 'base64')), secretKey: Uint8Array.from(Buffer.from(g.secretKey, 'base64')) }));
 try {
-  const windowHash = await main.openWindow(targets);
-  manifest.transactions.push({ kind: 'seed_demo_window', nativeHash: windowHash, allowedTargets: targets }); await save();
+  if (!revision2 || !manifest.transactions.some(tx => tx.kind === 'seed_demo_window')) {
+    const windowHash = await main.openWindow(targets);
+    manifest.transactions.push({ kind: 'seed_demo_window', nativeHash: windowHash, allowedTargets: targets }); await save();
+  }
   for (let index = 0; index < local.length; ++index) {
     const signer = await testnetSigner(local[index]);
     try {
@@ -38,16 +43,25 @@ try {
       }
       if (!entry.fundingHash) {
         // Funding EOAs needs an explicitly approved target in the parent's window.
-        const hash = await main.openWindow([...targets, signer.account.address]);
-        manifest.transactions.push({ kind: 'drill_funding_window', nativeHash: hash, allowedTargets: [...targets, signer.account.address] }); await save();
-        const funding = await main.wallet.sendTransaction({ to: signer.account.address, value: 350000000000000000n, gas: 21000n });
+        if (!revision2) {
+          const hash = await main.openWindow([...targets, signer.account.address]);
+          manifest.transactions.push({ kind: 'drill_funding_window', nativeHash: hash, allowedTargets: [...targets, signer.account.address] }); await save();
+        }
+        const current = await main.client.getBalance({ address: signer.account.address });
+        const target = revision2 ? 130000000000000000n : 350000000000000000n;
+        const value = current < target ? target - current : 0n;
+        const funding = await main.wallet.sendTransaction({ to: signer.account.address, value, gas: 21000n });
         const receipt = await main.client.waitForTransactionReceipt({ hash: funding, timeout: 90000 });
         if (receipt.status !== 'success') throw new Error('Canary funding failed');
         entry.fundingHash = funding; await save();
       }
-      if (!entry.exposureTx) { entry.exposureTx = await signer.ensurePqc(); await save(); }
+      if (!entry.exposureTx) {
+        entry.exposureTx = await signer.ensurePqc() ?? prior?.drillCanaries.find(c => c.address.toLowerCase() === entry.address.toLowerCase())?.exposureTx;
+        if (!entry.exposureTx) throw new Error('No confirmed public-key exposure reference');
+        await save();
+      }
       // Registration exposed the classical public key. Keys are intentionally retained for this drill.
-      entry.windowHash = await signer.openWindow([main.account.address], { maxTxs: 2n, maxValue: 200000n, blocks: 1800n });
+      if (!revision2 || !entry.windowHash) entry.windowHash = await signer.openWindow([main.account.address], { maxTxs: 2n, maxValue: 200000n, blocks: 1800n });
       entry.baselineWei = (await signer.client.getBalance({ address: signer.account.address })).toString(); await save();
       console.log(JSON.stringify({ stage: 'drill_canary_ready', index, address: entry.address, baselineWei: entry.baselineWei }));
       const count = await main.client.readContract({ address: registry, abi: registryArtifact.abi, functionName: 'canaryCount' });
@@ -61,7 +75,8 @@ try {
         const sigs = guardianPairs.map(g => toHex(mldsa87.sign(g.secretKey, hexToBytes(digest))));
         const simulation = await main.client.simulateContract({ account: main.account, address: governance, abi: governanceArtifact.abi,
           functionName: 'queue', args: [registry, data, deadline, [0n, 1n], pks, sigs], gas: 2500000n });
-        const hash = await main.wallet.writeContract(simulation.request);
+        const gas = await main.client.estimateContractGas({ ...simulation.request, gas: undefined });
+        const hash = await main.wallet.writeContract({ ...simulation.request, gas: gas * 11n / 10n, gasPrice: await main.client.getGasPrice() });
         const receipt = await main.client.waitForTransactionReceipt({ hash, timeout: 90000 });
         if (receipt.status !== 'success') throw new Error('PQ governance queue failed');
         entry.proposal = { nonce: nonce.toString(), deadline: deadline.toString(), digest, data, queueHash: hash }; await save();
@@ -86,7 +101,8 @@ try {
     }
     const simulation = await main.client.simulateContract({ account: main.account, address: governance, abi: governanceArtifact.abi, functionName: 'execute',
       args: [registry, proposal.data, BigInt(proposal.nonce), BigInt(proposal.deadline)], gas: 500000n });
-    const hash = await main.wallet.writeContract(simulation.request);
+    const gas = await main.client.estimateContractGas({ ...simulation.request, gas: undefined });
+    const hash = await main.wallet.writeContract({ ...simulation.request, gas: gas * 11n / 10n, gasPrice: await main.client.getGasPrice() });
     const receipt = await main.client.waitForTransactionReceipt({ hash, timeout: 90000 });
     if (receipt.status !== 'success') throw new Error('Adding canary failed');
     entry.addedHash = hash; await save();

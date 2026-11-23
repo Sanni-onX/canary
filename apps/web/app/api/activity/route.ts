@@ -1,5 +1,5 @@
 import { createPublicClient, http, isAddress, type Address } from 'viem';
-import manifest from '../../../../../deployments/testnet.json';
+import manifest from '../../../../../deployments/testnet-v2.json';
 import { factoryAbi, vaultEvents } from '../../../lib/contracts';
 export const dynamic = 'force-dynamic';
 export async function GET(request: Request) {

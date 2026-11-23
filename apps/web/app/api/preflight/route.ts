@@ -1,5 +1,5 @@
 import { createPublicClient, http, isAddress, decodeFunctionData, zeroAddress, type Address, type Hex } from 'viem';
-import manifest from '../../../../../deployments/testnet.json';
+import manifest from '../../../../../deployments/testnet-v2.json';
 import { factoryAbi, vaultAbi, erc20Abi } from '../../../lib/contracts';
 
 export async function POST(request: Request) {
