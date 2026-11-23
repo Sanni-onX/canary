@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import type { Coverage } from '@canary/coverage';
 export type CoverageState = { observedAt: string; canaries: { index: number; retired: boolean; drained: boolean; coverage: Coverage }[];
+  maintenance?: {index:number;state:string;expiryHeight:string|null;replaceByHeight:string|null;action:string}[];
+  watcher?: null|{healthy:boolean;submitterConfigured:boolean;pending:boolean;hasFeeBudget:boolean;lastAlarmTransaction:string|null};
   coverage?: { covered: number; expiring: number; lapsed: number; unknown: number; threshold: number; margin: number; desired: number;
     tripFeasible: boolean; degraded: boolean; blockSeconds: number | null; note: string } };
 function duration(seconds: number) {
@@ -27,6 +29,8 @@ export default function CoveragePanel({ data, error, lab = false }: { data: Cove
       })}</div>
       <p className="helper">Countdowns estimate time using the last 60 blocks; block height is authoritative. Coverage also checks transaction capacity, transfer scope and a conservative native fee/value budget. It is an observation, not a guarantee of inclusion.</p>
       <div className="warning-box">{summary.note} Lapse changes coverage only; it never trips or clears the balance-loss alarm.</div>
+      <div className="helper"><strong>Automatic alarm submission: </strong>{stale||!data.watcher?'status unavailable':data.watcher.pending?'previous submission needs reconciliation':!data.watcher.healthy?'watcher needs attention':!data.watcher.submitterConfigured?'not configured':!data.watcher.hasFeeBudget?'bot needs test QOR':'ready'}{data.watcher?.lastAlarmTransaction&&<p><a href={`https://explore.qore.network/tx/${data.watcher.lastAlarmTransaction}`} target="_blank" rel="noreferrer">View last automatic alarm receipt ↗</a></p>}</div>
+      {!!data.maintenance?.length && <details><summary>Coverage maintenance deadlines</summary><p className="helper">Replacement preparation starts 1,200 blocks before expiry. PQ governance approval remains an explicit operator action.</p>{data.maintenance.map(job=><article key={job.index}><strong>Canary {job.index+1}: {stale?'Refresh required':job.state}</strong><p className="helper">Prepare replacement by block {job.replaceByHeight??'unknown'} · expiry {job.expiryHeight??'unknown'}</p><p className="helper">{job.action}</p></article>)}</details>}
     </>}
     {lab && <><h3>Prepare the next epoch</h3><ol className="ceremony-list"><li>Prepare fresh testnet accounts and enough canaries for k plus a margin.</li><li>Fund and PQ-register them, expose the classical public keys, then open bounded transfer windows while both keys are available.</li><li>Record expiry blocks, transaction/value capacity, recipient scope and actual exposure receipts.</li><li>Submit additions through PQ governance early enough for its delay to finish before the old epoch ends.</li><li>Only then perform and attest the chosen key-destruction step. Destruction cannot be proven.</li></ol><p className="helper">No automatic renewal or key destruction runs here. The current registry supports 16 lifetime slots, so epochs require a capacity/rotation review before a production rollout. The existing drill keys were retained; no burned-key demonstration is claimed.</p></>}
   </section>;

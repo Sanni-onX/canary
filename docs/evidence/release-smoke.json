@@ -1,23 +1,23 @@
 {
-  "observedAt": "2026-11-23T12:16:38.870Z",
+  "observedAt": "2026-11-23T14:21:29.055Z",
   "base": "https://web-production-2863d083.up.railway.app",
   "protocolRevision": 2,
   "registry": "0xc4d00be73ac4307c4550312fe2df553c835c9230",
   "registryReady": true,
   "canaries": 3,
   "coverage": {
-    "covered": 3,
+    "covered": 0,
     "expiring": 0,
-    "lapsed": 0,
+    "lapsed": 1,
     "unknown": 0,
     "threshold": 2,
     "margin": 1,
     "desired": 3,
-    "tripFeasible": true,
-    "degraded": false
+    "tripFeasible": false,
+    "degraded": true
   },
   "watcherHealthy": true,
-  "submitterConfigured": false,
+  "submitterConfigured": true,
   "auditSourceSha256": "b91643999e7edc02be8fb15a6fe4c5a98c15684d3c9d54f00f76119386a71069",
   "checks": [
     "live revision-2 registry",

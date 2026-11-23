@@ -1,0 +1,115 @@
+{
+  "network": "qorechain-diana",
+  "registry": "0xc4d00be73ac4307c4550312fe2df553c835c9230",
+  "simulation": true,
+  "method": "Controlled native hybrid spends from retained-key drill accounts; not a classical or quantum attack",
+  "transactions": [
+    {
+      "index": 0,
+      "nativeHash": "80377EA281A6F6D807DDC003FA0FBE92BBE89550F61D7C4A520F2D757052D08C",
+      "amountUqor": "1",
+      "feeUqor": "22000"
+    },
+    {
+      "index": 1,
+      "nativeHash": "149470BE9B3188D56EF9F7C9F3D52EFADAB6375A6488DB5B39167953A9BD3215",
+      "amountUqor": "1",
+      "feeUqor": "22000"
+    }
+  ],
+  "completedAt": "2026-11-23T14:19:32.973Z",
+  "hostedWatcherAlarmObserved": true,
+  "status": {
+    "network": "qorechain-diana",
+    "registry": "0xc4d00be73ac4307c4550312fe2df553c835c9230",
+    "alarm": true,
+    "drained": 2,
+    "lastBlock": "10621407",
+    "lastSuccess": "2026-11-23T15:19:37.218Z",
+    "error": null,
+    "submitterConfigured": true,
+    "alarmBot": {
+      "native": "qor1st9rkt8535uejhwcdau4nw3zesafdhkqparqnv",
+      "evm": "0x82cA3b2CF48d39995Dd86f7959ba22Cc3a96dEC0",
+      "balanceWei": "1000000000000000000",
+      "hasFeeBudget": true
+    },
+    "submissionPending": false,
+    "maintenance": [
+      {
+        "index": 0,
+        "state": "overdue",
+        "expiryHeight": "10617818",
+        "replaceByHeight": "10616618",
+        "remainingBlocks": "0",
+        "action": "Prepare a fresh funded/exposed account, queue replacement through PQ governance, then verify coverage. Do not renew a destroyed-key canary."
+      },
+      {
+        "index": 1,
+        "state": "overdue",
+        "expiryHeight": "10617827",
+        "replaceByHeight": "10616627",
+        "remainingBlocks": "0",
+        "action": "Prepare a fresh funded/exposed account, queue replacement through PQ governance, then verify coverage. Do not renew a destroyed-key canary."
+      },
+      {
+        "index": 2,
+        "state": "overdue",
+        "expiryHeight": "10617889",
+        "replaceByHeight": "10616689",
+        "remainingBlocks": "0",
+        "action": "Prepare a fresh funded/exposed account, queue replacement through PQ governance, then verify coverage. Do not renew a destroyed-key canary."
+      }
+    ],
+    "coverage": {
+      "covered": 0,
+      "expiring": 0,
+      "lapsed": 1,
+      "unknown": 0,
+      "threshold": 2,
+      "margin": 1,
+      "desired": 3,
+      "tripFeasible": false,
+      "degraded": true
+    },
+    "lastAlarmTransaction": "36D218FFF6F302A09369FA978D17918E946E29A26187AAC47DDC187999609FA1",
+    "coverageMode": "finite-epochs",
+    "epochs": [
+      {
+        "index": 0,
+        "coverage": {
+          "status": "Lapsed",
+          "reason": "Window expired, closed or exhausted.",
+          "remainingBlocks": "0",
+          "expiryHeight": "10617818",
+          "openedHeight": "10616018"
+        }
+      },
+      {
+        "index": 1,
+        "coverage": {
+          "status": "Lapsed",
+          "reason": "Window expired, closed or exhausted.",
+          "remainingBlocks": "0",
+          "expiryHeight": "10617827",
+          "openedHeight": "10616027"
+        }
+      },
+      {
+        "index": 2,
+        "coverage": {
+          "status": "Lapsed",
+          "reason": "Window expired, closed or exhausted.",
+          "remainingBlocks": "0",
+          "expiryHeight": "10617889",
+          "openedHeight": "10616089"
+        }
+      }
+    ],
+    "nativeCoverageConfigured": true,
+    "healthy": true
+  },
+  "botReceiptVerified": true,
+  "alarmHash": "36D218FFF6F302A09369FA978D17918E946E29A26187AAC47DDC187999609FA1",
+  "alarmHeight": "10621373"
+}

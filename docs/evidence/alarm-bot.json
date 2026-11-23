@@ -1,0 +1,7 @@
+{
+  "native": "qor1st9rkt8535uejhwcdau4nw3zesafdhkqparqnv",
+  "evm": "0x82cA3b2CF48d39995Dd86f7959ba22Cc3a96dEC0",
+  "balanceWei": "900000000000000000",
+  "purpose": "Dedicated permissionless alarm submitter; no vault or governance authority",
+  "registrationHash": "F1914E6F6D3209D810446D7D2F4583E44363DC9AC739F44E54338E80F60187ED"
+}

@@ -2,7 +2,7 @@ import manifest from '../../../../../deployments/testnet-v2.json';
 import drill from '../../../../../docs/evidence/live-drill.json';
 import { createPublicClient, http, parseAbi, isAddress, type Address } from 'viem';
 import { toQorAddress, parseEvmWindow } from '@qorechain/evm';
-import { assessCoverage, summarizeCoverage, type WindowSnapshot } from '@canary/coverage';
+import { assessCoverage, summarizeCoverage, planMaintenance, type WindowSnapshot } from '@canary/coverage';
 
 export const dynamic = 'force-dynamic';
 const abi = parseAbi([
@@ -24,6 +24,15 @@ export async function GET() {
       client.getBlock({ blockNumber: block > 60n ? block - 60n : 0n }), client.getGasPrice()]);
     const blockSeconds = block > 60n ? Number(head.timestamp - previous.timestamp) / 60 : null;
     const registry = manifest.contracts.CanaryRegistry.address as `0x${string}`;
+    let watcher=null;
+    try {
+      const response=await fetch('https://watcher-production-64b80e30.up.railway.app/status',{cache:'no-store',signal:AbortSignal.timeout(3000)});
+      const status=await response.json();
+      if(response.ok&&status.registry?.toLowerCase()===registry.toLowerCase())watcher={healthy:status.healthy===true,
+        submitterConfigured:status.submitterConfigured===true,pending:status.submissionPending===true,
+        hasFeeBudget:status.alarmBot?.hasFeeBudget===true,
+        lastAlarmTransaction:typeof status.lastAlarmTransaction==='string'&&/^[0-9a-fA-F]{64}$/.test(status.lastAlarmTransaction)?status.lastAlarmTransaction:null};
+    }catch{/* Chain state remains readable when watcher status is unavailable. */}
     const [count, k, tolerance, state] = await Promise.all([
       client.readContract({ address: registry, abi, functionName: 'canaryCount', blockNumber: block }),
       client.readContract({ address: registry, abi, functionName: 'thresholdK', blockNumber: block }),
@@ -77,6 +86,8 @@ export async function GET() {
     return Response.json({ configured: true, network: manifest.network, chainId: 9800, block: block.toString(), observedAt: new Date().toISOString(),
       bounds: manifest.bounds, alarm: state[0], lastAlarmBlock: state[1].toString(), registryReady: state[2],
       threshold: Number(k), toleranceBps: Number(tolerance), canaries, vault, contracts: manifest.contracts,
+      maintenance: planMaintenance(canaries,block),
+      watcher,
       coverage: { ...summarizeCoverage(canaries, Number(k)), blockSeconds,
         note: 'Finite coverage epochs. Renewal requires both classical and PQ keys. Destroyed-key canaries cannot be renewed; new accounts and governance additions are needed before expiry.' },
       drill: drill ? { completedAt: drill.completedAt, checks: drill.checks, transactions: drill.transactions } : null }, { headers: { 'Cache-Control': 'no-store' } });

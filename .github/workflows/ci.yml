@@ -21,6 +21,8 @@ jobs:
       - run: npm run test:coverage
       - run: npm run test:ceremony
       - run: npm run test:watcher
+      - run: node --import tsx --test services/watcher/test/maintenance.test.mjs
+      - run: node --import tsx --test scripts/qorex-transactions.test.ts
       - run: npm run typecheck
       - run: npm run build
       - run: npm run lint:solidity

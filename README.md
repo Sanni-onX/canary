@@ -7,6 +7,13 @@ and Lifeboat guides migration into a separately PQ-authorized vault.
 Built for the QoreChain Developer Fest, Post-Quantum dApp track.
 **Working testnet prototype. Both QCAI stages reviewed; testnet only.**
 
+**Current operations:** the Railway watcher has a funded, dedicated PQ-registered
+bot and has automatically latched a real threshold alarm. Its verified native
+receipt is recorded in [automatic-alarm evidence](docs/evidence/automatic-alarm-test.json).
+Coverage deadlines are tracked and persisted; fresh epoch replacement still
+requires local PQ governance. See [operator procedures](docs/OPERATIONS.md).
+The mobile QR is a page link; use QoreX's in-app browser for signing.
+
 **Coverage is finite:** ordinary QoreChain window renewal needs both classical
 and PQ signatures. A PQ key alone cannot renew a canary after its classical key
 is destroyed. The app and watcher now show coverage epochs, expiry and k+1

@@ -1,7 +1,27 @@
 {
-  "name": "@canary/watcher", "version": "0.1.0", "private": true, "type": "module",
-  "engines": { "node": ">=22.13" },
-  "scripts": { "start": "tsx src/index.ts", "once": "tsx src/index.ts --once", "typecheck": "tsc --noEmit" },
-  "dependencies": { "@canary/coverage": "0.1.0", "@qorechain/evm": "0.14.0", "viem": "^2.0.0", "tsx": "^4.19.0" },
-  "devDependencies": { "@types/node": "^22.7.5", "typescript": "^5.6.3" }
+  "name": "@canary/watcher",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "once": "tsx src/index.ts --once",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@canary/coverage": "0.1.0",
+    "@cosmjs/crypto": "^0.39.0",
+    "@cosmjs/stargate": "^0.39.0",
+    "@qorechain/evm": "0.14.0",
+    "@qorechain/sdk": "^0.14.0",
+    "tsx": "^4.19.0",
+    "viem": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "typescript": "^5.6.3"
+  }
 }

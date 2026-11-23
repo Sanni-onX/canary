@@ -6,6 +6,7 @@ import { erc20Abi } from '../lib/contracts';
 import { migrationStorageKey, parseMigrationRecord, type MigrationRecord } from '../lib/migration';
 import Recovery from './Recovery';
 import QorexVaultActions from './QorexVaultActions';
+import MobileWalletHelp from './MobileWalletHelp';
 
 type Vault = { address: Address; owner: Address; rescue: Address; keyHash: Hex; nonce: string; locked: boolean; alarm: boolean;
   balance: string; dailyLimit: string; delay: string; coolingOff: string; spent: string; pendingTruncated: boolean;
@@ -124,6 +125,7 @@ export default function LiveWorkspace({ wallet, tab }: { wallet: string; tab: st
     finally { setBusy(false); }
   }
   return <>
+    <MobileWalletHelp />
     <section className="panel"><div className="panel-heading"><h2>{tab === 'Lifeboat' ? 'Your live migration workspace' : 'Your protected vaults'}</h2><span className="subtle-pill">DIANA TESTNET</span></div>
       <p className="helper">Connect QoreX or enter a public address to discover its actual vaults and assets. Watching an address grants no signing authority.</p>
       <label className="field-label" htmlFor="live-owner">Owner EVM address</label><input id="live-owner" disabled={busy} value={owner} onChange={event => { ++scanGeneration.current; setOwner(event.target.value); setPortfolio(null); }} placeholder="0x…" />

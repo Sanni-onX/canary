@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "id": "36d5a252-c3ea-4822-840b-1e7f5bd76510",
+  "network": "qorechain-diana",
+  "chainId": 9800,
+  "createdAt": "2026-11-23T14:22:20.393Z",
+  "address": "0x6Cf0B9bCC7f931B214999cD1185FE905bfFb0aaB",
+  "nativeAddress": "qor1dnctn0x8lycmy9yenng3shlfqkllkz4tvwwc0r",
+  "classicalPublicKey": "0x045caf164cf209d93a0421e4b0ec74813415014ff451f7a7a2c9f5deb6f7f48825a5a0796706d8d80ea7dd48fb79a33b689ecec0d21b139ecb7161e4dd61cf4101",
+  "status": "prepared-unfunded",
+  "exposureHash": null,
+  "keyDestructionProven": false,
+  "replacementSlot": 2,
+  "note": "Local testnet epoch account only. No transaction sent. Independent destruction is not provable."
+}

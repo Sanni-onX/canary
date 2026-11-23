@@ -10,6 +10,9 @@ import './preload-sdk.mjs';
 const { generatePqcRecoveryCode } = await import('@qorechain/sdk');
 const root = fileURLToPath(new URL('../', import.meta.url));
 const [action, id] = process.argv.slice(2);
+const slotFlag=process.argv.indexOf('--slot');
+const replacementSlot=slotFlag<0?null:Number(process.argv[slotFlag+1]);
+if(replacementSlot!==null&&(!Number.isInteger(replacementSlot)||replacementSlot<0||replacementSlot>15))throw new Error('Replacement slot must be 0 through 15.');
 const publicDirectory = resolve(root, 'docs/evidence/ceremonies');
 const secretDirectory = resolve(root, '.local/ceremonies');
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
@@ -29,7 +32,7 @@ if (action === 'prepare') {
     await writeFile(resolve(secretDirectory, `${nextId}.json`), JSON.stringify(local) + '\n', { mode: 0o600, flag: 'wx' });
     const record = { version: 1, id: nextId, network: 'qorechain-diana', chainId: 9800, createdAt: new Date().toISOString(),
       address: account.address, nativeAddress: toQorAddress(account.address), classicalPublicKey: account.publicKey,
-      status: 'prepared-unfunded', exposureHash: null, keyDestructionProven: false,
+      status: 'prepared-unfunded', exposureHash: null, keyDestructionProven: false, replacementSlot,
       note: 'Local testnet epoch account only. No transaction sent. Independent destruction is not provable.' };
     await writeFile(resolve(publicDirectory, `${nextId}.json`), JSON.stringify(record, null, 2) + '\n', { flag: 'wx' });
     console.log(JSON.stringify(record));
@@ -41,11 +44,12 @@ if (action === 'prepare') {
   await safeDirectory(publicDirectory); await safeDirectory(secretDirectory);
   const record = JSON.parse(await readFile(resolve(publicDirectory, `${id}.json`), 'utf8'));
   if (record.id !== id || record.chainId !== 9800 || !isAddress(record.address)) throw new Error('Invalid ceremony record.');
-  const manifest = JSON.parse(await readFile(resolve(root, 'deployments/testnet.json'), 'utf8'));
+  const manifest = JSON.parse(await readFile(resolve(root, 'deployments/testnet-v2.json'), 'utf8'));
+  if(record.governanceProposal&&record.governanceProposal.target.toLowerCase()!==manifest.contracts.CanaryRegistry.address.toLowerCase())throw new Error('Ceremony belongs to another registry; do not mix epochs.');
   const client = createPublicClient({ transport: http('https://evm-testnet.qore.host', { timeout: 20000 }) });
   if (await client.getChainId() !== 9800) throw new Error('Testnet only.');
   const registryAbi = parseAbi(['function canaryCount() view returns(uint256)',
-    'function canaries(uint256) view returns(address,uint256,bytes32,uint64,bool)', 'function addCanary(address,bytes32)']);
+    'function canaries(uint256) view returns(address,uint256,bytes32,uint64,bool)', 'function addCanary(address,bytes32)', 'function replaceCanary(uint256,address,bytes32)']);
   async function observe() {
     const [balance, window, count] = await Promise.all([client.getBalance({ address: record.address }),
       evmWindowStatus({ rest: 'https://api-testnet.qore.host', address: record.address }),
@@ -60,7 +64,9 @@ if (action === 'prepare') {
   }
   function addProposal(hash) {
     record.governanceProposal = { target: manifest.contracts.CanaryRegistry.address,
-      data: encodeFunctionData({ abi: registryAbi, functionName: 'addCanary', args: [record.address, hash] }),
+      data: record.replacementSlot!==null&&record.replacementSlot!==undefined
+        ? encodeFunctionData({abi:registryAbi,functionName:'replaceCanary',args:[BigInt(record.replacementSlot),record.address,hash]})
+        : encodeFunctionData({ abi: registryAbi, functionName: 'addCanary', args: [record.address, hash] }),
       note: 'Unsigned proposal only. Quorum approval and timelock execution are separate.' };
   }
   if (action === 'status') {

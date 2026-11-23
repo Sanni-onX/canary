@@ -119,6 +119,13 @@
   independently verified the human's registration and makes no audit claim.
 # 23 November release continuation
 
+Automatic alarm continuation: the user funded a dedicated testnet bot and
+explicitly approved its credential export to Railway. Codex registered its PQ
+key, configured native hybrid alarm submission and verified the hosted bot's
+successful receipt after controlled retained-key canary spends. No guardian or
+user-wallet credentials were exported. Coverage maintenance tracks deadlines;
+fresh-account replacement still requires operator-controlled PQ governance.
+
 QoreX continuation: Codex proved native cross-VM owner identity and a native
 bank deposit against the operator's revision-2 vault, then implemented QoreX
 signAndBroadcast flows with local encrypted PQ backups and checked receipts.

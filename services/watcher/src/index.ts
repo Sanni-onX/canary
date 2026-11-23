@@ -5,6 +5,8 @@ import { privateKeyToAccount } from 'viem/accounts';
 import { defineChain } from 'viem';
 import { parseEvmWindow, toQorAddress } from '@qorechain/evm';
 import { assessCoverage, summarizeCoverage, type WindowSnapshot, type Coverage } from '@canary/coverage';
+import {planMaintenance} from './maintenance.js';
+import {hasNativeAlarmBot,nativeAlarmBotAddress,submitNativeAlarm} from './native-alarm.js';
 
 const address = process.env.CANARY_REGISTRY_ADDRESS;
 if (!address || !isAddress(address) || /^0x0{40}$/i.test(address)) throw new Error('Set CANARY_REGISTRY_ADDRESS to the deployed testnet registry.');
@@ -32,6 +34,10 @@ let running = false;
 let stopped = false;
 let coverageState: ReturnType<typeof summarizeCoverage> | null = null;
 let epochStates: { index: number; coverage: Coverage }[] = [];
+let maintenance:ReturnType<typeof planMaintenance>=[];
+const bot=await nativeAlarmBotAddress();
+let botBalanceWei:string|null=null;
+let botCheckedAt=0;
 
 function record(block: bigint, kind: string, detail: unknown) {
   const body = JSON.stringify(detail);
@@ -88,6 +94,15 @@ async function check() {
     }));
     coverageState = summarizeCoverage(snapshots, Number(k));
     epochStates = snapshots.map((item, index) => ({ index, coverage: item.coverage }));
+    maintenance=planMaintenance(epochStates,block.number);
+    const maintenanceSignature=JSON.stringify(maintenance.map(job=>[job.index,job.state,job.expiryHeight]));
+    const previousMaintenance=db.prepare("SELECT value FROM meta WHERE key='maintenance_signature'").get() as {value:string}|undefined;
+    if(previousMaintenance?.value!==maintenanceSignature){
+      record(block.number,'coverage_maintenance',{jobs:maintenance});
+      db.prepare('INSERT OR REPLACE INTO meta VALUES (?,?)').run('maintenance_signature',maintenanceSignature);
+    }
+    db.prepare('INSERT OR REPLACE INTO meta VALUES (?,?)').run('maintenance_jobs',JSON.stringify(maintenance));
+    if(bot&&Date.now()-botCheckedAt>60000){botBalanceWei=(await publicClient.getBalance({address:bot.evm as Address})).toString();botCheckedAt=Date.now();}
     db.prepare('INSERT OR REPLACE INTO meta VALUES (?,?)').run('coverage_epochs', JSON.stringify(epochStates));
     const signature = JSON.stringify({ ...coverageState, epochs: snapshots.map(item => [item.coverage.status, item.coverage.openedHeight, item.coverage.expiryHeight]) });
     const priorCoverage = db.prepare("SELECT value FROM meta WHERE key='coverage'").get() as { value: string } | undefined;
@@ -98,9 +113,24 @@ async function check() {
     drained = snapshots.filter(item => item.drained).length;
     const priorAlarm = alarm;
     alarm = latched;
+    if(latched)db.prepare("DELETE FROM meta WHERE key='native_alarm_pending'").run();
     if (!latched && BigInt(drained) >= k) {
       const key = process.env.WATCHER_PRIVATE_KEY;
-      if (!key) { record(block.number, 'submission_needed', { drained, threshold: k.toString(), reason: 'No bot signer configured; anyone may call checkAndTrip.' }); }
+      if(hasNativeAlarmBot()){
+        const pending=db.prepare("SELECT value FROM meta WHERE key='native_alarm_pending'").get();
+        if(pending){record(block.number,'submission_reconciliation_needed',{reason:'Previous submission has an uncertain outcome. No duplicate broadcast.'});}
+        else{
+          db.prepare('INSERT OR REPLACE INTO meta VALUES (?,?)').run('native_alarm_pending',JSON.stringify({registry,at:new Date().toISOString(),block:block.number.toString()}));
+          const hash=await submitNativeAlarm(registry);
+          db.prepare('INSERT OR REPLACE INTO meta VALUES (?,?)').run('native_alarm_pending',JSON.stringify({registry,hash}));
+          alarm=await publicClient.readContract({address:registry,abi,functionName:'alarmed'});
+          if(!alarm)throw new Error('Native alarm receipt confirmed but registry alarm is not latched; reconciliation required');
+          db.prepare("DELETE FROM meta WHERE key='native_alarm_pending'").run();
+          db.prepare('INSERT OR REPLACE INTO meta VALUES (?,?)').run('last_alarm_transaction',hash);
+          record(block.number,'alarm_tripped',{nativeHash:hash,route:'hybrid-native-crossvm'});
+        }
+      }
+      else if (!key) { record(block.number, 'submission_needed', { drained, threshold: k.toString(), reason: 'No bot signer configured; anyone may call checkAndTrip.' }); }
       else {
         if (!/^0x[0-9a-fA-F]{64}$/.test(key)) throw new Error('Invalid bot key format.');
         const account = privateKeyToAccount(key as `0x${string}`);
@@ -129,7 +159,10 @@ if (process.argv.includes('--once')) { db.close(); if (lastError) process.exitCo
 else {
   const status = () => ({ network: 'qorechain-diana', registry, alarm, drained, lastBlock,
     lastSuccess: lastSuccess ? new Date(lastSuccess).toISOString() : null, error: lastError,
-    submitterConfigured: Boolean(process.env.WATCHER_PRIVATE_KEY), coverage: coverageState,
+    submitterConfigured: hasNativeAlarmBot()||Boolean(process.env.WATCHER_PRIVATE_KEY),
+    alarmBot:bot?{...bot,balanceWei:botBalanceWei,hasFeeBudget:botBalanceWei!==null&&BigInt(botBalanceWei)>=100000000000000000n}:null,
+    submissionPending:Boolean(db.prepare("SELECT value FROM meta WHERE key='native_alarm_pending'").get()),maintenance, coverage: coverageState,
+    lastAlarmTransaction:(db.prepare("SELECT value FROM meta WHERE key='last_alarm_transaction'").get() as {value:string}|undefined)?.value??null,
     coverageMode: 'finite-epochs', epochs: epochStates, nativeCoverageConfigured: Boolean(nativeRest) });
   const server = createServer((request, response) => {
     if (!['/health', '/status'].includes(request.url ?? '')) { response.writeHead(404); response.end(); return; }

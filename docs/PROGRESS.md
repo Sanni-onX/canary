@@ -1,5 +1,35 @@
 # Canary progress
 
+## 23 November — automatic alarm and coverage operations
+
+Dedicated alarm bot prepared, funded by the user and PQ-registered. The user
+explicitly approved exporting only this bot's credential to Railway after the
+automatic approval review initially blocked that export. No personal, deployer,
+canary or guardian credential was uploaded. The hosted watcher now submits
+hybrid native cross-VM checkAndTrip calls, with a persisted pending intent and
+duplicate-send suspension on uncertain outcomes.
+
+Live controlled test passed: two operator-authorized native hybrid spends from
+retained-key drill accounts crossed the threshold. Railway's dedicated bot
+latched the alarm; code-0 receipt sender/target verified. Native hash:
+36D218FFF6F302A09369FA978D17918E946E29A26187AAC47DDC187999609FA1.
+This is automatic detection/submission evidence, not a classical/quantum attack.
+
+Coverage maintenance persists per-slot preparation deadlines 1,200 blocks ahead
+of expiry and scheduled/due/overdue/investigate states. The dashboard exposes the
+same plan. Ceremony CLI now targets revision 2 and emits replaceCanary proposals
+for explicitly selected slots. Fresh account funding, guardian approval and
+key destruction remain operator actions; no automatic renewal is claimed.
+
+Added a QR URL handoff and official extension/mobile testnet steps. It is not
+WalletConnect pairing. See docs/OPERATIONS.md and the automatic-alarm evidence.
+
+Three fresh replacement accounts are prepared under docs/evidence/next-epoch.json.
+The local maintenance runner is prepared with funding intent guards, scoped
+windows, per-proposal receipts and timelock waits. It preserves the alarm and
+does not delete keys. This fresh replacement run awaits the requested operator
+test-QOR funding; it has not been claimed as executed.
+
 ## 23 November — encrypted backup save fix
 
 User reported backup generation/saving failure. Desktop reproduction generated

@@ -4,6 +4,17 @@ export type Coverage = { status: 'Covered' | 'Expiring' | 'Lapsed' | 'Unknown' |
   remainingBlocks: string | null; expiryHeight: string | null; openedHeight: string | null };
 export const DEFAULT_EXPIRING_BLOCKS = 600n;
 
+export function planMaintenance(epochs:{index:number;coverage:Coverage}[], block:bigint, lead=1200n) {
+  return epochs.flatMap(({index,coverage})=>{
+    if(coverage.status==='Retired')return [];
+    const expiry=coverage.expiryHeight&&/^\d+$/.test(coverage.expiryHeight)?BigInt(coverage.expiryHeight):null;
+    const due=expiry===null?null:expiry>lead?expiry-lead:0n;
+    const state=coverage.status==='Unknown'?'investigate':expiry===null||coverage.status==='Lapsed'?'overdue':block>=(due??0n)?'due':'scheduled';
+    return [{index,state,expiryHeight:expiry?.toString()??null,replaceByHeight:due?.toString()??null,
+      remainingBlocks:coverage.remainingBlocks,action:'Prepare a fresh funded/exposed account, queue replacement through PQ governance, then verify coverage. Do not renew a destroyed-key canary.'}];
+  });
+}
+
 /** Monitoring only: coverage failure never mutates or infers the balance alarm. */
 export function assessCoverage(input: { retired: boolean; window: WindowSnapshot | null;
   balanceWei: bigint; baselineWei: bigint; toleranceBps: bigint; feePerGasWei: bigint;
