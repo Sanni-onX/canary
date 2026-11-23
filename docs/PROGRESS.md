@@ -1,5 +1,16 @@
 # Canary progress
 
+## 23 November — encrypted backup save fix
+
+User reported backup generation/saving failure. Desktop reproduction generated
+the backup, but the previous UI claimed download success without verifying a
+file save. Local generation was unnecessarily behind a chain-ID network check.
+Generation now runs fully locally, displays the 12-character password minimum,
+and exposes an explicit user-click Save action after encryption. The download
+link is attached to the document and its object URL remains valid for 60 seconds.
+Encrypted JSON is available as a fallback for wallet browsers without downloads.
+The UI asks the user to verify their saved file rather than claiming success.
+
 ## 23 November — QoreX native transaction slice
 
 Deployment check: three message/account-safety tests pass; live browser smoke

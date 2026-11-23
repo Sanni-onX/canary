@@ -18,15 +18,24 @@ export default function QorexVaultActions({owner, vault, refresh}:{owner:Address
     catch(error){setStatus(error instanceof Error?error.message:'Wallet action failed.');}
     finally{setBusy(false);}
   }
-  async function makeBackup(){await run(async()=>{
-    const pair=generateKeypair();
+  async function makeBackup(){
+    setBusy(true);setStatus('Encrypting your recovery backup on this device…');
+    let pair:ReturnType<typeof generateKeypair>|undefined;
     try {
+      if(password.length<12)throw new Error('Use a recovery backup password of at least 12 characters.');
+      pair=generateKeypair();
       const blob=await encryptKeyBlob(pair,password);setBackup(blob);setSaved(false);
-      const url=URL.createObjectURL(new Blob([JSON.stringify(blob)],{type:'application/json'}));
-      const link=document.createElement('a');link.href=url;link.download=`canary-pq-${blob.publicKeyHash.slice(2,10)}.json`;link.click();URL.revokeObjectURL(url);
-      setStatus('Encrypted recovery backup downloaded. Save it and its password before creating the vault.');
-    } finally {pair.secretKey.fill(0);}
-  });}
+      setStatus('Encrypted backup ready. Use Save encrypted backup below, then confirm you saved it.');
+    } catch(error){setStatus(error instanceof Error?error.message:'Could not encrypt backup.');}
+    finally {pair?.secretKey.fill(0);setBusy(false);}
+  }
+  function downloadBackup(){
+    if(!backup)return;
+    const url=URL.createObjectURL(new Blob([JSON.stringify(backup)],{type:'application/json'}));
+    const link=document.createElement('a');link.href=url;link.download=`canary-pq-${backup.publicKeyHash.slice(2,10)}.json`;
+    document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+    setStatus('Backup save requested. Check your browser downloads or Files app before confirming.');
+  }
   async function create(){await run(async()=>{
     if(!backup||!saved||!isAddress(rescue)||rescue===zeroAddress)throw new Error('Save the encrypted backup and enter a valid rescue address.');
     const pair=await decryptKeyBlob(backup,password);
@@ -73,7 +82,9 @@ export default function QorexVaultActions({owner, vault, refresh}:{owner:Address
       <p className="helper">Initial policy: 0.01 QOR daily classical limit, 24-hour large-transfer delay and 1-hour cooling-off. The PQ recovery key is separate from your wallet key.</p>
       <label className="field-label" htmlFor="qvx-rescue">Rescue address</label><input id="qvx-rescue" value={rescue} onChange={e=>setRescue(e.target.value as Address)}/>
       <label className="field-label" htmlFor="qvx-password">Recovery backup password</label><input id="qvx-password" type="password" autoComplete="new-password" value={password} onChange={e=>setPassword(e.target.value)}/>
+      <p className="helper">Use at least 12 characters. Backup generation happens locally and requires no wallet approval or network connection.</p>
       <button className="secondary" onClick={()=>void makeBackup()}>Generate encrypted recovery backup</button>
+      {backup&&<><button className="secondary" onClick={downloadBackup}>Save encrypted backup</button><details><summary>Download not supported by your wallet browser?</summary><p className="helper">Copy this encrypted JSON into a .json file and store it safely. It contains encrypted recovery material, not your password.</p><textarea readOnly aria-label="Encrypted recovery backup JSON" value={JSON.stringify(backup)} onFocus={e=>e.currentTarget.select()}/></details></>}
       {backup&&<label><input type="checkbox" checked={saved} onChange={e=>setSaved(e.target.checked)}/> I saved the downloaded backup and its password.</label>}
       <button className="primary" disabled={!backup||!saved} onClick={()=>void create()}>Create vault with QoreX</button>
     </fieldset>
