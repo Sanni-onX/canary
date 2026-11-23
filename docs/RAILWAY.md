@@ -1,5 +1,15 @@
 # Railway release
 
+## Current: automatic alarm bot enabled, 23 November
+
+The user explicitly approved storing only the dedicated testnet alarm bot's
+credential in Railway. Native hybrid cross-VM checkAndTrip submission is live
+and verified by a real controlled threshold test. /status exposes fee readiness,
+pending reconciliation and the last confirmed alarm hash. No guardian, canary,
+deployer or user-wallet key is hosted. Coverage maintenance jobs persist in the
+same volume; fresh canary replacement uses local PQ governance. The following
+dated entries preserve earlier deployment checkpoints.
+
 ## Live testnet beta, 2026-11-21
 
 Project: `da648595-e82a-4737-829f-ed958ca08bf6`.
@@ -17,7 +27,7 @@ Current services use CLI source uploads, not GitHub autodeploys.
 `0xc4d00be73ac4307c4550312fe2df553c835c9230` after three canary additions passed
 PQ governance. The watcher now uses `/data/canary-v2.sqlite`; the original
 database is retained. Watcher health reported 3 covered, threshold 2, margin 1,
-no degraded coverage at activation. It remains read-only with no bot signer;
+no degraded coverage at activation. At that checkpoint it was read-only with no bot signer;
 finite windows expire and this does not establish continuous coverage.
 
 Create two services from the repository root (do not set a subdirectory root).

@@ -24,11 +24,15 @@ key destruction remain operator actions; no automatic renewal is claimed.
 Added a QR URL handoff and official extension/mobile testnet steps. It is not
 WalletConnect pairing. See docs/OPERATIONS.md and the automatic-alarm evidence.
 
-Three fresh replacement accounts are prepared under docs/evidence/next-epoch.json.
-The local maintenance runner is prepared with funding intent guards, scoped
-windows, per-proposal receipts and timelock waits. It preserves the alarm and
-does not delete keys. This fresh replacement run awaits the requested operator
-test-QOR funding; it has not been claimed as executed.
+The user funded the operator and the local maintenance run completed for three
+fresh accounts. Each funding/exposure, 2-of-3 PQ queue and timelock execution is
+recorded under docs/evidence/next-epoch.json. A second verification run reused
+confirmed receipts and sent no new transactions. The active epoch is saved in
+deployments/testnet-v2.json. Public app and watcher both verified 3 covered,
+threshold 2 plus one spare, healthy bot, and no degraded coverage. The alarm
+remains latched and an unsigned reset proposal is ready for separate review.
+Keys were retained; no destruction is claimed. Future preparation deadlines
+are persisted and displayed, but later replacements remain local operator runs.
 
 ## 23 November — encrypted backup save fix
 

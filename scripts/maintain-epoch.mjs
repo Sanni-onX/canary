@@ -60,8 +60,11 @@ try{
   await govern(`slot-${account.replacementSlot}`,data);
   const current=await main.client.readContract({address:plan.registry,abi:registryArtifact.abi,functionName:'canaries',args:[BigInt(account.replacementSlot)]});
   if(current[0].toLowerCase()!==record.address.toLowerCase()||current[4])throw new Error('Replacement receipt confirmed but registry slot does not match');
+  account.baselineWei=current[1].toString();account.expiryHeight=window.expiryHeight.toString();account.replacementHash=plan.actions[`slot-${account.replacementSlot}`].executeHash;await save();
  }
  plan.status='replaced-alarm-state-preserved';plan.completedAt=new Date().toISOString();await save();
+ manifest.activeEpoch={completedAt:plan.completedAt,plan:'docs/evidence/next-epoch.json',keysRetained:true,accounts:plan.accounts.map(({id,address,nativeAddress,replacementSlot,baselineWei,expiryHeight,replacementHash})=>({id,address,nativeAddress,replacementSlot,baselineWei,expiryHeight,replacementHash}))};
+ await writeFile(new URL('../deployments/testnet-v2.json',import.meta.url),JSON.stringify(manifest,null,2)+'\n');
  // Reset is deliberately separate from replacement. Evidence is retained for operator review.
  const evidence=await readFile(new URL('../docs/evidence/automatic-alarm-test.json',import.meta.url));
  plan.resetProposal={target:plan.registry,data:encodeFunctionData({abi:registryArtifact.abi,functionName:'resetAlarm',args:[`0x${createHash('sha256').update(evidence).digest('hex')}`]}),note:'Unsigned reset proposal only; review drill evidence and execute separately after cooldown.'};await save();

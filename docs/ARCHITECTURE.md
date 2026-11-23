@@ -15,7 +15,13 @@ supported for ordinary windows. See `CANARY_EPOCHS.md` for verified limits.
 
 Status as of 21 November: core contracts are implemented and deployed on Diana
 with short demo bounds, plus a real watcher-triggered alarm/PQ-rescue drill.
-The browser has an interactive simulation and read-only live dashboard.
+The browser has an interactive simulation and live dashboard. Native QoreX
+controls now compose cross-VM vault calls and native bank deposits. The chain
+route has real transaction evidence; actual installed-wallet decoding/approval
+remains a separate verification step. The Railway watcher now uses an explicitly
+approved isolated PQ-registered bot for native alarm submission. Local guardian
+keys remain outside the service. Coverage deadlines are persisted; replacement
+is a separate locally PQ-governed operation and never clears the alarm.
 General-user live migration is not complete; no external audit has been run.
 The build prompt remains the full product specification.
 

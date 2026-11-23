@@ -7,9 +7,27 @@
   "address": "0x6Cf0B9bCC7f931B214999cD1185FE905bfFb0aaB",
   "nativeAddress": "qor1dnctn0x8lycmy9yenng3shlfqkllkz4tvwwc0r",
   "classicalPublicKey": "0x045caf164cf209d93a0421e4b0ec74813415014ff451f7a7a2c9f5deb6f7f48825a5a0796706d8d80ea7dd48fb79a33b689ecec0d21b139ecb7161e4dd61cf4101",
-  "status": "prepared-unfunded",
-  "exposureHash": null,
+  "status": "exposed-keys-retained",
+  "exposureHash": "0x31cb67fcae9a8a5c885bd1452fb50f7467ac8b3b3b5e748b3d7453a4ba5d67a9",
   "keyDestructionProven": false,
   "replacementSlot": 2,
-  "note": "Local testnet epoch account only. No transaction sent. Independent destruction is not provable."
+  "note": "Local testnet epoch account only. No transaction sent. Independent destruction is not provable.",
+  "registrationHash": "1E8E9F3AFE436F519993322FC1C009A7038B2C0969F7AAB8DD9EC48DB665BE76",
+  "windowHash": "8B056D744E6C2188D08B4C7F5FAF8D0B1E3E3875AE9DB049C291D53AA2C69CA2",
+  "exposureBlock": "10621879",
+  "governanceProposal": {
+    "target": "0xc4d00be73ac4307c4550312fe2df553c835c9230",
+    "data": "0x643e65fa00000000000000000000000000000000000000000000000000000000000000020000000000000000000000006cf0b9bcc7f931b214999cd1185fe905bffb0aab31cb67fcae9a8a5c885bd1452fb50f7467ac8b3b3b5e748b3d7453a4ba5d67a9",
+    "note": "Unsigned proposal only. Quorum approval and timelock execution are separate."
+  },
+  "observation": {
+    "observedAt": "2026-11-23T14:30:46.890Z",
+    "balanceWei": "197637500000000000",
+    "live": true,
+    "expiryHeight": "10629076",
+    "remainingBlocks": "7196",
+    "registered": false,
+    "exposureMatches": false,
+    "baselineWei": null
+  }
 }

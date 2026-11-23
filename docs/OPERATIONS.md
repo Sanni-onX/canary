@@ -31,10 +31,13 @@ requires investigation. A lapse is not a drain and does not trigger/reset alarm.
 For each due slot, on the local operator machine:
 
 `node scripts/prepare-next-epoch.mjs` prepares an idempotent three-slot public
-plan without transactions. Once the operator is funded, `node
+plan without transactions. For later cycles, pass `--new` after the previous
+replacement run completes; this archives the previous public plan before
+preparing new accounts. Once the operator is funded, `node
 scripts/maintain-epoch.mjs` funds the fresh accounts, exposes them and performs
-the local PQ-governed replacements. The current plan is prepared and unfunded;
-its execution path has not yet been exercised. It preserves the alarm and
+the local PQ-governed replacements. The current three-slot run completed on
+23 November, restoring three covered canaries; all exposure, queue and execute
+receipts are retained in docs/evidence/next-epoch.json. It preserves the alarm and
 produces an unsigned reset proposal for separate review. It does not destroy keys.
 
 The individual ceremony workflow remains available:
