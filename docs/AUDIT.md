@@ -2,7 +2,27 @@
 
 QCAI Stage 1 was completed on 2026-11-21. The original report is preserved in
 `docs/audit/2026-11-21-stage-1.pdf`: score 72/100, medium risk, five findings.
-Contracts are not ready for custody. Stage 2 remains pending.
+Stage 2 completed on 2026-11-23 using the same Ethereum setting: 72/100,
+medium risk, five findings. Its original report is preserved in
+`docs/audit/2026-11-23-stage-2.pdf`. Both external review stages and finding
+dispositions are recorded; this is not an independent security audit or a
+claim that the contracts are ready for custody.
+
+## Stage 2 finding dispositions
+
+| Finding | Disposition | Evidence |
+| --- | --- | --- |
+| HIGH: drainedIndexes lacks access control | False positive | The function is already `public view`, exactly the read-only behavior requested. It reads public balances and returns indexes, with no state write or asset transfer. Watchers and vaults require permissionless observations; restricting callers would not protect public chain data. |
+| MEDIUM: registry balance arithmetic overflow | False positive | The calculation decomposes baseline into quotient and remainder before multiplying. With factor <= 10000, the quotient term cannot exceed baseline, the remainder product is below 100 million, and their sum equals floor(baseline * factor / 10000) <= baseline. Solidity checked arithmetic remains enabled. `testFuzzDrainFloorMatchesFullPrecisionMath` compares this against OpenZeppelin Math.mulDiv up to uint256 maximum (256 runs). |
+| MEDIUM: vault creation front-running | False positive; same disposition as Stage 1 | `testAuditCopiedCreationProofCannotConsumeOwnerNonce` proves another sender cannot consume the nonce with a valid copied proof, the owner can proceed, and replay fails. Sender, owner, policy, rescue, chain, factory and nonce remain bound. |
+| LOW: securityState unbounded loop | False positive; same disposition as Stage 1 | `testAuditRegistryRejectsSeventeenthSlot` proves the cap; repeated rotation preserves sixteen slots. Caching would add state synchronization obligations without removing an unbounded path, since none exists. |
+| INFO: ERC-165 absent | No change; same disposition as Stage 1 | No claimed ERC-165 or NFT receiving interface. It is not required for native/ERC-20 custody. |
+
+No executable contract changes are justified by these five findings. Stage 1
+and Stage 2 contain different automated assertions; neither report includes
+exploit traces. All findings are retained rather than suppressed. Remaining
+release limitations concern canary activation, live wallet flows and operational
+controls, not an unreported passing audit score.
 
 ## Stage 1 finding dispositions
 
@@ -25,7 +45,7 @@ Validation on 2026-11-21: all 27 core and rotation tests passed, including
 `testFuzzClassicalAuthorityNeverExceedsRollingBudget` (256 runs), and
 `testRepeatedEpochRotationKeepsSixteenSlotsAndReadiness`.
 These are source-based dispositions, not a claim that the score establishes
-security. The second QCAI review remains required to close this workflow.
+security. The second QCAI review and its dispositions are recorded above.
 
 Follow https://build.qorechain.io/faq using the same EVM/Solidity setting for
 both QCAI stages. EVM quantum readiness showing Not scored is expected.
@@ -76,10 +96,10 @@ completed Stage 1 with the Ethereum setting and supplied the original report.
 Its findings and dispositions appear above. Local static reports remain
 separate evidence from QCAI.
 
-The Stage 2 packet is ready in `audit/qcai/STAGE2-RESPONSE.md`. Its bundle adds
+The Stage 2 input packet is in `audit/qcai/STAGE2-RESPONSE.md`. Its bundle adds
 defense explanations; executable contract behavior is unchanged. Two new
 targeted regressions passed, making 29 core/rotation tests on 23 November.
 
-Outstanding: QCAI Stage 2, independent review, production delay bounds,
+Outstanding: independent review, production delay bounds,
 revision-2 canary activation and wallet-backed end-user flows. Drill account
 keys were deliberately retained; no destruction ceremony is claimed.

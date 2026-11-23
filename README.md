@@ -5,7 +5,7 @@ canaries trigger a latching alarm, PQ-Wrap vaults freeze classical fund release,
 and Lifeboat guides migration into a separately PQ-authorized vault.
 
 Built for the QoreChain Developer Fest, Post-Quantum dApp track.
-**Working testnet prototype. QCAI Stage 1 reviewed; Stage 2 pending. Testnet only.**
+**Working testnet prototype. Both QCAI stages reviewed; testnet only.**
 
 **Coverage is finite:** ordinary QoreChain window renewal needs both classical
 and PQ signatures. A PQ key alone cannot renew a canary after its classical key
@@ -219,7 +219,8 @@ Install `audit/requirements.txt` into `.local/audit-venv`, then run
 `npm run audit:static`. The compiled, flattened QCAI input is in `audit/qcai/`;
 Stage 1 completed on 21 November 2026 (72/100, medium risk). All five findings
 have documented dispositions in [the audit response](docs/AUDIT.md). Stage 2
-remains pending; the automated review is not an independent security audit.
+completed on 23 November (72/100, medium); all five findings have dispositions.
+Both original PDFs are in docs/audit/. Automated reviews are not independent security audits.
 
 Canary Lab's local script fallback is documented in [CEREMONY.md](docs/CEREMONY.md).
 Fresh unfunded preparation/status and three refusal guards are verified. Its

@@ -2,6 +2,13 @@
 
 ## 23 November — release continuation
 
+Update: Stage 2 PDF received and preserved in docs/audit/2026-11-23-stage-2.pdf.
+Same Ethereum setting, 72/100 medium, five findings. All five mapped in
+docs/AUDIT.md; no executable contract change justified. The new high finding
+targets an already-public-view observation function. Four targeted tests passed
+again, including full-range arithmetic fuzz comparison. Both QCAI stages are
+now evidenced. Earlier pending references below describe the prior checkpoint.
+
 Stage 1 report preserved (72/100, medium, five findings). All findings have
 source-based dispositions. Existing executable protections already address
 the report; explanatory contract comments and two targeted audit regressions

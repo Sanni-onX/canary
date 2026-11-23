@@ -23,5 +23,6 @@ and both watcher integration tests passed. Full historic invariant evidence is
 in docs/AUDIT.md. These tests use verifier mocks for authorization plumbing;
 actual chain PQ verification has separate transaction evidence.
 
-Stage 2 has NOT been submitted or completed by preparing this packet. Save the
-actual second report under docs/audit/ and map any new findings before closure.
+Stage 2 subsequently completed on 23 November. The original second report is
+`docs/audit/2026-11-23-stage-2.pdf`; all five findings are mapped in docs/AUDIT.md.
+This file preserves the input response packet, not the auditor's output.
