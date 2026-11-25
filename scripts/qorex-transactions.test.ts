@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import './preload-sdk.mjs';
 import {qorechainTypes} from '@qorechain/sdk';
 import {MsgSend} from 'cosmjs-types/cosmos/bank/v1beta1/tx';
-import {crossVmBytes,bankSendBytes,sendQorexNative} from '../apps/web/lib/qorex-transactions';
+import {crossVmBytes,bankSendBytes,sendQorexNative,requireQorexDiana} from '../apps/web/lib/qorex-transactions';
 const sender='qor1mqfp8mfhqwpf8sc26850r94qarahf4ryfjvdpp';
 const target='0x73fc8909324a0360B53d4763fD98cDFAcC0c2d64' as const;
 test('native cross-VM bytes match official protobuf encoding exactly',()=>{
@@ -24,4 +24,22 @@ test('QoreX refuses a foreign owner before asking for a signature',async()=>{
   Object.assign((globalThis as unknown as {window:object}).window,{addEventListener:()=>{}});
   try {await assert.rejects(sendQorexNative(target,()=>({typeUrl:'test',value:new Uint8Array()})),/differs/);assert.equal(sent,0);}
   finally {if(prior)Object.defineProperty(globalThis,'window',prior);else delete (globalThis as {window?:unknown}).window;}
+});
+
+test('QoreX mainnet is refused before enable or signing; Diana succeeds after a fresh read',async()=>{
+  let enabled=0,chain='0x2649';
+  const prior=Object.getOwnPropertyDescriptor(globalThis,'window');
+  Object.defineProperty(globalThis,'window',{configurable:true,value:{addEventListener:()=>{},qorex:{evm:{request:async()=>chain},native:{signDirect:async()=>{},getKey:async()=>{},enable:async()=>{enabled++;}}}}});
+  try{
+    await assert.rejects(requireQorexDiana(),/Switch to testnet.*No transaction was sent/);
+    assert.equal(enabled,0);
+    chain='0x2648';await requireQorexDiana();assert.equal(enabled,1);
+  }finally{if(prior)Object.defineProperty(globalThis,'window',prior);else delete (globalThis as {window?:unknown}).window;}
+});
+
+test('native network mismatch is explained when EVM network reads are unavailable',async()=>{
+  const prior=Object.getOwnPropertyDescriptor(globalThis,'window');
+  Object.defineProperty(globalThis,'window',{configurable:true,value:{addEventListener:()=>{},qorex:{native:{signDirect:async()=>{},getKey:async()=>{},enable:async()=>{throw Error('QoreX: chain qorechain-diana does not match the active network qorechain-vladi');}}}}});
+  try{await assert.rejects(requireQorexDiana(),/version number.*seven times/);}
+  finally{if(prior)Object.defineProperty(globalThis,'window',prior);else delete (globalThis as {window?:unknown}).window;}
 });

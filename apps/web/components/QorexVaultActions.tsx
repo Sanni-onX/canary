@@ -2,10 +2,10 @@
 import { useState } from 'react';
 import { createPublicClient, http, parseEther, encodeFunctionData, hexToBytes, toHex, isAddress, zeroAddress, type Address } from 'viem';
 import { toQorAddress } from '@qorechain/evm';
-import { generateKeypair, encryptKeyBlob, decryptKeyBlob, hashPublicKey, sign, type EncryptedKeyBlob } from '@canary/pq';
+import { generateKeypair, encryptKeyBlob, decryptKeyBlob, hashPublicKey, sign, parseEncryptedKeyBlob, type EncryptedKeyBlob } from '@canary/pq';
 import manifest from '../../../deployments/testnet-v2.json';
 import { factoryAbi, vaultAbi } from '../lib/contracts';
-import { crossVmBytes, bankSendBytes, sendQorexNative } from '../lib/qorex-transactions';
+import { crossVmBytes, bankSendBytes, sendQorexNative, requireQorexDiana } from '../lib/qorex-transactions';
 import {parseExactAmount} from '../lib/amounts';
 const client = createPublicClient({transport:http('https://evm-testnet.qore.host')});
 export default function QorexVaultActions({owner, vault, refresh}:{owner:Address;vault?:Address;refresh:(selected?:Address)=>Promise<void>}) {
@@ -37,8 +37,17 @@ export default function QorexVaultActions({owner, vault, refresh}:{owner:Address
     document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
     setStatus('Backup save requested. Check your browser downloads or Files app before confirming.');
   }
+  async function restoreBackup(file?:File){
+    if(!file)return;
+    try{
+      if(file.size>100000)throw new Error('Select an encrypted Canary backup under 100 KB.');
+      const blob=parseEncryptedKeyBlob(JSON.parse(await file.text()));
+      setBackup(blob);setSaved(false);setStatus('Encrypted backup restored. Enter its password and confirm you saved the file before creating your vault.');
+    }catch(error){setStatus(error instanceof Error?error.message:'Could not restore this encrypted backup.');}
+  }
   async function create(){await run(async()=>{
     if(!backup||!saved||!isAddress(rescue)||rescue===zeroAddress)throw new Error('Save the encrypted backup and enter a valid rescue address.');
+    await requireQorexDiana();
     const pair=await decryptKeyBlob(backup,password);
     try {
       const factory=manifest.contracts.VaultFactory.address as Address;
@@ -87,8 +96,9 @@ export default function QorexVaultActions({owner, vault, refresh}:{owner:Address
       <label className="field-label" htmlFor="qvx-password">Recovery backup password</label><input id="qvx-password" type="password" autoComplete="new-password" value={password} onChange={e=>setPassword(e.target.value)}/>
       <p className="helper">Use at least 12 characters. Backup generation happens locally and requires no wallet approval or network connection.</p>
       <button className="secondary" onClick={()=>void makeBackup()}>Generate encrypted recovery backup</button>
+      <label className="field-label" htmlFor="qvx-existing-backup">Or restore an existing encrypted backup</label><input id="qvx-existing-backup" type="file" accept=".json,application/json" onChange={event=>void restoreBackup(event.target.files?.[0])}/>
       {backup&&<><button className="secondary" onClick={downloadBackup}>Save encrypted backup</button><details><summary>Download not supported by your wallet browser?</summary><p className="helper">Copy this encrypted JSON into a .json file and store it safely. It contains encrypted recovery material, not your password.</p><textarea readOnly aria-label="Encrypted recovery backup JSON" value={JSON.stringify(backup)} onFocus={e=>e.currentTarget.select()}/></details></>}
-      {backup&&<label><input type="checkbox" checked={saved} onChange={e=>setSaved(e.target.checked)}/> I saved the downloaded backup and its password.</label>}
+      {backup&&<label className="backup-confirmation" htmlFor="qvx-saved"><input id="qvx-saved" type="checkbox" checked={saved} onChange={e=>setSaved(e.target.checked)}/><span>I saved the encrypted backup file and its password separately.</span></label>}
       <button className="primary" disabled={!backup||!saved} onClick={()=>void create()}>Create vault with QoreX</button>
     </fieldset>
     {vault&&<fieldset disabled={busy}><legend>Move test QOR</legend>

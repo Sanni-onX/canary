@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useReducer, useRef, useState } from 'react';
-import { getQorexNative } from '@qorechain/qorex-types';
+import { requireQorexDiana } from '../lib/qorex-transactions';
 import { generateKeypair, sign, verify, hashPublicKey, encryptKeyBlob, storeEncryptedBackup, buildTypedDigest, withdrawalAction, type Keypair } from '@canary/pq';
 import { hexToBytes, isAddress, parseEther, zeroAddress, formatEther } from 'viem';
 import { CHAIN_ID } from '../lib/network';
@@ -95,9 +95,7 @@ export default function Home() {
   }
 
   async function connect() {
-    const provider = getQorexNative();
-    if (!provider) throw new Error('QoreX extension not found. Desktop-to-mobile QR pairing is not enabled in Canary yet.');
-    await provider.enable(CHAIN_ID);
+    const provider = await requireQorexDiana();
     const key = await provider.getKey(CHAIN_ID);
     setWallet(key.bech32Address); setNotice('QoreX connected on testnet. No transaction has been requested.');
   }

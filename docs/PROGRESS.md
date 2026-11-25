@@ -1,5 +1,21 @@
 # Canary progress
 
+## 25 November — backup confirmation and wallet network fix
+
+The saved-backup checkbox now has fixed 20px dimensions and a full clickable
+label with keyboard focus. Added encrypted-backup import to resume creation
+after a page refresh without regenerating the key. The imported file is parsed
+locally and decrypted only for creation after the user supplies its password.
+
+Connection and transaction submission now read QoreX's own eth_chainId when
+available, separately from the Diana RPC used for simulation. Mainnet is
+refused with the official seven-tap testnet instructions before enabling the
+wallet or decrypting the vault-creation key. Native-only builds still enforce
+the requested chain through enable, with a normalized network-mismatch error.
+No network is silently changed. Five transaction/network unit checks and six
+targeted desktop/mobile browser cases passed, including backup round-trip,
+checkbox label/Space activation and zero wallet requests on mainnet.
+
 ## 25 November — explicit wallet connection chooser
 
 Connect QoreX now opens a keyboard-accessible dialog with Mobile wallet and

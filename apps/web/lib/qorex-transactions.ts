@@ -2,6 +2,24 @@ import { getQorexNative } from '@qorechain/qorex-types';
 import { toEvmAddress } from '@qorechain/evm';
 import { createPublicClient, http, hexToBytes, isAddress, type Address, type Hex } from 'viem';
 const utf8 = new TextEncoder();
+export const QOREX_TESTNET_HELP='QoreX is not on Diana testnet. In the extension, unlock it, tap the version number at the bottom seven times, then choose “Switch to testnet (diana)”. Keep your saved backup, then retry. No transaction was sent.';
+export async function requireQorexDiana(){
+  const provider=getQorexNative();
+  if(!provider)throw new Error('QoreX extension not found. Mobile QR pairing is not enabled in Canary yet.');
+  // This reads QoreX itself, not the separate Diana RPC used for simulation.
+  const evm=typeof window==='undefined'?undefined:window.qorex?.evm;
+  if(evm){
+    let chain:unknown;
+    try{chain=await evm.request({method:'eth_chainId'});}catch{throw new Error('Could not read QoreX’s active network. Unlock the extension and retry. No transaction was sent.');}
+    if(typeof chain!=='string'||! /^(0x[0-9a-f]+|[0-9]+)$/i.test(chain)||BigInt(chain)!==9800n)throw new Error(QOREX_TESTNET_HELP);
+  }
+  try{await provider.enable('qorechain-diana');}
+  catch(error){
+    if(error instanceof Error&&/does not match the active network|chain.*mismatch/i.test(error.message))throw new Error(QOREX_TESTNET_HELP);
+    throw error;
+  }
+  return provider;
+}
 function varint(value: number): number[] {
   const out = []; do { const byte = value % 128; value = Math.floor(value / 128); out.push(byte | (value ? 128 : 0)); } while (value); return out;
 }
@@ -19,9 +37,8 @@ export function bankSendBytes(sender: string, recipient: string, amount: bigint)
   return Uint8Array.from([...field(1, sender), ...field(2, recipient), ...field(3, coin)]);
 }
 export async function sendQorexNative(owner: Address, build: (sender: string) => {typeUrl:string; value:Uint8Array}, gasLimit = 2000000): Promise<string> {
-  const provider = getQorexNative();
+  const provider = await requireQorexDiana();
   if (!provider?.capabilities?.includes('signAndBroadcast')) throw new Error('QoreX signing provider unavailable. Install/update the desktop extension; mobile QR pairing is not enabled in Canary yet.');
-  await provider.enable('qorechain-diana');
   const key = await provider.getKey('qorechain-diana');
   if (toEvmAddress(key.bech32Address).toLowerCase() !== owner.toLowerCase()) throw new Error('Selected QoreX account differs from the vault owner. Switch accounts and reconnect.');
   const result = await provider.signAndBroadcast({ chainId:'qorechain-diana', messages:[build(key.bech32Address)], gasLimit, memo:'Canary testnet vault action' });

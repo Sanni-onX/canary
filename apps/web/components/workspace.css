@@ -8,4 +8,8 @@
 .panel select{width:100%;max-width:100%;padding:14px;background:var(--surface);color:inherit;border:1px solid var(--line);border-radius:4px}
 .panel .mono{overflow-wrap:anywhere;word-break:break-word;font-size:10px;max-width:100%}
 .panel .action-result{display:block;overflow-wrap:anywhere}.panel+.panel{margin-top:20px}
+.backup-confirmation{display:flex;align-items:flex-start;gap:12px;min-height:48px;padding:14px;margin:18px 0;border:1px solid var(--line);border-radius:6px;cursor:pointer;font-size:13px;line-height:1.6}
+.backup-confirmation input[type=checkbox]{width:20px;height:20px;min-width:20px;padding:0;margin:1px 0 0;flex:0 0 20px;accent-color:var(--accent);cursor:pointer}
+.backup-confirmation span{flex:1;min-width:0}
+.backup-confirmation:focus-within{outline:2px solid var(--accent);outline-offset:3px}
 @media(max-width:800px){.panel dl>div{flex-wrap:wrap;gap:8px}.panel dl dd{max-width:100%}.approval-choice code{font-size:9px}}
