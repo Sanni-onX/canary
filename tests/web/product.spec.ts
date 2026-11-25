@@ -100,3 +100,18 @@ test('QoreX chooser opens without invoking the extension and keeps mobile choice
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).not.toBeVisible();
 });
+
+test('QoreX coin60 public account connects on mainnet with a persistent signing restriction',async({page},info)=>{
+ await page.addInitScript(()=>{
+  const tracked=window as unknown as {qorex:unknown;connectedChains:string[]};tracked.connectedChains=[];
+  tracked.qorex={evm:{request:async()=> '0x2649'},native:{enable:async(chain:string)=>{tracked.connectedChains.push(chain);},getKey:async()=>({bech32Address:'qor1z84y95u0t2zmm3a46f5pmy2k2qtcxdp502m5r3'}),signDirect:async()=>{throw Error('Public connection must not sign');}}};
+ });
+ await page.goto('/');await page.getByRole('button',{name:'Connect QoreX'}).click();await page.getByRole('button',{name:'Browser extension',exact:false}).click();
+ await expect(page.getByRole('status')).toContainText('QoreX account connected');
+ await expect(page.getByRole('button',{name:/qor1z84y/})).toBeVisible();
+ await expect(page.getByRole('note',{name:'QoreX network'})).toContainText('Wallet network: Mainnet.');
+ await page.getByRole('navigation').getByRole('button',{name:'Lifeboat'}).click();
+ await expect(page.getByRole('note',{name:'QoreX network'})).toContainText('signing is blocked');
+ expect(await page.evaluate(()=>(window as unknown as {connectedChains:string[]}).connectedChains)).toEqual(['qorechain-vladi']);
+ await page.screenshot({path:`.artifacts/qorex-mainnet-connected-${info.project.name}.png`});
+});

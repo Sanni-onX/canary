@@ -1,10 +1,9 @@
 'use client';
 
 import { useEffect, useReducer, useRef, useState } from 'react';
-import { requireQorexDiana } from '../lib/qorex-transactions';
+import { connectQorexAccount } from '../lib/qorex-transactions';
 import { generateKeypair, sign, verify, hashPublicKey, encryptKeyBlob, storeEncryptedBackup, buildTypedDigest, withdrawalAction, type Keypair } from '@canary/pq';
 import { hexToBytes, isAddress, parseEther, zeroAddress, formatEther } from 'viem';
-import { CHAIN_ID } from '../lib/network';
 import { initialDemo, reduceDemo } from '../lib/demo';
 import LiveWorkspace from '../components/LiveWorkspace';
 import CoveragePanel, { type CoverageState } from '../components/CoveragePanel';
@@ -43,6 +42,7 @@ export default function Home() {
   const [environment, setEnvironment] = useState('simulation');
   const [state, dispatch] = useReducer(reduceDemo, undefined, initialDemo);
   const [wallet, setWallet] = useState('');
+  const [walletNetwork,setWalletNetwork]=useState<'mainnet'|'testnet'|null>(null);
   const [walletChooserOpen, setWalletChooserOpen] = useState(false);
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
@@ -95,9 +95,9 @@ export default function Home() {
   }
 
   async function connect() {
-    const provider = await requireQorexDiana();
-    const key = await provider.getKey(CHAIN_ID);
-    setWallet(key.bech32Address); setNotice('QoreX connected on testnet. No transaction has been requested.');
+    const {key,network}=await connectQorexAccount();
+    setWallet(key.bech32Address);setWalletNetwork(network);
+    setNotice(network==='testnet'?'QoreX connected on testnet. No transaction has been requested.':'QoreX account connected. Your wallet is on Mainnet; Canary transactions remain blocked until it selects Diana testnet. Canary’s Live testnet view reads Diana balances, not your mainnet balance. No transaction has been requested.');
   }
 
   async function pqRescue() {
@@ -144,6 +144,7 @@ export default function Home() {
       <main id="main"><div className="simulation-strip"><span className="pill">{environment === 'simulation' ? 'SIMULATION' : 'TESTNET'}</span>{environment === 'simulation' ? 'Interactive product demo · sample balances · no blockchain transactions' : 'Real Diana testnet contracts · short demo delays · no real funds'}</div>
         <div className="page-heading"><div><div className="eyebrow">YOUR POST-QUANTUM SAFETY LAYER</div><h1>{tab === 'Overview' ? 'An early warning. A way out.' : tab === 'My vault' ? 'Your assets. Stronger boundaries.' : tab === 'Lifeboat' ? 'Move before the alarm.' : tab === 'Q-Day drill' ? 'Practice the day keys fall.' : tab === 'Canary lab' ? 'Small signals. Shared protection.' : tab === 'Activity' ? 'Every signal, in one place.' : 'Know what protects you.'}</h1><p>{tab === 'Overview' ? 'Watch the canaries. Bound classical access. Keep your PQ escape route ready.' : tab === 'Lifeboat' ? 'A guided migration into a vault with a separate, device-held post-quantum key.' : tab === 'Q-Day drill' ? 'Drain bait accounts, latch the alarm, block a classical withdrawal and test PQ rescue.' : 'Protection you can inspect, test and understand.'}</p></div>{environment === 'simulation' && tab === 'Overview' && <button className="secondary" onClick={() => setTab('Q-Day drill')}>Run a Q-Day drill <span>↗</span></button>}</div>
         {notice && <div className="notice" role="status">{notice}</div>}
+        {walletNetwork==='mainnet'&&<div className="warning-box" role="note" aria-label="QoreX network"><strong>Wallet network: Mainnet.</strong> Account connection is available, but Canary signing is blocked until QoreX selects Diana testnet. Live testnet mode reads Diana balances.</div>}
         {environment === 'testnet' && tab === 'Threat model' ? <ThreatModel /> : environment === 'testnet' && ['My vault', 'Lifeboat', 'Activity'].includes(tab) ? <LiveWorkspace wallet={wallet} tab={tab} /> : environment === 'testnet' && tab === 'Canary lab' ? <CoveragePanel data={live} error={liveError} lab /> : environment === 'testnet' ? <>
           {liveError && <div className="warning-box" role="alert">{liveError}</div>}
           {!live ? <section className="panel live-empty"><h2>Reading deployed testnet contracts…</h2><p>Live data is fetched from Diana. Local simulation values are never used as a fallback.</p></section> : <>

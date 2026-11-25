@@ -20,7 +20,7 @@ export default function WalletConnectionChooser({open,onClose,onExtension}:{open
    <p>Choose where you want to approve wallet requests.</p>
    <button type="button" className="wallet-connection-option" onClick={()=>setMobile(true)}><strong>Mobile wallet</strong><span>Scan to connect · Not available yet</span></button>
    <button type="button" className="wallet-connection-option" onClick={onExtension}><strong>Browser extension</strong><span>Connect the QoreX extension on this computer</span></button>
-   <p className="helper">Diana testnet only. Choosing a connection method does not send a transaction.</p>
+   <p className="helper">Canary transactions require Diana testnet. Connecting your public account does not send a transaction.</p>
   </>}
  </dialog>;
 }

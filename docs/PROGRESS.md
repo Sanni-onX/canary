@@ -1,5 +1,20 @@
 # Canary progress
 
+## 25 November — public connection separated from signing network
+
+The user activated coin60 but could not connect. A fresh UI retry still
+reported mainnet: the strict Diana precheck was also applied to public account
+connection. Public connection now reads QoreX's active chain, enables that
+exact native chain and reads its selected public account on either Vladi or
+Diana. Mainnet connections carry a persistent warning that signing is blocked
+and live-testnet balances are Diana reads. Coin60 activation does not change
+the network. All transaction paths retain the strict Diana guard, and no
+wallet network is silently changed. Native-only providers keep the existing
+Diana-enforced fallback. Six unit checks and eight targeted desktop/mobile
+browser checks cover connection versus signing, account mismatch, the chooser,
+backup restoration and checkbox behavior. This does not establish a completed
+wallet transaction or resolve the installed wallet's testnet-switch UI.
+
 ## 25 November — backup confirmation and wallet network fix
 
 The saved-backup checkbox now has fixed 20px dimensions and a full clickable

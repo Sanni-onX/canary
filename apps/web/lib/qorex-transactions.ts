@@ -3,6 +3,19 @@ import { toEvmAddress } from '@qorechain/evm';
 import { createPublicClient, http, hexToBytes, isAddress, type Address, type Hex } from 'viem';
 const utf8 = new TextEncoder();
 export const QOREX_TESTNET_HELP='QoreX is not on Diana testnet. In the extension, unlock it, tap the version number at the bottom seven times, then choose “Switch to testnet (diana)”. Keep your saved backup, then retry. No transaction was sent.';
+export async function connectQorexAccount(){
+  const provider=getQorexNative();
+  if(!provider)throw new Error('QoreX extension not found. Mobile QR pairing is not enabled in Canary yet.');
+  const evm=typeof window==='undefined'?undefined:window.qorex?.evm;
+  if(!evm){const native=await requireQorexDiana();return {key:await native.getKey('qorechain-diana'),network:'testnet' as const};}
+  const chain=await evm.request({method:'eth_chainId'});
+  if(typeof chain!=='string'||! /^(0x[0-9a-f]+|[0-9]+)$/i.test(chain))throw new Error('Could not identify QoreX’s active network. Unlock it and retry.');
+  const id=BigInt(chain);
+  if(id!==9800n&&id!==9801n)throw new Error('QoreX must select a QoreChain account to connect.');
+  const nativeChain=id===9800n?'qorechain-diana':'qorechain-vladi';
+  await provider.enable(nativeChain);
+  return {key:await provider.getKey(nativeChain),network:id===9800n?'testnet' as const:'mainnet' as const};
+}
 export async function requireQorexDiana(){
   const provider=getQorexNative();
   if(!provider)throw new Error('QoreX extension not found. Mobile QR pairing is not enabled in Canary yet.');
