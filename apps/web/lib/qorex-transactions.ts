@@ -20,7 +20,7 @@ export function bankSendBytes(sender: string, recipient: string, amount: bigint)
 }
 export async function sendQorexNative(owner: Address, build: (sender: string) => {typeUrl:string; value:Uint8Array}, gasLimit = 2000000): Promise<string> {
   const provider = getQorexNative();
-  if (!provider?.capabilities?.includes('signAndBroadcast')) throw new Error('Open Canary in QoreX or install/update the QoreX extension.');
+  if (!provider?.capabilities?.includes('signAndBroadcast')) throw new Error('QoreX signing provider unavailable. Install/update the desktop extension; mobile QR pairing is not enabled in Canary yet.');
   await provider.enable('qorechain-diana');
   const key = await provider.getKey('qorechain-diana');
   if (toEvmAddress(key.bech32Address).toLowerCase() !== owner.toLowerCase()) throw new Error('Selected QoreX account differs from the vault owner. Switch accounts and reconnect.');

@@ -1,5 +1,26 @@
 # QoreX-only integration investigation — 20 November 2026
 
+## 25 November: desktop-to-mobile QR requirement
+
+The user reports that the installed QoreX mobile app has no dApp browser and
+requires Canary on desktop with phone QR approval. Earlier instructions to
+use that mobile browser do not apply to their build. Do not repeat them.
+
+Official Dashboard documentation describes qorex://connect QR sessions and
+qorex://tx transfer proposals. Public Dashboard client code, inspected without
+credentials, creates /api/wallet/connect/sessions and polls session status;
+transfer proposals use /api/wallet/transfer-requests with network and known
+send/delegate/undelegate/claim-rewards kinds. These are Dashboard application
+endpoints, not an established third-party wallet transport. The public
+qore-wallet-provider repository exposes only a README. No generic WalletConnect
+or third-party cross-VM QR adapter has been established by this investigation.
+
+Canary's old URL QR cannot establish a session and has been removed from the
+connection help. Actual app version and Scan/Connect options were requested.
+Do not fabricate a qorex:// payload or claim that scanning proves wallet control.
+Sources checked: https://docs.qorechain.io/dashboard/wallet/ and
+https://docs.qorechain.io/qorex/account-and-dashboard/ . Historical notes follow.
+
 ## 23 November: native cross-VM route proven; QoreX approval pending
 
 The native MsgCrossVMCall route now works on Diana without a session key or

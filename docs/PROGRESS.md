@@ -1,5 +1,22 @@
 # Canary progress
 
+## 25 November — mobile connection correction
+
+The user reports no browser in their installed QoreX app and requests desktop
+Canary with mobile QR approval. Official documentation describes that workflow
+for the Dashboard. Its public client uses Dashboard session and transfer-request
+APIs; published third-party connectors expose injected browser providers.
+No compatible generic QR contract-call transport has yet been established.
+The public wallet-provider repository contains only a README.
+
+Removed the URL QR and unsupported mobile-browser instructions from connection
+help. A page link cannot prove wallet ownership or route approval requests.
+The working desktop extension remains available; its actual transaction
+approval still needs verification. Mobile QR signing remains blocked on a
+supported QoreX protocol, not completed by this UI correction. The user asked
+us to choose the best route rather than supplying an app version; do not ask
+again for the same information or request wallet secrets.
+
 ## 25 November — release verification and refreshed coverage
 
 Replaced all three expired slots through local 2-of-3 PQ governance using the

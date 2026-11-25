@@ -59,5 +59,9 @@ cooldown-bound evidence process and invalidates no historical alarm evidence.
 ## Mobile access
 
 Extension: unlock, tap the version number seven times, choose Diana testnet.
-Mobile: Settings → Use testnet, then open Canary in the QoreX dApp Browser.
-The page QR is a URL handoff only, not a WalletConnect pairing session.
+The tester reports no browser in the installed mobile app. Do not instruct them
+to open Canary inside it. QoreChain documents Dashboard-specific QR sessions
+and mobile transfer requests; its public dApp connectors expose injected
+providers, not a documented generic QR transport. Canary mobile pairing and
+contract-call compatibility are not yet verified. The former URL QR has been
+removed from the connection help because it cannot pair a wallet.

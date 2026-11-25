@@ -18,7 +18,9 @@ bot and has automatically latched a real threshold alarm. Its verified native
 receipt is recorded in [automatic-alarm evidence](docs/evidence/automatic-alarm-test.json).
 Coverage deadlines are tracked and persisted; fresh epoch replacement still
 requires local PQ governance. See [operator procedures](docs/OPERATIONS.md).
-The mobile QR is a page link; use QoreX's in-app browser for signing.
+Desktop-to-mobile QR pairing is not implemented. The tester's mobile app has
+no dApp browser; its signing route remains unresolved. Desktop extension
+connection is verified. No web-address QR is represented as wallet pairing.
 
 **Coverage is finite:** ordinary QoreChain window renewal needs both classical
 and PQ signatures. A PQ key alone cannot renew a canary after its classical key
@@ -277,7 +279,7 @@ persistent read-only-by-default watcher without copying `.local/` or secrets.
 Both Dockerfiles have built and run on Railway: the
 [public app](https://web-production-2863d083.up.railway.app/?mode=testnet) and
 [persistent watcher](https://watcher-production-64b80e30.up.railway.app/status)
-are live. QoreX mobile uses the HTTPS app in its dApp Browser.
+are live. QoreX mobile pairing remains an unresolved integration requirement.
 Docker Compose's watcher has no signer configured; health
 means fresh RPC monitoring, while coverage degradation is reported separately.
 

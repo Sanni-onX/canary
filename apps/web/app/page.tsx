@@ -94,7 +94,7 @@ export default function Home() {
 
   async function connect() {
     const provider = getQorexNative();
-    if (!provider) throw new Error('Open Canary in a browser with the QoreX extension, or its mobile dApp browser over HTTPS.');
+    if (!provider) throw new Error('QoreX extension not found. Desktop-to-mobile QR pairing is not enabled in Canary yet.');
     await provider.enable(CHAIN_ID);
     const key = await provider.getKey(CHAIN_ID);
     setWallet(key.bech32Address); setNotice('QoreX connected on testnet. No transaction has been requested.');
