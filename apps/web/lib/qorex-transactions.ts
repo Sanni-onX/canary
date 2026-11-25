@@ -2,7 +2,28 @@ import { getQorexNative } from '@qorechain/qorex-types';
 import { toEvmAddress } from '@qorechain/evm';
 import { createPublicClient, http, hexToBytes, isAddress, type Address, type Hex } from 'viem';
 const utf8 = new TextEncoder();
-export const QOREX_TESTNET_HELP='QoreX is not on Diana testnet. In the extension, unlock it, tap the version number at the bottom seven times, then choose “Switch to testnet (diana)”. Keep your saved backup, then retry. No transaction was sent.';
+export const QOREX_TESTNET_HELP='QoreX is not on Diana testnet. Use “Request Diana testnet” to check whether your wallet can switch. If QoreX refuses, its active network must be changed in a testnet-capable QoreX build. Keep your saved backup. No transaction was sent.';
+export async function readQorexNetwork(){
+  const evm=typeof window==='undefined'?undefined:window.qorex?.evm;
+  if(!evm)throw new Error('QoreX network provider not found. Unlock the extension, then refresh Canary.');
+  const value=await evm.request({method:'eth_chainId'});
+  if(typeof value!=='string'||! /^(0x[0-9a-f]+|[0-9]+)$/i.test(value))throw new Error('QoreX returned an unreadable network ID.');
+  const chain=BigInt(value);
+  if(chain!==9800n&&chain!==9801n)throw new Error('QoreX is not reporting a QoreChain network.');
+  return Number(chain);
+}
+export async function requestQorexDiana(){
+  const before=await readQorexNetwork();
+  if(before===9800)return {before,after:before,requested:false};
+  let refusal:string|undefined,code:number|undefined;
+  try{await window.qorex!.evm.request({method:'wallet_switchEthereumChain',params:[{chainId:'0x2648'}]});}
+  catch(error){
+    refusal=error instanceof Error?error.message:error&&typeof error==='object'&&'message' in error&&typeof error.message==='string'?error.message:typeof error==='string'?error:'QoreX refused the network request.';
+    if(error&&typeof error==='object'&&'code' in error&&typeof error.code==='number')code=error.code;
+  }
+  // A resolved request alone is not proof that the wallet actually switched.
+  return {before,after:await readQorexNetwork(),requested:true,refusal,code};
+}
 export async function connectQorexAccount(){
   const provider=getQorexNative();
   if(!provider)throw new Error('QoreX extension not found. Mobile QR pairing is not enabled in Canary yet.');

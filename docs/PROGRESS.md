@@ -1,5 +1,18 @@
 # Canary progress
 
+## 25 November — QoreX-only network request diagnostic
+
+The user explicitly chose QoreX only after the Dashboard web-wallet review;
+no browser wallet is being added. Added a fixed Diana EIP-3326 request and a
+separate read-only network check. The response is followed by a fresh
+eth_chainId read: null/success alone never establishes a switch. Refusal
+messages/codes remain visible, including plain-object wallet errors. The
+request sends no transaction and does not add a network or export any key.
+Repeated, inapplicable seven-tap instructions were replaced with this verified
+check and a clear requirement for a QoreX build capable of selecting testnet.
+Seven unit checks and ten targeted desktop/mobile cases passed; actual installed
+wallet behavior must still be observed after deployment.
+
 ## 25 November — public connection separated from signing network
 
 The user activated coin60 but could not connect. A fresh UI retry still

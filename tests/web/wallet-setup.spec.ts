@@ -29,3 +29,21 @@ test('saved backup restores after refresh, confirmation is usable, and mainnet r
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await page.screenshot({path:`.artifacts/wallet-backup-network-${info.project.name}.png`,fullPage:true});
 });
+
+test('QoreX switch refusal remains mainnet and reports the exact wallet response',async({page},info)=>{
+ await page.addInitScript(()=>{
+  const tracked=window as unknown as {qorex:unknown;switchRequests:number};tracked.switchRequests=0;
+  tracked.qorex={evm:{request:async(args:{method:string;params?:unknown})=>{
+   if(args.method==='eth_chainId')return '0x2649';
+   if(args.method==='wallet_switchEthereumChain'){tracked.switchRequests++;throw Object.assign(new Error('QoreX test fixture: network not selected'),{code:4902});}
+   throw Error('Unexpected wallet method');
+  }}};
+ });
+ await page.route('**/api/protocol',route=>route.fulfill({status:502,json:{error:'Test fixture: protocol unavailable'}}));
+ await page.goto('/?mode=testnet');await page.getByRole('button',{name:'Check QoreX network',exact:true}).click();
+ await expect(page.getByRole('status').filter({hasText:'QoreX reports Vladi mainnet'})).toBeVisible();
+ await page.getByRole('button',{name:'Request Diana testnet',exact:true}).click();
+ await expect(page.getByRole('status').filter({hasText:'Wallet response (4902): QoreX test fixture: network not selected'})).toContainText('wallet did not switch');
+ expect(await page.evaluate(()=>(window as unknown as {switchRequests:number}).switchRequests)).toBe(1);
+ await page.locator('.qorex-network-setup').screenshot({path:`.artifacts/qorex-network-request-${info.project.name}.png`});
+});
