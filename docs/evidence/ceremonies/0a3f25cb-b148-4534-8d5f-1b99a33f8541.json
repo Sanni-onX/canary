@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "id": "0a3f25cb-b148-4534-8d5f-1b99a33f8541",
+  "network": "qorechain-diana",
+  "chainId": 9800,
+  "createdAt": "2026-11-25T07:47:35.257Z",
+  "address": "0x8429763936F756d2bD7083f764D16d6Ccd99749b",
+  "nativeAddress": "qor1ss5hvwfk7atd90tss0mkf5tddnxejaymjateuc",
+  "classicalPublicKey": "0x04c61a8cded6162f40b8a38982092fdb51be4f2ea6168a8b71602c3f2cfffd70d398ec9482dd8ce6f8043430df6a2d6211a091935d7eddd24ddba7bd9e91351c04",
+  "status": "exposed-keys-retained",
+  "exposureHash": "0xe6eaf4d1c80c787e4c43a2272e3c0d9075ef7389f9836aa56cce9eb5a15c71d9",
+  "keyDestructionProven": false,
+  "replacementSlot": 2,
+  "note": "Local testnet epoch account only. No transaction sent. Independent destruction is not provable.",
+  "registrationHash": "F02A260F049814D37B0DABD58EF8A172D4DB91C9CE168DB8BDA12FE3BF7F5AF8",
+  "windowHash": "D8986848746C3DBF6A88B82C3EC4C50DEBFB823227EC3AA216ACC32903819A88",
+  "exposureBlock": "10718600",
+  "governanceProposal": {
+    "target": "0xc4d00be73ac4307c4550312fe2df553c835c9230",
+    "data": "0x643e65fa00000000000000000000000000000000000000000000000000000000000000020000000000000000000000008429763936f756d2bd7083f764d16d6ccd99749be6eaf4d1c80c787e4c43a2272e3c0d9075ef7389f9836aa56cce9eb5a15c71d9",
+    "note": "Unsigned proposal only. Quorum approval and timelock execution are separate."
+  },
+  "observation": {
+    "observedAt": "2026-11-25T07:51:18.423Z",
+    "balanceWei": "197637500000000000",
+    "live": true,
+    "expiryHeight": "10725797",
+    "remainingBlocks": "7197",
+    "registered": false,
+    "exposureMatches": false,
+    "baselineWei": null
+  }
+}

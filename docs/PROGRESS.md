@@ -1,5 +1,27 @@
 # Canary progress
 
+## 25 November — release verification and refreshed coverage
+
+Replaced all three expired slots through local 2-of-3 PQ governance using the
+existing funded operator. Public funding, exposure and governance receipts are
+saved in next-epoch.json; the prior epoch is archived. The hosted watcher and
+web API verified three covered canaries, threshold two plus one spare, with
+no degraded coverage at the recorded observation. Windows remain finite and
+keys are retained. The controlled drill alarm remains latched deliberately.
+
+All 41 contract tests passed, including seven invariants with 128,000 calls
+each. Type checks, production build and seven amount/codec/coverage/maintenance
+checks passed. Browser verification initially found two stale recovery-fixture
+assertions and one transient browser launch failure. The fixture now permits
+only the new public eth_call reads alongside rescue preflight; all three failed
+checks passed on rerun, completing the 18 desktop/mobile cases.
+
+The installed extension connected on Diana with the registered public address.
+No user transaction was requested or signed. The user prefers mobile for the
+remaining transaction proof. Recovery passwords and backups remain user-held.
+Created the public repository at https://github.com/Sanni-onX/canary; publication
+and hosted CI results must be checked before declaring submission ready.
+
 ## 23 November — expanded Lifeboat and release packet
 
 Added exact ERC-20 approvals, separate token deposits, allowance revocation,

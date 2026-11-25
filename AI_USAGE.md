@@ -143,4 +143,5 @@ targeted regression tests and defense documentation, and prepared the Stage 2
 response bundle. No executable contract changes were needed for those findings.
 Codex deployed revision 2 with the authorized fresh testnet operator, compared
 runtime bytecode and verified a real PQ withdrawal from a new demo vault.
-User wallet secrets were not provided or uploaded. Stage 2 is still pending.
+User wallet secrets were not provided or uploaded. Stage 2 completed at 72/100;
+its original PDF and finding dispositions are retained in docs/audit/ and docs/AUDIT.md.

@@ -48,17 +48,22 @@ hosted app uses revision 2 and labels revision-1 drill receipts as historical.
 - **Watcher:** block subscription plus HTTP fallback/backoff, SQLite history,
   permissionless alarm submission, `/status`, `/health`, and `--once`.
 - **Live workspace:** discover owned vaults, native/fUSD/user-added token
-  balances, scoped allowance review, and decoded on-chain activity. Export
-  selected, preflight-checked revocation plans without claiming they were sent.
+  balances, scoped allowance review, and decoded on-chain activity. QoreX
+  controls support vault creation, QOR and token deposits, exact approvals,
+  allowance revocation, classical and queued withdrawals, PQ rescue, immediate
+  policy tightening, and PQ-authorized delayed policy changes.
 - **Recovery:** restore encrypted backups from file or IndexedDB, check vault
   key binding, unlock locally for five minutes, and export a real PQ rescue
   authorization only after local signature verification and chain preflight.
 - **Resume records:** save/export public owner/vault/key/policy snapshots and
   receipt references; imported labels never establish completion.
 
-The browser's migration and transfer controls are **local simulation**. Live
-testnet mode currently monitors the operator-owned demonstration; general-user
-wallet-backed migration/transactions, production bounds and audits remain open.
+The default browser walkthrough is **local simulation**. Live testnet mode
+provides wallet transaction controls that preflight calls, verify native chain
+receipts and check resulting state. The underlying native transaction route is
+proven on Diana; actual installed-QoreX decoding and approval remain unverified.
+Do not treat browser fixtures or operator-signed probes as that wallet proof.
+Production bounds and an independent security audit remain open.
 QoreX connects through its documented native provider; no unsupported EVM send
 or QR/WalletConnect capability is invented. No user wallet key was provided.
 
@@ -81,23 +86,25 @@ computer; QoreX mobile needs a publicly reachable HTTPS deployment.
 ## Actual testnet deployment
 
 Network: `qorechain-diana`, EVM chain ID **9800**. Every transaction/receipt is
-recorded in [deployments/testnet.json](deployments/testnet.json).
+recorded in [deployments/testnet-v2.json](deployments/testnet-v2.json).
 
 | Contract | Address |
 | --- | --- |
-| PQGovernance | `0xb933dc8be7b7044049e368c4ae61c2cad69fb952` |
-| CanaryRegistry | `0x3a6d15b3cf0b65c5e6db6217d353508136988ec9` |
-| VaultFactory | `0x1d8cfb8bdd89021ead9c7c42f929d35d7452dfac` |
-| PQVault demo clone | `0x7ff8A9F57f638A4347146687e1ef4F5b54E89Ae6` |
+| PQGovernance | `0x8906dca5d2b1ec2d7d54808e5537b8371d96a8de` |
+| CanaryRegistry | `0xc4d00be73ac4307c4550312fe2df553c835c9230` |
+| VaultFactory | `0xeacad1b5d4c146b6aa2180d10c0ae9ab6876d502` |
+| PQVault demo clone | `0x73fc8909324a0360B53d4763fD98cDFAcC0c2d64` |
 
 **DEMO BOUNDS:** 60-second governance/minimum vault timelock; 10-second minimum
 cooling-off. Not production settings. The three governance keys are retained by
 one local demo operator, not three independent human guardians. Drill canary
 keys are deliberately retained; there is no destruction claim.
 
-The demonstration currently has **alarm latched, two of three canaries drained,
-PQ nonce 2, and zero vault balance after rescue**. Reset requires PQ governance
-and a delay; refreshing the UI cannot reset the chain.
+Revision 2 retains the controlled drill's latched alarm. Coverage changes as
+finite permission windows expire; consult the live dashboard for current state.
+Reset requires separate PQ governance and a delay; refreshing the UI cannot
+reset the chain. Historical revision-1 receipts are preserved in
+[deployments/testnet.json](deployments/testnet.json).
 
 Key proof transactions (select testnet in the explorer):
 

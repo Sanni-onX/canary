@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
-import { decodeFunctionData, hexToBytes, keccak256, zeroAddress, parseAbi } from 'viem';
+import { decodeFunctionData, hexToBytes, keccak256, zeroAddress, parseAbi, toFunctionSelector } from 'viem';
 import { verify, buildTypedDigest, withdrawalAction } from '../../packages/pq/src/index';
 const vaultAbi = parseAbi(['function withdrawPQ(address,uint256,address,uint256,bytes,bytes)']);
 
@@ -23,6 +23,19 @@ test('encrypted backup recovers a real signing key and exports only a checked, n
   await page.getByRole('button', { name: 'Generate key & download encrypted backup' }).click();
   const backupFile = await backupDownload;
   const backup = JSON.parse(await readFile((await backupFile.path())!, 'utf8'));
+  // Policy controls read pending changes when a vault is selected. Keep this
+  // recovery fixture deterministic and permit only these public read calls.
+  await page.route('https://evm-testnet.qore.host/**', async route => {
+    const rpc = route.request().postDataJSON();
+    expect(rpc.method).toBe('eth_call');
+    expect(rpc.params[0].to.toLowerCase()).toBe(address.toLowerCase());
+    const results: Record<string, string> = {
+      [toFunctionSelector('changeCount()')]: `0x${'0'.repeat(64)}`,
+      [toFunctionSelector('pqPkHash()')]: backup.publicKeyHash,
+    };
+    expect(results[rpc.params[0].data]).toBeDefined();
+    await route.fulfill({ json: { jsonrpc: '2.0', id: rpc.id, result: results[rpc.params[0].data] } });
+  });
   await page.route('**/api/portfolio?*', route => route.fulfill({ json: portfolio(backup.publicKeyHash) }));
   await page.route('**/api/preflight', route => route.fulfill({ json: { success: true } }));
   await page.getByLabel('Environment').selectOption('testnet');
@@ -48,8 +61,12 @@ test('encrypted backup recovers a real signing key and exports only a checked, n
   const digest = buildTypedDigest({ vault: address, chainId: 9800n, nonce: 4n, deadline, action: withdrawalAction(token, amount, to) });
   expect(verify(hexToBytes(pk), hexToBytes(digest), hexToBytes(signature))).toBe(true);
   expect(verify(hexToBytes(pk), hexToBytes(buildTypedDigest({ vault: address, chainId: 9800n, nonce: 5n, deadline, action: withdrawalAction(token, amount, to) })), hexToBytes(signature))).toBe(false);
-  expect(posts).toHaveLength(1);
-  expect(posts[0].url).toContain('/api/preflight');
+  const preflights = posts.filter(post => post.url.endsWith('/api/preflight'));
+  expect(preflights).toHaveLength(1);
+  for (const post of posts.filter(post => !post.url.endsWith('/api/preflight'))) {
+    expect(post.url).toBe('https://evm-testnet.qore.host/');
+    expect(post.body.method).toBe('eth_call');
+  }
   expect(JSON.stringify(posts)).not.toMatch(/secretKey|password|ciphertext|privateKey/);
   await page.getByRole('button', { name: 'Lock recovery key', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Sign & check rescue authorization' })).toBeDisabled();

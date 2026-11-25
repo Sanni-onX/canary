@@ -84,8 +84,10 @@ threshold before changing or retiring a slot. Replacement never resets the alarm
 or its historical block. Address history grows by one mapping entry per canary;
 scan loops remain bounded to 16. Active or retired slots can be replaced.
 
-Revision 2 is locally tested, **not deployed**. It needs renewed static/QCAI
-review and a separate deployment; its code does not upgrade the active registry.
-Migration of existing vaults to another immutable registry cannot be silently
-performed by an administrator. The current release remains a bounded testnet
-prototype until the new deployment and ceremony flow are verified.
+Revision 2 was separately deployed and activated after both QCAI reviews.
+Runtime comparisons and real local PQ-governed slot replacements are recorded
+in deployments/testnet-v2.json and docs/evidence/next-epoch.json. Revision 1
+remains immutable historical evidence. Existing vaults cannot be silently moved
+between registries by an administrator. The release remains a bounded testnet
+prototype; the current drill keys are retained and replacement requires local
+operator execution.

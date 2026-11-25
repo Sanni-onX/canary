@@ -172,36 +172,36 @@
     }
   ],
   "activeEpoch": {
-    "completedAt": "2026-11-23T14:32:31.699Z",
+    "completedAt": "2026-11-25T07:52:31.710Z",
     "plan": "docs/evidence/next-epoch.json",
     "keysRetained": true,
     "accounts": [
       {
-        "id": "7f1be84b-8799-4d80-bb1f-0960a589ebd6",
-        "address": "0x1259FD4E702f26981Cb48c9459980e092cDe15c5",
-        "nativeAddress": "qor1zfvl6nns9unfs8953j29nxqwpykdu9w9j9q005",
+        "id": "80099deb-3570-41aa-9ccd-c741b432bb4a",
+        "address": "0xE593d909c01429Ae12D133CfE2867E26769eFa22",
+        "nativeAddress": "qor1ukfajzwqzs56uyk3x0879pn7yemfa73znaa4nk",
         "replacementSlot": 0,
         "baselineWei": "197637500000000000",
-        "expiryHeight": "10628939",
-        "replacementHash": "0x70cf1ce76a78b014433d75b24f61ae97b2ee4bae4fde0f6e5468b38c4dd869ad"
+        "expiryHeight": "10725664",
+        "replacementHash": "0x995a0921da6e0be402e302d928576e2127d5268ea2e947613f848ce44c4c8426"
       },
       {
-        "id": "9f1f45c5-a164-4173-bcb1-b5e5e4095007",
-        "address": "0x2c8405BD1798f500c05A4acC6954026982642097",
-        "nativeAddress": "qor19jzqt0ghnr6spsz6ftxxj4qzdxpxggyhpfsurr",
+        "id": "ca02b8d9-ca18-49f4-8868-5b9ba1868d6d",
+        "address": "0x840eF7EE43b1ACF14Acc359AeB428339638eF475",
+        "nativeAddress": "qor1ss800mjrkxk0zjkvxkdwks5r893caar4gt5v9w",
         "replacementSlot": 1,
         "baselineWei": "197637500000000000",
-        "expiryHeight": "10629009",
-        "replacementHash": "0xfe7eb79d166700fa70f339b46948456952987fae04dac428f08c1f0460229a03"
+        "expiryHeight": "10725733",
+        "replacementHash": "0xe965e8b9b38d8a9aaaa2d161238ecdbedca58833c34059aa345977e08a654aed"
       },
       {
-        "id": "36d5a252-c3ea-4822-840b-1e7f5bd76510",
-        "address": "0x6Cf0B9bCC7f931B214999cD1185FE905bfFb0aaB",
-        "nativeAddress": "qor1dnctn0x8lycmy9yenng3shlfqkllkz4tvwwc0r",
+        "id": "0a3f25cb-b148-4534-8d5f-1b99a33f8541",
+        "address": "0x8429763936F756d2bD7083f764D16d6Ccd99749b",
+        "nativeAddress": "qor1ss5hvwfk7atd90tss0mkf5tddnxejaymjateuc",
         "replacementSlot": 2,
         "baselineWei": "197637500000000000",
-        "expiryHeight": "10629076",
-        "replacementHash": "0x1c933a23a8574d1bfb84c7dd245f4acc33c268a1e204e782723a282d8a49621a"
+        "expiryHeight": "10725797",
+        "replacementHash": "0x5be440ba178006ceaec45d4fb03023c4a804ef7a9667df151377620f98a13c82"
       }
     ]
   }

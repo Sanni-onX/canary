@@ -30,6 +30,7 @@ documented in AI_USAGE.md and README.md.
 ## Links and evidence
 
 - App: https://web-production-2863d083.up.railway.app/?mode=testnet
+- Public source: https://github.com/Sanni-onX/canary
 - Watcher: https://watcher-production-64b80e30.up.railway.app/status
 - Active addresses/receipts: deployments/testnet-v2.json
 - Automatic alarm: docs/evidence/automatic-alarm-test.json
@@ -48,7 +49,7 @@ Keep the registered QoreX address linked. Add build accounts to the project:
 
 ## Before submission
 
-Publish the public GitHub repository and link it here and on the project page;
+Link the public GitHub repository on the project page;
 install the QoreChain Build GitHub App; verify hosted CI; upload the video;
 review project category, checked features and team registration. Record a real
 QoreX approval result. Review coverage and alarm status immediately before a
