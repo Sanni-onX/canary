@@ -1,0 +1,17 @@
+{
+  "observedDate": "2026-11-25",
+  "source": "Installed QoreX response observed through Canary's live network-setup UI",
+  "url": "https://web-production-2863d083.up.railway.app/?mode=testnet",
+  "request": {"method": "wallet_switchEthereumChain", "params": [{"chainId": "0x2648"}]},
+  "beforeChainId": 9801,
+  "afterChainId": 9801,
+  "responseCode": 4100,
+  "responseMessage": "QoreX: switch the network in QoreX itself",
+  "networkChanged": false,
+  "transactionRequested": false,
+  "transactionBroadcast": false,
+  "walletVersion": "not established",
+  "qorexOnlyPreference": true,
+  "browserWalletAdded": false,
+  "remainingRequirement": "Select Diana in the installed QoreX interface, or use an official QoreX build that exposes a working testnet selection control."
+}

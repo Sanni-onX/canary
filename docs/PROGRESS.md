@@ -13,6 +13,16 @@ check and a clear requirement for a QoreX build capable of selecting testnet.
 Seven unit checks and ten targeted desktop/mobile cases passed; actual installed
 wallet behavior must still be observed after deployment.
 
+Live result subsequently verified: the installed extension returned code 4100,
+“QoreX: switch the network in QoreX itself.” A fresh network read remained
+9801/Vladi. Saved public evidence is docs/evidence/qorex-network-refusal.json.
+No transaction or key export occurred. The standard dApp request cannot change
+this build's active network; the QoreX UI/testnet capability is now the concrete
+external blocker. An installed version or user-provided main-screen screenshot
+is still needed to identify the actual available control. Do not present account
+activation, null switch responses, or the Dashboard's testnet selection as proof
+that QoreX switched. The user continues to require QoreX only.
+
 ## 25 November — public connection separated from signing network
 
 The user activated coin60 but could not connect. A fresh UI retry still
