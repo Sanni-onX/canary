@@ -26,8 +26,9 @@ Created https://build.qorechain.io/p/canary with the source, demo, protocol
 preview and four verified testnet addresses. AI-Native and repository kits were
 verified by the fest. Its generated cover is used because the local upload
 chooser did not open. The user authenticated and installed QoreChain Build,
-with read-only repository access scoped to Canary. Mobile approval and
-confirmation of fest commit indexing remain open.
+with read-only repository access scoped to Canary. My space verified one
+counted commit after a new push and awarded the PQC-check contract badge.
+The original public audit PDFs match local bytes. Mobile approval remains open.
 
 ## 23 November — expanded Lifeboat and release packet
 

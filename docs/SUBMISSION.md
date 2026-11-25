@@ -56,8 +56,9 @@ and four verified testnet addresses. Category is Post-Quantum dApp and AI-Native
 is verified; only used kits/features were declared. The fest generated a cover
 because browser file upload could not open the local chooser. Hosted CI passed
 for be9e0f6. The user completed GitHub authentication and installed QoreChain
-Build with read access scoped to Sanni-onX/canary. Commit indexing must be
-confirmed after a subsequent push.
+Build with read access scoped to Sanni-onX/canary. After the subsequent push,
+My space verified one counted commit and the PQC-check contract badge was
+earned. The original public audit PDFs match the local originals byte-for-byte.
 
 Record a real QoreX mobile approval result and replace the preview with a full
 mobile migration demonstration if available. Review finite coverage and alarm
