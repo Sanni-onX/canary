@@ -1,5 +1,16 @@
 # Canary progress
 
+## 25 November — explicit wallet connection chooser
+
+Connect QoreX now opens a keyboard-accessible dialog with Mobile wallet and
+Browser extension choices. No extension API runs until Browser extension is
+selected. Mobile shows its current QR-pairing limitation without requesting
+extension access or pretending to establish a connection. Escape and Close
+dismiss the dialog. Four targeted desktop/mobile browser checks passed,
+including a tracked provider proving zero extension requests on the mobile
+path and exactly one after extension selection. Typecheck and production
+build passed. Screenshots were reviewed at both sizes.
+
 ## 25 November — mobile connection correction
 
 The user reports no browser in their installed QoreX app and requests desktop

@@ -10,6 +10,7 @@ import LiveWorkspace from '../components/LiveWorkspace';
 import CoveragePanel, { type CoverageState } from '../components/CoveragePanel';
 import type { Coverage } from '@canary/coverage';
 import ThreatModel from '../components/ThreatModel';
+import WalletConnectionChooser from '../components/WalletConnectionChooser';
 import '../components/workspace.css';
 
 type Tab = 'Overview' | 'My vault' | 'Lifeboat' | 'Canary lab' | 'Q-Day drill' | 'Activity' | 'Threat model';
@@ -42,6 +43,7 @@ export default function Home() {
   const [environment, setEnvironment] = useState('simulation');
   const [state, dispatch] = useReducer(reduceDemo, undefined, initialDemo);
   const [wallet, setWallet] = useState('');
+  const [walletChooserOpen, setWalletChooserOpen] = useState(false);
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
   const [dark, setDark] = useState(true);
@@ -134,12 +136,13 @@ export default function Home() {
   const activity = <div className="event-list">{state.activity.slice(0, tab === 'Activity' ? 40 : 5).map(event => <div className="event" key={event.id}><i className={event.tone} /><div><strong>{event.title}</strong><p>{event.detail}</p></div><span>#{String(event.id).padStart(3, '0')}</span></div>)}</div>;
 
   return <div className={dark ? 'app dark' : 'app'}>
+    <WalletConnectionChooser open={walletChooserOpen} onClose={()=>setWalletChooserOpen(false)} onExtension={()=>{setWalletChooserOpen(false);void perform(connect);}} />
     <a className="skip" href="#main">Skip to content</a>
     <aside className="sidebar"><a className="brand" href="/" aria-label="Canary home"><span className="bird">◒</span>canary<span>.</span></a><div className="sidebar-label">PROTECT WHAT COMES NEXT</div>
       <nav aria-label="Main navigation">{tabs.map(item => <button key={item.name} className={tab === item.name ? 'nav-item active' : 'nav-item'} onClick={() => { setTab(item.name); setNotice(''); }}><span>{item.icon}</span>{item.name}{item.name === 'Q-Day drill' && <small>TEST</small>}</button>)}</nav>
       <div className="sidebar-bottom"><div className="network-led"><i /> QoreChain · Diana</div><p>Post-quantum protection.<br />On your terms.</p><button className="text-button" onClick={() => setDark(!dark)}>{dark ? '☼ Light appearance' : '☾ Dark appearance'}</button></div>
     </aside>
-    <div className="main-shell"><header className="topbar"><div className="breadcrumb">Workspace <span>/</span> <strong>{tab}</strong></div><div className="top-actions"><select aria-label="Environment" value={environment} onChange={e => setEnvironment(e.target.value)}><option value="simulation">Local simulation</option><option value="testnet">Live testnet</option></select><button className="wallet-button" disabled={busy} onClick={() => void perform(connect)}>{wallet ? `${wallet.slice(0, 9)}…${wallet.slice(-5)}` : 'Connect QoreX'} <span>↗</span></button></div></header>
+    <div className="main-shell"><header className="topbar"><div className="breadcrumb">Workspace <span>/</span> <strong>{tab}</strong></div><div className="top-actions"><select aria-label="Environment" value={environment} onChange={e => setEnvironment(e.target.value)}><option value="simulation">Local simulation</option><option value="testnet">Live testnet</option></select><button className="wallet-button" disabled={busy} onClick={() => setWalletChooserOpen(true)}>{wallet ? `${wallet.slice(0, 9)}…${wallet.slice(-5)}` : 'Connect QoreX'} <span>↗</span></button></div></header>
       <main id="main"><div className="simulation-strip"><span className="pill">{environment === 'simulation' ? 'SIMULATION' : 'TESTNET'}</span>{environment === 'simulation' ? 'Interactive product demo · sample balances · no blockchain transactions' : 'Real Diana testnet contracts · short demo delays · no real funds'}</div>
         <div className="page-heading"><div><div className="eyebrow">YOUR POST-QUANTUM SAFETY LAYER</div><h1>{tab === 'Overview' ? 'An early warning. A way out.' : tab === 'My vault' ? 'Your assets. Stronger boundaries.' : tab === 'Lifeboat' ? 'Move before the alarm.' : tab === 'Q-Day drill' ? 'Practice the day keys fall.' : tab === 'Canary lab' ? 'Small signals. Shared protection.' : tab === 'Activity' ? 'Every signal, in one place.' : 'Know what protects you.'}</h1><p>{tab === 'Overview' ? 'Watch the canaries. Bound classical access. Keep your PQ escape route ready.' : tab === 'Lifeboat' ? 'A guided migration into a vault with a separate, device-held post-quantum key.' : tab === 'Q-Day drill' ? 'Drain bait accounts, latch the alarm, block a classical withdrawal and test PQ rescue.' : 'Protection you can inspect, test and understand.'}</p></div>{environment === 'simulation' && tab === 'Overview' && <button className="secondary" onClick={() => setTab('Q-Day drill')}>Run a Q-Day drill <span>↗</span></button>}</div>
         {notice && <div className="notice" role="status">{notice}</div>}

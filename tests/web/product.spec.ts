@@ -72,6 +72,31 @@ test('Lifeboat requires a real encrypted backup and explicit confirmation before
 test('QoreX connection never requests a private key or silently sends a transaction', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: 'Connect QoreX' }).click();
+  await expect(page.getByRole('dialog', {name:'Connect QoreX'})).toBeVisible();
+  await page.getByRole('button', { name: 'Browser extension', exact:false }).click();
   await expect(page.getByRole('status')).toContainText('QoreX extension');
   await expect(page.getByRole('textbox', { name: /private key|seed phrase/i })).toHaveCount(0);
+});
+
+test('QoreX chooser opens without invoking the extension and keeps mobile choice separate', async ({page},info)=>{
+  await page.addInitScript(()=>{
+    const tracked=window as unknown as {qorex:unknown;extensionConnections:number};
+    tracked.extensionConnections=0;
+    tracked.qorex={native:{enable:async()=>{tracked.extensionConnections++;},getKey:async()=>({bech32Address:'qor1wlxxvzrqpmcrqkqhc2la7jgs7yce58mrjpr86z'}),signDirect:async()=>{throw new Error('Connection must not sign a transaction');}}};
+  });
+  await page.goto('/');
+  await page.getByRole('button',{name:'Connect QoreX'}).click();
+  await expect(page.getByRole('dialog',{name:'Connect QoreX'})).toBeVisible();
+  await page.screenshot({path:`.artifacts/wallet-chooser-${info.project.name}.png`});
+  await page.getByRole('button',{name:'Mobile wallet',exact:false}).click();
+  await expect(page.getByRole('status')).toContainText('Mobile QR pairing is not available');
+  expect(await page.evaluate(()=>(window as unknown as {extensionConnections:number}).extensionConnections)).toBe(0);
+  await page.getByRole('button',{name:'Back to connection options'}).click();
+  await page.getByRole('button',{name:'Browser extension',exact:false}).click();
+  await expect(page.getByRole('dialog')).not.toBeVisible();
+  await expect(page.getByRole('status')).toContainText('QoreX connected on testnet');
+  expect(await page.evaluate(()=>(window as unknown as {extensionConnections:number}).extensionConnections)).toBe(1);
+  await page.getByRole('button',{name:/qor1wlxxv/}).click();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog')).not.toBeVisible();
 });
