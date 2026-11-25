@@ -55,7 +55,9 @@ The public project now links the repository, live app, protocol-preview MP4
 and four verified testnet addresses. Category is Post-Quantum dApp and AI-Native
 is verified; only used kits/features were declared. The fest generated a cover
 because browser file upload could not open the local chooser. Hosted CI passed
-for be9e0f6. GitHub App installation/commit indexing remains to be checked.
+for be9e0f6. The user completed GitHub authentication and installed QoreChain
+Build with read access scoped to Sanni-onX/canary. Commit indexing must be
+confirmed after a subsequent push.
 
 Record a real QoreX mobile approval result and replace the preview with a full
 mobile migration demonstration if available. Review finite coverage and alarm

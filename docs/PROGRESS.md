@@ -25,7 +25,9 @@ browser, cryptography and build checks. Railway deployment 97e64e29 succeeded.
 Created https://build.qorechain.io/p/canary with the source, demo, protocol
 preview and four verified testnet addresses. AI-Native and repository kits were
 verified by the fest. Its generated cover is used because the local upload
-chooser did not open. Mobile approval and commit-feed integration remain open.
+chooser did not open. The user authenticated and installed QoreChain Build,
+with read-only repository access scoped to Canary. Mobile approval and
+confirmation of fest commit indexing remain open.
 
 ## 23 November — expanded Lifeboat and release packet
 
