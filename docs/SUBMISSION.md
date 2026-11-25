@@ -31,6 +31,8 @@ documented in AI_USAGE.md and README.md.
 
 - App: https://web-production-2863d083.up.railway.app/?mode=testnet
 - Public source: https://github.com/Sanni-onX/canary
+- Fest project: https://build.qorechain.io/p/canary
+- Hosted CI passed: https://github.com/Sanni-onX/canary/actions/runs/45580593618
 - Watcher: https://watcher-production-64b80e30.up.railway.app/status
 - Active addresses/receipts: deployments/testnet-v2.json
 - Automatic alarm: docs/evidence/automatic-alarm-test.json
@@ -49,11 +51,17 @@ Keep the registered QoreX address linked. Add build accounts to the project:
 
 ## Before submission
 
-Link the public GitHub repository on the project page;
-install the QoreChain Build GitHub App; verify hosted CI; upload the video;
-review project category, checked features and team registration. Record a real
-QoreX approval result. Review coverage and alarm status immediately before a
-live demonstration. No Q-Day Survivor participation is claimed.
+The public project now links the repository, live app, protocol-preview MP4
+and four verified testnet addresses. Category is Post-Quantum dApp and AI-Native
+is verified; only used kits/features were declared. The fest generated a cover
+because browser file upload could not open the local chooser. Hosted CI passed
+for be9e0f6. GitHub App installation/commit indexing remains to be checked.
 
-Official procedure checked 23 November 2026:
+Record a real QoreX mobile approval result and replace the preview with a full
+mobile migration demonstration if available. Review finite coverage and alarm
+status immediately before a live demonstration. No Q-Day Survivor participation
+is claimed. The project remains editable until the official deadline; there is
+no separate final submit button according to the current Start page.
+
+Official procedure checked 25 November 2026:
 https://build.qorechain.io/start and https://build.qorechain.io/faq .

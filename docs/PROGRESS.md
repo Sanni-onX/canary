@@ -19,8 +19,13 @@ checks passed on rerun, completing the 18 desktop/mobile cases.
 The installed extension connected on Diana with the registered public address.
 No user transaction was requested or signed. The user prefers mobile for the
 remaining transaction proof. Recovery passwords and backups remain user-held.
-Created the public repository at https://github.com/Sanni-onX/canary; publication
-and hosted CI results must be checked before declaring submission ready.
+Published the public repository at https://github.com/Sanni-onX/canary. Hosted
+CI 45580593618 passed at commit be9e0f6, including static analysis, contract,
+browser, cryptography and build checks. Railway deployment 97e64e29 succeeded.
+Created https://build.qorechain.io/p/canary with the source, demo, protocol
+preview and four verified testnet addresses. AI-Native and repository kits were
+verified by the fest. Its generated cover is used because the local upload
+chooser did not open. Mobile approval and commit-feed integration remain open.
 
 ## 23 November — expanded Lifeboat and release packet
 

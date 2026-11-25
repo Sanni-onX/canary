@@ -1,5 +1,11 @@
 # Canary
 
+[![Built on QoreChain](https://build.qorechain.io/badge/canary.svg)](https://build.qorechain.io/p/canary)
+
+[Live app](https://web-production-2863d083.up.railway.app/?mode=testnet) ·
+[Fest project](https://build.qorechain.io/p/canary) ·
+[CI checks](https://github.com/Sanni-onX/canary/actions)
+
 **An early warning. A way out.** A post-quantum safety layer for QoreChain:
 canaries trigger a latching alarm, PQ-Wrap vaults freeze classical fund release,
 and Lifeboat guides migration into a separately PQ-authorized vault.
@@ -158,7 +164,7 @@ npm run lint:solidity
 npm run build
 ```
 
-Current source: **39 Foundry tests** (22 core, 5 rotation, 5 probe, 7 invariants),
+Current source: **41 Foundry tests** (24 core, 5 rotation, 5 probe, 7 invariants),
 **8 discovery tests**, **3 PQ client tests**, **2 coverage tests**,
 **2 watcher integration tests**, and **18 desktop/mobile browser tests**.
 Each invariant ran 256 campaigns of 500
@@ -169,7 +175,7 @@ replay have unit coverage. Full external audits are still required. [Gas evidenc
 
 On non-Windows platforms, install Playwright Chromium with
 `npx playwright install chromium`; Windows tests use installed Edge. CI runs
-these checks; hosted CI has not yet been run for this local repository.
+these checks; see [hosted CI](https://github.com/Sanni-onX/canary/actions) for results.
 
 ## Run the watcher
 
@@ -182,9 +188,10 @@ node --env-file=services/watcher/.env --import tsx services/watcher/src/index.ts
 
 Health/status bind to `127.0.0.1:8787` by default. Without a bot key it observes
 and records submission-needed alerts; it never pretends to submit a transaction.
-A testnet bot needs its own registered PQ key and live EVM window. Its classical
-transaction key has no registry privilege. The service never needs a user's PQ
-secret. Dockerfile: `services/watcher/Dockerfile` (build from repository root).
+The hosted native-hybrid bot needs its own registered PQ key and fee budget,
+but no EVM window. Its transaction key has no registry privilege. Deployer and
+guardian keys remain local. The service never needs a user's PQ secret.
+Dockerfile: `services/watcher/Dockerfile` (build from repository root).
 
 ## Local deployment workflow
 
@@ -219,13 +226,13 @@ chain availability, gas, transaction inclusion, the verifier and a secure rescue
 address. Rebasing and fee-on-transfer tokens are unsupported; observed deposit
 deltas do not prove future token behavior.
 
-The deployed revision-1 registry has 16 lifetime slots, including retired
-entries. Revision-2 slot rotation is locally tested and requires review plus a
-new deployment. It cannot change existing immutable vaults. Rolling transfer
-capacity, governance operations and rescue UX need additional hardening.
-General-user live Lifeboat transactions, actual approval revocation, complete
-ceremony, production-bounds deployment, two-stage QCAI, public hosting,
-public repository and the final demo video remain incomplete.
+The historical revision-1 registry has 16 lifetime slots, including retired
+entries. Deployed revision 2 supports local PQ-governed replacement without
+changing existing immutable vaults. Coverage renewal is not unattended, and
+current canaries retain their drill keys. Actual QoreX transaction approval,
+a full mobile migration recording, and fest project configuration remain open.
+Production bounds, independent guardian custody and external security review
+are required before considering real funds.
 
 Slither 0.11.5 completed on revision 2 with **37 findings**, all individually mapped in
 [static analysis review](audit/slither.md). Solhint 6.2.5 reports zero errors
@@ -238,9 +245,9 @@ completed on 23 November (72/100, medium); all five findings have dispositions.
 Both original PDFs are in docs/audit/. Automated reviews are not independent security audits.
 
 Canary Lab's local script fallback is documented in [CEREMONY.md](docs/CEREMONY.md).
-Fresh unfunded preparation/status and three refusal guards are verified. Its
-funding/exposure/governance/destruction flow has not been exercised; it never
-accepts a personal wallet export or claims provable key destruction.
+Preparation/refusal guards and actual funding, exposure and PQ-governed slot
+replacement are verified. Key destruction has not been exercised; the script
+never accepts a personal wallet export or claims provable key destruction.
 
 ## Recover without giving the relay your key
 
@@ -267,9 +274,11 @@ live. The earlier real testnet drill used `run-testnet-drill.mjs` instead.
 
 `apps/web/Dockerfile`, `compose.yaml` and `.dockerignore` prepare the web app and
 persistent read-only-by-default watcher without copying `.local/` or secrets.
-Docker's engine was unavailable on the build machine, so container execution
-has not been verified. No public deployment was made. QoreX mobile still needs
-a public HTTPS URL. Docker Compose's watcher has no signer configured; health
+Both Dockerfiles have built and run on Railway: the
+[public app](https://web-production-2863d083.up.railway.app/?mode=testnet) and
+[persistent watcher](https://watcher-production-64b80e30.up.railway.app/status)
+are live. QoreX mobile uses the HTTPS app in its dApp Browser.
+Docker Compose's watcher has no signer configured; health
 means fresh RPC monitoring, while coverage degradation is reported separately.
 
 See [threat model](docs/THREAT_MODEL.md), [architecture](docs/ARCHITECTURE.md),

@@ -36,7 +36,7 @@ replacement run completes; this archives the previous public plan before
 preparing new accounts. Once the operator is funded, `node
 scripts/maintain-epoch.mjs` funds the fresh accounts, exposes them and performs
 the local PQ-governed replacements. The current three-slot run completed on
-23 November, restoring three covered canaries; all exposure, queue and execute
+25 November, restoring three covered canaries; all exposure, queue and execute
 receipts are retained in docs/evidence/next-epoch.json. It preserves the alarm and
 produces an unsigned reset proposal for separate review. It does not destroy keys.
 
