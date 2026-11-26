@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('dashboard presents canaries and a vault, with honest environment separation', async ({ page }, info) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'An early warning. A way out.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Overview' })).toBeVisible();
   await expect(page.getByRole('heading', { name: /Canary 0/ })).toHaveCount(6);
   await expect(page.getByRole('heading', { name: 'PQ-Wrap vault' })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

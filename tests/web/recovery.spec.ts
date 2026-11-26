@@ -126,6 +126,6 @@ test('finite epochs show expiring/lapsed coverage and threshold margin without i
   await expect(page.getByRole('heading', { name: 'On-chain alarm latched.' })).toHaveCount(0);
   await page.getByRole('navigation').getByRole('button', { name: 'Canary lab' }).click();
   await expect(page.getByRole('heading', { name: 'Prepare the next epoch' })).toBeVisible();
-  await expect(page.getByText('No automatic renewal or key destruction runs here.', { exact: false })).toBeVisible();
+  await expect(page.getByText('Epoch replacement requires operator approval.', { exact: false })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

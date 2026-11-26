@@ -15,7 +15,7 @@ export default function QorexNetworkSetup({onNetwork}:{onNetwork:(chain:number)=
   finally{setBusy(false);}
  }
  return <section className="panel qorex-network-setup" aria-labelledby="qorex-network-title"><h2 id="qorex-network-title">QoreX network setup</h2>
-  <p className="helper">Choosing coin60 selects an account, not a network. Canary needs Diana testnet. This request asks QoreX to switch; some builds refuse it and require a change inside the wallet.</p>
+  <p className="helper">Transactions require Diana testnet.</p>
   <div className="button-stack"><button className="secondary" disabled={busy} onClick={()=>void run(false)}>Check QoreX network</button><button className="secondary" disabled={busy} onClick={()=>void run(true)}>Request Diana testnet</button></div>
   <p className="helper" role="status">{status}</p>
  </section>;

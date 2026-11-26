@@ -89,12 +89,12 @@ export default function QorexVaultActions({owner, vault, refresh}:{owner:Address
     await refresh();setStatus(`${deposit?'Deposit':'Withdrawal'} confirmed on Diana. Balances refreshed.`);
   });}
   return <section className="panel"><h2>QoreX vault transactions</h2>
-    <p className="helper">QoreX approves each native transaction with its hybrid signature. Contract calls use the tested native cross-VM route. If your wallet refuses an unknown message, stop and update QoreX; no secret export is needed.</p>
+    <p className="helper">Approve transactions in QoreX on Diana testnet.</p>
     <fieldset disabled={busy}><legend>Create a protected vault</legend>
       <p className="helper">Initial policy: 0.01 QOR daily classical limit, 24-hour large-transfer delay and 1-hour cooling-off. The PQ recovery key is separate from your wallet key.</p>
       <label className="field-label" htmlFor="qvx-rescue">Rescue address</label><input id="qvx-rescue" value={rescue} onChange={e=>setRescue(e.target.value as Address)}/>
       <label className="field-label" htmlFor="qvx-password">Recovery backup password</label><input id="qvx-password" type="password" autoComplete="new-password" value={password} onChange={e=>setPassword(e.target.value)}/>
-      <p className="helper">Use at least 12 characters. Backup generation happens locally and requires no wallet approval or network connection.</p>
+      <p className="helper">Use at least 12 characters. Keep your backup and password separately.</p>
       <button className="secondary" onClick={()=>void makeBackup()}>Generate encrypted recovery backup</button>
       <label className="field-label" htmlFor="qvx-existing-backup">Or restore an existing encrypted backup</label><input id="qvx-existing-backup" type="file" accept=".json,application/json" onChange={event=>void restoreBackup(event.target.files?.[0])}/>
       {backup&&<><button className="secondary" onClick={downloadBackup}>Save encrypted backup</button><details><summary>Download not supported by your wallet browser?</summary><p className="helper">Copy this encrypted JSON into a .json file and store it safely. It contains encrypted recovery material, not your password.</p><textarea readOnly aria-label="Encrypted recovery backup JSON" value={JSON.stringify(backup)} onFocus={e=>e.currentTarget.select()}/></details></>}
@@ -106,7 +106,7 @@ export default function QorexVaultActions({owner, vault, refresh}:{owner:Address
       <button className="primary" onClick={()=>void transfer(true)}>Deposit with QoreX</button>
       <label className="field-label" htmlFor="qvx-to">Withdrawal recipient</label><input id="qvx-to" value={to} onChange={e=>setTo(e.target.value as Address)}/>
       <button className="secondary" onClick={()=>void transfer(false)}>Withdraw within daily limit</button>
-      <p className="helper">Native deposits credit the vault balance directly; they do not invoke Solidity receive or open a cooling-off reversal window. Alarm, lock and daily-limit checks still apply to classical withdrawals.</p>
+      <p className="helper">QOR deposits have no cooling-off reversal window.</p>
     </fieldset>}
     <p role="status">{status}</p>{hash&&<a href={`https://explore.qore.network/tx/${hash}`} target="_blank" rel="noreferrer">View confirmed native receipt ↗</a>}
   </section>;

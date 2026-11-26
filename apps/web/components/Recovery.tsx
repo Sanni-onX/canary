@@ -84,7 +84,7 @@ export default function Recovery({ vault, refresh }: { vault: { address: Address
     finally { if (alive.current) setBusy(false); }
   }
   return <section className="panel"><div className="panel-heading"><h2>Recover with your PQ backup</h2><span className="subtle-pill">ON THIS DEVICE</span></div>
-    <p className="helper">Your password and private key stay here. The exported authorization contains a public signature that permits only the displayed rescue amount and destination.</p>
+    <p className="helper">Recovery keys stay on this device. Verify the amount and destination before signing.</p>
     {!!backups.length && <button className="secondary" disabled={busy} onClick={() => { clearKey(); setBlob(backups[0]); setStatus('Stored encrypted backup selected. Enter its password.'); }}>Use encrypted backup saved on this device</button>}
     <label className="field-label" htmlFor="recovery-file">Encrypted PQ backup file</label><input id="recovery-file" type="file" accept=".json,application/json" disabled={busy} onChange={event => void importFile(event.target.files?.[0])} />
     <label className="field-label" htmlFor="recovery-password">Backup password</label><input id="recovery-password" type="password" autoComplete="off" value={password} onChange={event => setPassword(event.target.value)} />
@@ -93,7 +93,7 @@ export default function Recovery({ vault, refresh }: { vault: { address: Address
     <label className="field-label" htmlFor="recovery-amount">PQ rescue amount in QOR</label><input id="recovery-amount" type="text" inputMode="decimal" value={amount} onChange={event => setAmount(event.target.value)} />
     <button className="primary" disabled={!unlocked || busy} onClick={() => void prepareRescue()}>{busy ? 'Checking…' : 'Sign & check rescue authorization'}</button>
     <button className="secondary" disabled={!unlocked || busy} onClick={() => void prepareRescue(true)}>Sign & submit PQ rescue with QoreX</button>
-    <p className="helper">QoreX approves the native transaction; your separate vault PQ key authorizes rescue. The export route remains available for a local relay. Refresh vault state before each authorization.</p>
+    <p className="helper">Refresh vault state before signing.</p>
     <p className="action-result" role="status">{status}</p>
   </section>;
 }
