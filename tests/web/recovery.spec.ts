@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { decodeFunctionData, hexToBytes, keccak256, zeroAddress, parseAbi, toFunctionSelector } from 'viem';
-import { verify, buildTypedDigest, withdrawalAction } from '../../packages/pq/src/index';
+import { verify, buildTypedDigest, withdrawalAction, generateKeypair, encryptKeyBlob } from '../../packages/pq/src/index';
 const vaultAbi = parseAbi(['function withdrawPQ(address,uint256,address,uint256,bytes,bytes)']);
 
 const owner = '0x0000000000000000000000000000000000001234';
@@ -16,13 +16,9 @@ function portfolio(keyHash: string) {
 test('encrypted backup recovers a real signing key and exports only a checked, nonce-bound rescue authorization', async ({ page }) => {
   const posts: { url: string; body: Record<string, unknown> }[] = [];
   page.on('request', request => { if (request.method() === 'POST') posts.push({ url: request.url(), body: request.postDataJSON() }); });
-  await page.goto('/');
-  await page.getByRole('navigation').getByRole('button', { name: 'Lifeboat' }).click();
-  await page.getByLabel('Encryption password').fill('Canary recovery password 2026!');
-  const backupDownload = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Generate key & download encrypted backup' }).click();
-  const backupFile = await backupDownload;
-  const backup = JSON.parse(await readFile((await backupFile.path())!, 'utf8'));
+  const keys=generateKeypair();
+  const backup=await encryptKeyBlob(keys,'Canary recovery password 2026!');
+  keys.secretKey.fill(0);
   // Policy controls read pending changes when a vault is selected. Keep this
   // recovery fixture deterministic and permit only these public read calls.
   await page.route('https://evm-testnet.qore.host/**', async route => {
@@ -38,10 +34,10 @@ test('encrypted backup recovers a real signing key and exports only a checked, n
   });
   await page.route('**/api/portfolio?*', route => route.fulfill({ json: portfolio(backup.publicKeyHash) }));
   await page.route('**/api/preflight', route => route.fulfill({ json: { success: true } }));
-  await page.getByLabel('Environment').selectOption('testnet');
+  await page.goto('/?tab=My%20vault');
   await page.getByLabel('Owner EVM address').fill(owner);
   await page.getByRole('button', { name: 'Discover vaults & review assets' }).click();
-  await page.getByRole('button', { name: 'Use encrypted backup saved on this device' }).click();
+  await page.getByLabel('Encrypted PQ backup file').setInputFiles({name:'backup.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(backup))});
   await page.getByLabel('Backup password', { exact: true }).fill('Wrong password');
   await page.getByRole('button', { name: 'Unlock recovery key', exact: true }).click();
   await expect(page.getByRole('status').filter({ hasText: 'Could not unlock' })).toBeVisible();
@@ -83,7 +79,7 @@ test('live reports match chain bindings and reject a report for another vault', 
   await page.getByRole('navigation').getByRole('button', { name: 'Lifeboat' }).click();
   await page.getByLabel('Owner EVM address').fill(owner);
   await page.getByRole('button', { name: 'Discover vaults & review assets' }).click();
-  await expect(page.getByRole('heading', { name: 'Your live PQ-Wrap vault' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Vault balance and policy' })).toBeVisible();
   await page.getByRole('button', { name: 'Save migration record' }).click();
   const report = { version: 1, chainId: 9800, owner, vault: rescue, keyHash, updatedAt: new Date().toISOString(), receipts: [],
     snapshot: { rescue, dailyLimitWei: '100000000000000000', timelockSeconds: '86400', coolingOffSeconds: '3600', observedBlock: '100' } };
@@ -115,17 +111,17 @@ test('finite epochs show expiring/lapsed coverage and threshold margin without i
       lapsed: statuses.filter(status => status === 'Lapsed').length, unknown: 0, threshold: 2, margin: 1, desired: 3,
       tripFeasible: statuses.filter(status => status !== 'Lapsed').length >= 2, degraded: true, blockSeconds: 1, note: 'Finite epochs; no PQ-only renewal.' } });
   await page.route('**/api/protocol', route => route.fulfill({ json: fixture() }));
-  await page.goto('/?mode=testnet');
+  await page.goto('/?tab=Canaries');
   await expect(page.getByText('Coverage degraded', { exact: true })).toBeVisible();
   await expect(page.getByText('Expiring', { exact: true })).toBeVisible();
   await expect(page.getByText('Lapsed', { exact: true })).toHaveCount(1);
   statuses[1] = 'Lapsed';
   await page.getByRole('button', { name: 'Refresh', exact: false }).click();
   await expect(page.getByText('Lapsed', { exact: true })).toHaveCount(2);
-  await expect(page.getByText('Fewer than k intact canaries are covered.', { exact: false })).toBeVisible();
+  await expect(page.getByText('Not enough canaries have active permissions to reach the alarm threshold.', { exact: false })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'On-chain alarm latched.' })).toHaveCount(0);
-  await page.getByRole('navigation').getByRole('button', { name: 'Canary lab' }).click();
-  await expect(page.getByRole('heading', { name: 'Prepare the next epoch' })).toBeVisible();
-  await expect(page.getByText('Epoch replacement requires operator approval.', { exact: false })).toBeVisible();
+  await page.getByText('Operator maintenance',{exact:true}).click();
+  await expect(page.getByRole('heading', { name: 'Replace expiring canaries' })).toBeVisible();
+  await expect(page.getByText('Replacement requires operator approval.', { exact: false })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

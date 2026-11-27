@@ -8,7 +8,7 @@ import { factoryAbi, vaultAbi } from '../lib/contracts';
 import { crossVmBytes, bankSendBytes, sendQorexNative, requireQorexDiana } from '../lib/qorex-transactions';
 import {parseExactAmount} from '../lib/amounts';
 const client = createPublicClient({transport:http('https://evm-testnet.qore.host')});
-export default function QorexVaultActions({owner, vault, refresh}:{owner:Address;vault?:Address;refresh:(selected?:Address)=>Promise<void>}) {
+export default function QorexVaultActions({owner, vault, refresh, purpose="create"}:{owner:Address;vault?:Address;refresh:(selected?:Address)=>Promise<void>;purpose?:"create"|"manage"|"fund"}) {
   const [rescue,setRescue]=useState(owner), [password,setPassword]=useState('');
   const [backup,setBackup]=useState<EncryptedKeyBlob|null>(null), [saved,setSaved]=useState(false);
   const [amount,setAmount]=useState('0.001'), [to,setTo]=useState(owner);
@@ -88,9 +88,9 @@ export default function QorexVaultActions({owner, vault, refresh}:{owner:Address
     }
     await refresh();setStatus(`${deposit?'Deposit':'Withdrawal'} confirmed on Diana. Balances refreshed.`);
   });}
-  return <section className="panel"><h2>QoreX vault transactions</h2>
+  return <section className="panel"><h2>{purpose==='create'?'Create vault':purpose==='fund'?'Deposit QOR':'QOR transfers'}</h2>
     <p className="helper">Approve transactions in QoreX on Diana testnet.</p>
-    <fieldset disabled={busy}><legend>Create a protected vault</legend>
+    {purpose==='create'&&<fieldset disabled={busy}><legend>Recovery key and rescue destination</legend>
       <p className="helper">Initial policy: 0.01 QOR daily classical limit, 24-hour large-transfer delay and 1-hour cooling-off. The PQ recovery key is separate from your wallet key.</p>
       <label className="field-label" htmlFor="qvx-rescue">Rescue address</label><input id="qvx-rescue" value={rescue} onChange={e=>setRescue(e.target.value as Address)}/>
       <label className="field-label" htmlFor="qvx-password">Recovery backup password</label><input id="qvx-password" type="password" autoComplete="new-password" value={password} onChange={e=>setPassword(e.target.value)}/>
@@ -100,12 +100,12 @@ export default function QorexVaultActions({owner, vault, refresh}:{owner:Address
       {backup&&<><button className="secondary" onClick={downloadBackup}>Save encrypted backup</button><details><summary>Download not supported by your wallet browser?</summary><p className="helper">Copy this encrypted JSON into a .json file and store it safely. It contains encrypted recovery material, not your password.</p><textarea readOnly aria-label="Encrypted recovery backup JSON" value={JSON.stringify(backup)} onFocus={e=>e.currentTarget.select()}/></details></>}
       {backup&&<label className="backup-confirmation" htmlFor="qvx-saved"><input id="qvx-saved" type="checkbox" checked={saved} onChange={e=>setSaved(e.target.checked)}/><span>I saved the encrypted backup file and its password separately.</span></label>}
       <button className="primary" disabled={!backup||!saved} onClick={()=>void create()}>Create vault with QoreX</button>
-    </fieldset>
-    {vault&&<fieldset disabled={busy}><legend>Move test QOR</legend>
+    </fieldset>}
+    {vault&&purpose!=='create'&&<fieldset disabled={busy}><legend>QOR amount</legend>
       <label className="field-label" htmlFor="qvx-amount">Amount in QOR</label><input id="qvx-amount" inputMode="decimal" value={amount} onChange={e=>setAmount(e.target.value)}/>
       <button className="primary" onClick={()=>void transfer(true)}>Deposit with QoreX</button>
-      <label className="field-label" htmlFor="qvx-to">Withdrawal recipient</label><input id="qvx-to" value={to} onChange={e=>setTo(e.target.value as Address)}/>
-      <button className="secondary" onClick={()=>void transfer(false)}>Withdraw within daily limit</button>
+      {purpose==='manage'&&<><label className="field-label" htmlFor="qvx-to">Withdrawal recipient</label><input id="qvx-to" value={to} onChange={e=>setTo(e.target.value as Address)}/>
+      <button className="secondary" onClick={()=>void transfer(false)}>Withdraw within daily limit</button></>}
       <p className="helper">QOR deposits have no cooling-off reversal window.</p>
     </fieldset>}
     <p role="status">{status}</p>{hash&&<a href={`https://explore.qore.network/tx/${hash}`} target="_blank" rel="noreferrer">View confirmed native receipt ↗</a>}

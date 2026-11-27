@@ -2,13 +2,12 @@
 
 [![Built on QoreChain](https://build.qorechain.io/badge/canary.svg)](https://build.qorechain.io/p/canary)
 
-[Live app](https://web-production-2863d083.up.railway.app/?mode=testnet) ·
+[Live app](https://web-production-2863d083.up.railway.app/) ·
 [Fest project](https://build.qorechain.io/p/canary) ·
 [CI checks](https://github.com/Sanni-onX/canary/actions)
 
-**An early warning. A way out.** A post-quantum safety layer for QoreChain:
-canaries trigger a latching alarm, PQ-Wrap vaults freeze classical fund release,
-and Lifeboat guides migration into a separately PQ-authorized vault.
+Canary monitors bait accounts for balance loss, freezes classical vault withdrawals
+when the alarm trips, and supports recovery with a separate post-quantum key.
 
 Built for the QoreChain Developer Fest, Post-Quantum dApp track.
 **Working testnet prototype. Both QCAI stages reviewed; testnet only.**
@@ -38,8 +37,6 @@ revision-2 deployment and real PQ withdrawal are recorded in
 three retained-key drill canaries were activated through PQ governance. The
 hosted app uses revision 2 and labels revision-1 drill receipts as historical.
 
-![Canary product overview, labeled local simulation](docs/images/overview.png)
-
 ## What works today
 
 - **Real deployed contracts:** CanaryRegistry, 2-of-3 PQGovernance, VaultFactory
@@ -47,10 +44,12 @@ hosted app uses revision 2 and labels revision-1 drill receipts as historical.
 - **Real testnet drill:** normal classical withdrawal; two retained-key canary
   drains; permissionless watcher alarm; decoded `ClassicalFrozen` rejection;
   successful PQ rescue of the remaining vault balance.
-- **Product UI:** overview, vault controls, nine-step Lifeboat simulation, ceremony
-  draft, interactive Q-Day drill, activity and threat model; light/dark and mobile.
-- **Live dashboard:** reads actual registry/canary/vault state and deployment
-  receipts. Local simulation is explicitly separate, never a live-data fallback.
+- **Product UI:** Overview shows alarm status and coverage totals; Lifeboat creates
+  and funds vaults; My vault manages withdrawals, policy and recovery. Canaries
+  holds the full coverage list, Activity holds owner events, and Wallet contains
+  QoreX network setup. The public app has no simulation mode or environment selector.
+- **Protocol reads:** actual registry/canary/vault state and deployment receipts.
+  Missing or stale reads are reported without substituting sample balances.
 - **Browser PQ:** real ML-DSA-87 signing and AES-256-GCM encrypted backups using
   PBKDF2-SHA256 (310,000 iterations); encrypted blobs only in IndexedDB.
 - **Watcher:** block subscription plus HTTP fallback/backoff, SQLite history,
@@ -66,9 +65,8 @@ hosted app uses revision 2 and labels revision-1 drill receipts as historical.
 - **Resume records:** save/export public owner/vault/key/policy snapshots and
   receipt references; imported labels never establish completion.
 
-The default browser walkthrough is **local simulation**. Live testnet mode
-provides wallet transaction controls that preflight calls, verify native chain
-receipts and check resulting state. The underlying native transaction route is
+The public app reads Diana directly. Wallet transaction controls preflight calls,
+verify native chain receipts and check resulting state. The underlying native transaction route is
 proven on Diana; actual installed-QoreX decoding and approval remain unverified.
 Do not treat browser fixtures or operator-signed probes as that wallet proof.
 Production bounds and an independent security audit remain open.
@@ -277,7 +275,7 @@ live. The earlier real testnet drill used `run-testnet-drill.mjs` instead.
 `apps/web/Dockerfile`, `compose.yaml` and `.dockerignore` prepare the web app and
 persistent read-only-by-default watcher without copying `.local/` or secrets.
 Both Dockerfiles have built and run on Railway: the
-[public app](https://web-production-2863d083.up.railway.app/?mode=testnet) and
+[public app](https://web-production-2863d083.up.railway.app/) and
 [persistent watcher](https://watcher-production-64b80e30.up.railway.app/status)
 are live. QoreX mobile pairing remains an unresolved integration requirement.
 Docker Compose's watcher has no signer configured; health

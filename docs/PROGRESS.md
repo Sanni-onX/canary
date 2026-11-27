@@ -1,5 +1,23 @@
 # Canary progress
 
+## 27 November — public product workflow
+
+Removed the shipped simulation UI and environment selector. Public entry now reads
+Diana protocol state directly; no sample balances or model-based drill are offered.
+Removed the testnet/no-real-funds strip. Overview summarizes alarm and coverage;
+Canaries is the sole detailed permission/balance list and explains expiry. QoreX
+network diagnostics live only under Wallet. Lifeboat handles creation, backup,
+deposits, approvals and migration records; My vault handles balances, withdrawals,
+policy and PQ recovery; Activity contains owner transaction events only. Historical
+operator receipts remain expandable verification records, separate from user assets.
+
+Validation: 22 desktop/mobile checks passed, including page separation, native wallet
+network restrictions, saved backup restoration and real nonce-bound PQ signing.
+A public protocol read at 2026-11-27T23:26:00.122Z (block 10876685) showed the
+alarm latched, 0 covered canaries, threshold 2 and 3 lapsed permissions. This UI
+release does not renew coverage, reset the alarm or establish a signed QoreX
+user transaction. Those remain operational release requirements.
+
 ## 25 November — QoreX-only network request diagnostic
 
 The user explicitly chose QoreX only after the Dashboard web-wallet review;
